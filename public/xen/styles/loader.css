@@ -1,0 +1,119 @@
+@keyframes wrongPw {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70% {
+    transform: translateX(-10px);
+  }
+
+  20%,
+  40%,
+  60% {
+    transform: translateX(10px);
+  }
+
+  80% {
+    transform: translateX(8px);
+  }
+
+  90% {
+    transform: translateX(-8px);
+  }
+}
+
+@keyframes preload-anim {
+  0%,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+.os-preload,
+.os-setup {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  position: absolute;
+  z-index: 4000;
+  background-color: #504f64;
+  transition: 0s ease-in-out;
+  color: white;
+}
+
+.os-preload p {
+  animation: preload-anim 2s ease-out 100ms infinite normal forwards;
+}
+
+.os-setup {
+  flex-direction: row;
+  z-index: 400;
+}
+
+.os-setup-p {
+  animation: preload-anim 9s ease-out 100ms infinite normal forwards;
+  text-shadow: -7px 5px 19px rgba(0, 0, 0, 0.63);
+}
+
+.os-setup-keybind-p {
+  animation: none;
+  text-align: center;
+  width: 656px;
+  padding-bottom: 9px;
+}
+
+.os-setup-choiceWrap,
+.os-setup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.os-setup-choiceWrap {
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.os-setup-choiceWrap input {
+  background: whitesmoke;
+  outline: transparent;
+  border: 1px solid #80808047;
+  width: 193px;
+  height: 24px;
+  margin-left: 31px;
+  font-family: "IBM PLEX SANS";
+  font-size: 20px;
+  border-radius: 4px;
+  padding-left: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.os-setup-button {
+  margin: -9px 9px 0 7px;
+  background-color: #ffffff00;
+  border-color: #ffffff00;
+  box-shadow: none;
+  cursor: pointer;
+  font-variant: none;
+  font-weight: 100;
+  font-family: "IBM PLEX SANS", sans-serif;
+  color: black;
+}
