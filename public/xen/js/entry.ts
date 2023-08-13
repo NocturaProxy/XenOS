@@ -14,4 +14,9 @@ console.log(var2 + var1);
 const OsPre = document.getElementById('os-pre');
 OsPre?.parentNode?.removeChild(OsPre);
 
-xen.CreateWindow('Shit');
+const vscodeButton = document.getElementById("vscode");
+if (vscodeButton) {
+    vscodeButton.addEventListener("click", () => {
+        xen.CreateWindow("Shit");
+    });
+}
