@@ -1,5 +1,4 @@
 const express = require("express");
-const webpack = require("webpack");
 const esbuild = require("esbuild");
 const path = require("path");
 const request = require("request");
@@ -20,34 +19,6 @@ try {
       platform: "node",
     })
     .then((ctx) => ctx.watch());
-
-  var SDKBundle = webpack(
-    {
-      mode: "none",
-      entry: path.join(__dirname, "public/sdk/mod.ts"),
-      module: {
-        rules: [
-          {
-            test: /\.ts?$/,
-            use: "ts-loader",
-            exclude: /node_modules/,
-          },
-        ],
-      },
-      resolve: {
-        extensions: [".ts", ".js"],
-      },
-      output: {
-        path: path.join(__dirname, "public"),
-        filename: "sdk.bundle.js",
-      },
-      experiments: {
-        topLevelAwait: true,
-      },
-      watch: true,
-    },
-    (e) => console.log(e || "Completed SDK Bundle"),
-  );
 } catch (e) {
   console.log(e);
 }
