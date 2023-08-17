@@ -11,12 +11,21 @@ console.log("Welcome to XenOS Server");
 try {
   esbuild
     .context({
-      entryPoints: ["public/xen/js/entry.js"],
+      entryPoints: [
+        {
+          in: "public/xen/js/entry.js",
+          out: "web.bundle"
+        },
+        {
+          in: "public/sw.js",
+          out: "sw.bundle"
+        }
+      ],
       bundle: true,
-      format: "esm",
-      outfile: "public/xen/web/web.bundle.js",
+      format: "cjs",
+      outdir: "public/xen/web/",
       logLevel: "info",
-      platform: "node",
+      platform: "browser",
     })
     .then((ctx) => ctx.watch());
 } catch (e) {

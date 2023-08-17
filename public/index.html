@@ -3,7 +3,7 @@
 	<head>
     <script integrity="sha256-9NsIanf8jSVFuiPetrZ1jfLPoMPzZuPz2w3GWvQFgIU=">
 		if (navigator.serviceWorker.controller === null) {
-		navigator.serviceWorker.register("/sw.js", {
+		navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
 			scope: "/",
 		});
 	
@@ -12,6 +12,7 @@
 	</script>
 		<link href="./xen/styles/index.css" rel="stylesheet" type="text/css"/>
     	<link href="./xen/styles/loader.css" rel="stylesheet" type="text/css"/>
+		<link href="./xen/styles/window.css" rel="stylesheet" type="text/css"/>
 		<link rel="icon" type="image/x-icon" href="./xen/img/logo-small.png" />
 		<link rel="apple-touch-icon" type="image/x-icon" href="./xen/img/logo-small.png" />
 		<meta charset="utf-8" />
@@ -136,29 +137,10 @@
 		<div class="os-taskbar-cont" id='os-taskbar-resizable'>
 			<div class="os-taskbar-under"></div>
 			<div class="os-dock">
-        <img alt="XenOS Logo" src='./xen/img/logo-small.png' class='os-startbutton' id="startButton">
-        <div class="os-dock-apps">
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/code.png" />
-		  </div>
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/spotify.png" />
-		  </div>
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/discord.png" />
-		  </div>
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/roblox.jpg" />
-		  </div>
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/geforce.png" />
-		  </div>
-          <div class="os-dock-item">
-			<img alt="App Logo" src="/xen/img/app/stack.svg" />
-		  </div>
-        </div>
+        <img alt="XenOS Logo" src='./xen/img/logo-small.png' class='os-startbutton' id="startButton" />
+        <div class="os-dock-apps"></div>
         <div class="os-dock-battery">
-          <svg
+		  <svg
             class="os-header-items os-battery"
             xmlns="http://www.w3.org/2000/svg"
             width="447"
@@ -194,9 +176,9 @@
           </svg>
         </div>
         <div class="os-dock-clock">
-          12:56
+          <span id="os-dock-time">12:56 PM</span>
           <br />
-          8/9/23
+          <span id="os-dock-date">8/9/23</span>
         </div>
 			</div>
 		</div>

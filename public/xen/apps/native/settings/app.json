@@ -1,0 +1,8 @@
+{
+    "name": "Settings",
+    "version": "1.0.0",
+    "type": "default",
+    "entry": "index.js",
+    "native": true,
+    "files": []
+}

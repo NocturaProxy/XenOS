@@ -1,4 +1,12 @@
-import System from "./system";
+const Xen = require('./core/Xen');
 
-// Load XEN System With Components
-window.xen = new System(/* stuff */);
+window.xen = new Xen();
+
+window.xen.startup().then(() => {
+    console.log(
+        "%cWelcome to XenOS",
+        "color:black; background-color:white; padding:5px; border-radius: 5px; line-height: 26px; font-size:30px;"
+    );
+
+    window.xen.hideLoader();
+});

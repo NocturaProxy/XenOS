@@ -1,0 +1,13 @@
+{
+    "name": "Welcome",
+    "version": "1.0.3",
+    "type": "static",
+    "staticURL": "index.html",
+    "native": true,
+    "files": [
+        "app.json",
+        "index.html",
+        "fb.png",
+        "icon.png"
+    ]
+}
