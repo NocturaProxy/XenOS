@@ -43,7 +43,6 @@ body, html {
 
 body {
   overflow: hidden;
-  cursor: auto;
   font-family: "IBM PLEX SANS", sans-serif;
   margin: 0;
   transition: 0s;
@@ -53,6 +52,7 @@ body {
 
 * {
   box-sizing: border-box;
+  cursor: url("/xen/cursors/default_24.svg"), auto;
 }
 
 .os-launchpad {
@@ -80,7 +80,7 @@ body {
 .os-launchpad-applet {
   margin: 17px;
   transition: 0.202s ease-out;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
 }
 
 .os-launchpad-applet,
@@ -338,7 +338,7 @@ body {
   margin-right: 9px;
   color: white;
   margin-top: -2px;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
   border-radius: 4px;
   padding: 0px 2px;
   font-size: 15px;
@@ -422,7 +422,7 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.07);
   border-width: 0.01px;
@@ -763,7 +763,7 @@ hr {
   box-sizing: border-box;
   background: #ffffff0f;
   border: 0;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
   border-right: 1px solid rgb(0, 0, 0, 0.1);
 }
 
@@ -779,7 +779,7 @@ hr {
   padding: 7px 0;
   position: absolute;
   top: 10px;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
   right: 10px;
   font-size: 10px;
   text-align: center;

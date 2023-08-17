@@ -38,7 +38,7 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 13px;
   line-height: 1.5;
-  cursor: default;
+  cursor: url("/xen/cursors/default_24.svg"), default;
   height: 25px;
   padding: 2px 67px 2px 10px;
   text-overflow: ellipsis;
@@ -123,14 +123,20 @@
   height: 100%;
 }
 
-.leftResize:hover,
-.rightResize:hover {
-  cursor: ew-resize;
+.leftResize:hover {
+  cursor: url("/xen/cursors/size_hor_24.svg") 5 5, ew-resize;
 }
 
-.topResize:hover,
+.rightResize:hover {
+  cursor: url("/xen/cursors/size_hor_24.svg") 14 14, ew-resize;
+}
+
+.topResize:hover {
+  cursor: url("/xen/cursors/size_ver_24.svg") 5 5, ns-resize;
+}
+
 .bottomResize:hover {
-  cursor: ns-resize;
+  cursor: url("/xen/cursors/size_ver_24.svg") 14 14, ns-resize;
 }
 
 .topResize,
@@ -185,14 +191,17 @@
   width: 19px;
 }
 
-.topLeftResize,
+.topLeftResize {
+  cursor: url("/xen/cursors/size_fdiag_24.svg") 8 8, nwse-resize;
+}
+
 .bottomRightResize {
-  cursor: nwse-resize;
+  cursor: url("/xen/cursors/size_fdiag_24.svg") 14 14, nwse-resize;
 }
 
 .bottomLeftResize,
 .topRightResize {
-  cursor: nesw-resize;
+  cursor: url("/xen/cursors/size_bdiag_24.svg") 8 8, nesw-resize;
 }
 
 .appFrame {

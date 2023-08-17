@@ -1317,7 +1317,8 @@ var require_Xen = __commonJS({
         await this.loader.init(
           "components/apps.js",
           "components/taskbar.js",
-          "components/battery.js"
+          "components/battery.js",
+          "components/cursor.js"
         );
         return true;
       }

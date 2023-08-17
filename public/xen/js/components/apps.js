@@ -153,7 +153,7 @@ const appManager = {
   },
 
   register: async function(options) {
-    const { name, type, url, x, y, width, height } = options;
+    const { name, type, url, x, y, width, height, focus } = options;
 
     const app = {
       id: this.createID(),
@@ -164,6 +164,7 @@ const appManager = {
       y,
       width,
       height,
+      focus
     };
 
     this.apps.push(app);
@@ -186,6 +187,8 @@ const appManager = {
         resolve();
       })
     );
+
+    if (focus !== false) await xen.wm.focus(app.id);
 
     return app;
   },

@@ -74,6 +74,7 @@ class Xen {
             "components/apps.js",
             "components/taskbar.js",
             "components/battery.js",
+            "components/cursor.js"
         );
 
         return true;

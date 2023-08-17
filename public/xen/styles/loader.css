@@ -113,7 +113,7 @@
   background-color: #ffffff00;
   border-color: #ffffff00;
   box-shadow: none;
-  cursor: pointer;
+  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
   font-variant: none;
   font-weight: 100;
   font-family: "IBM PLEX SANS", sans-serif;
