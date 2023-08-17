@@ -1,1 +1,1 @@
-var e=class{CreateWindow(n){let t=document.createElement("div");t.textContent=n,document.body.appendChild(t)}};var r=new e,d="foo",s="bar";console.log(d+s);var o=document.getElementById("os-pre");o?.parentNode?.removeChild(o);r.CreateWindow("Shit");
+var o="foo",n="bar";console.log(o+n);
