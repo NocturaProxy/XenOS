@@ -5,6 +5,7 @@ const appManager = {
   nativeApps: [
     "Xen/welcome",
     "Xen/settings",
+    "Xen/velocity",
   ],
 
   init: async function() {
@@ -85,6 +86,8 @@ const appManager = {
     if (this.opening.includes(id)) return false;
     this.opening.push(id);
 
+    if (!el) el = await window.xen.taskbar.addApp(appData.name, id);
+
     switch(appData.type) {
       case "static": {
         let complete = false;
@@ -105,7 +108,7 @@ const appManager = {
           name: appData.name,
           native: appData.native || false,
           type: "static",
-          url: path.join(`/xen/~/apps/${id}/`, appData.staticURL),
+          url: appData.staticURL.match(/^https?:\/\//g) ? appData.staticURL : path.join(`/xen/~/apps/${id}/`, appData.staticURL),
           x: 100,
           y: 200,
           width: 700,
@@ -114,7 +117,7 @@ const appManager = {
 
         complete = true;
         
-        await window.xen.taskbar.appOpen(app.name, app.id);
+        await window.xen.taskbar.appOpen(app.name, id, app.id);
 
         break;
       }

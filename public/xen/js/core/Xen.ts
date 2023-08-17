@@ -108,6 +108,10 @@ class Xen {
                 name: "Settings",
                 id: "Xen/settings"
             },
+            {
+                name: "Velocity",
+                id: "Xen/velocity"
+            },
         ] as any);
 
         // App files

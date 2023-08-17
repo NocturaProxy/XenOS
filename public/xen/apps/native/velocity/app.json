@@ -1,0 +1,9 @@
+{
+    "name": "Velocity",
+    "icon": "icon.png",
+    "native": true,
+    "type": "static",
+    "staticURL": "https://velocity.radon.games/",
+    "version": "1.0.0",
+    "files": ["app.json", "icon.png"]
+}

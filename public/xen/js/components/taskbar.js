@@ -61,10 +61,9 @@ const taskbar = {
 
         const icon = path.join("/xen/~/apps/", id, appData.icon) || "/xen/~/apps/" + id + "/icon.png";
 
-
         el.classList.add("os-dock-item");
 
-        el.dataset.name = name;
+        el.dataset.name = appData.name;
         el.innerHTML = `
             <img alt="App Logo" src="${icon}">
             <span class="os-dock-indicator"></span>
@@ -83,14 +82,36 @@ const taskbar = {
 
         return el;
     },
-    async appOpen(name, id) {
+    async appOpen(name, id, elID) {
         if (this.currentApps.find(a => a[0] == name)) {
             var appEl = this.currentApps.find(a => a[0] == name)[1];
 
             appEl.dataset.open = "true";
 
             appEl.querySelector(".os-dock-indicator").style.opacity = "1";
-        } else return;
+        } else return this.addApp(...arguments);
+    },
+    async addApp(name, id) {
+        if (this.currentApps.find(a => a[0] == name)) return;
+
+        let el = await this.createElement("", id);
+
+        el.style.transform = "scale(0)";
+        el.dataset.open = "true";
+        el.dataset.temporary = "true";
+
+        this.currentApps.push([name, el]);
+        this.dockApps.appendChild(el);
+
+        await new Promise(r => setTimeout(r, 100));
+
+        requestAnimationFrame(() => {
+            el.style.transform = "scale(1)";
+        });
+
+        await new Promise(r => setTimeout(r, 200));
+
+        return el;
     },
     async appClose(name, id) {
         if (this.currentApps.find(a => a[0] == name)) {

@@ -1342,6 +1342,10 @@ var require_Xen = __commonJS({
           {
             name: "Settings",
             id: "Xen/settings"
+          },
+          {
+            name: "Velocity",
+            id: "Xen/velocity"
           }
         ]);
         await vfs.mkdir("/xen/system/apps");
