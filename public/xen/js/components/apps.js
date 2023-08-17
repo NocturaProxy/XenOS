@@ -129,4 +129,6 @@ const appManager = {
   },
 };
 
+window.xen.apps = appManager;
+
 export default appManager;
