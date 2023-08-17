@@ -1,76 +1,45 @@
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __esm = (fn, res) =>
-  function __init() {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])((fn = 0))), res;
-  };
-var __commonJS = (cb, mod) =>
-  function __require() {
-    return (
-      mod ||
-        (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
-      mod.exports
-    );
-  };
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __copyProps = (to, from, except, desc) => {
-  if ((from && typeof from === "object") || typeof from === "function") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, {
-          get: () => from[key],
-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
-        });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (
-  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
-  __copyProps(
-    // If the importer is in node compatibility mode or this is not an ESM
-    // file that has been converted to a CommonJS file using a Babel-
-    // compatible transform (i.e. "__esModule" has not been set), then set
-    // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod || !mod.__esModule
-      ? __defProp(target, "default", { value: mod, enumerable: true })
-      : target,
-    mod,
-  )
-);
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 
 // node_modules/path-normalize/lib/index.js
 var require_lib = __commonJS({
-  "node_modules/path-normalize/lib/index.js"(exports, module) {
+  "node_modules/path-normalize/lib/index.js"(exports, module2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", {
-      value: true,
+      value: true
     });
     exports["default"] = void 0;
     function _typeof(obj) {
       "@babel/helpers - typeof";
-      return (
-        (_typeof =
-          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
-            ? function (obj2) {
-                return typeof obj2;
-              }
-            : function (obj2) {
-                return obj2 &&
-                  "function" == typeof Symbol &&
-                  obj2.constructor === Symbol &&
-                  obj2 !== Symbol.prototype
-                  ? "symbol"
-                  : typeof obj2;
-              }),
-        _typeof(obj)
-      );
+      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+        return typeof obj2;
+      } : function(obj2) {
+        return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+      }, _typeof(obj);
     }
     var SLASH = 47;
     var DOT = 46;
@@ -97,12 +66,7 @@ var require_lib = __commonJS({
         if (code === SLASH) {
           if (lastSlash === i - 1 || dots === 1) {
           } else if (lastSlash !== i - 1 && dots === 2) {
-            if (
-              res.length < 2 ||
-              lastSegmentLength !== 2 ||
-              res.charCodeAt(res.length - 1) !== DOT ||
-              res.charCodeAt(res.length - 2) !== DOT
-            ) {
+            if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== DOT || res.charCodeAt(res.length - 2) !== DOT) {
               if (res.length > 2) {
                 var lastSlashIndex = res.lastIndexOf("/");
                 if (lastSlashIndex !== res.length - 1) {
@@ -158,7 +122,7 @@ var require_lib = __commonJS({
         return s;
       }
     };
-    var normalize2 = function normalize3(p) {
+    var normalize = function normalize2(p) {
       assertPath(p);
       var path = p;
       if (path.length === 0) {
@@ -179,469 +143,967 @@ var require_lib = __commonJS({
       }
       return path;
     };
-    var _default = normalize2;
+    var _default = normalize;
     exports["default"] = _default;
-    module.exports = exports.default;
-  },
-});
-
-// node_modules/@lukeed/uuid/dist/index.mjs
-function v4() {
-  var i = 0,
-    num,
-    out = "";
-  if (!BUFFER || IDX + 16 > 256) {
-    BUFFER = Array((i = 256));
-    while (i--) BUFFER[i] = (256 * Math.random()) | 0;
-    i = IDX = 0;
+    module2.exports = exports.default;
   }
-  for (; i < 16; i++) {
-    num = BUFFER[IDX + i];
-    if (i == 6) out += HEX[(num & 15) | 64];
-    else if (i == 8) out += HEX[(num & 63) | 128];
-    else out += HEX[num];
-    if (i & 1 && i > 1 && i < 11) out += "-";
-  }
-  IDX++;
-  return out;
-}
-var IDX, HEX, BUFFER;
-var init_dist = __esm({
-  "node_modules/@lukeed/uuid/dist/index.mjs"() {
-    IDX = 256;
-    HEX = [];
-    while (IDX--) HEX[IDX] = (IDX + 256).toString(16).substring(1);
-  },
 });
 
-// public/xen/js/core/windows.js
-var windows_exports = {};
-__export(windows_exports, {
-  default: () => windows_default,
-});
-var Window, windows_default;
-var init_windows = __esm({
-  "public/xen/js/core/windows.js"() {
+// public/xen/js/core/FileSystem.ts
+var require_FileSystem = __commonJS({
+  "public/xen/js/core/FileSystem.ts"(exports, module2) {
     "use strict";
-    init_dist();
-    Window = class {
-      constructor(details) {
-        Object.entries(
-          Object.assign(details, {
-            name: "Unknown",
-            icon: void 0,
-            width: 500,
-            height: 400,
-            x: 0,
-            y: 0,
-          }),
-        ).forEach(([name, value]) => (this[name] = value));
-        this.id = this.createID();
-        this.containers = this.initializeContainer();
-        this.iframe = this.initializeFrame();
-        this.containers[1].appendChild(this.iframe);
-        console.log(this.containers);
-      }
-      createID() {
-        return v4();
-      }
-      createElement(tag, classList, id) {
-        const el = document.createElement(tag);
-        el.classList.add(...classList);
-        el.id = id;
-        return el;
-      }
-      initializeContainer() {
-        const el = this.createElement(
-          "div",
-          ["xen-window-container", this.id],
-          this.id,
-        );
-        const content = this.createElement(
-          "div",
-          ["xen-window-content", this.id],
-          "",
-        );
-        const controls = this.createElement(
-          "div",
-          ["xen-window-controls", this.id],
-          "",
-        );
-        const maximize = this.createElement(
-          "span",
-          ["xen-window-maximize", this.id],
-          "",
-        );
-        const minimize = this.createElement(
-          "span",
-          ["xen-window-minimize", this.id],
-          "",
-        );
-        const close = this.createElement(
-          "span",
-          ["xen-window-close", this.id],
-          "",
-        );
-        controls.append(maximize, minimize, close);
-        el.appendChild(controls);
-        el.appendChild(content);
-        return [el, content];
-      }
-      initializeFrame() {
-        const el = this.createElement(
-          "iframe",
-          ["xen-window-frame", this.id],
-          "",
-        );
-        el.style.background = "black";
-        return el;
-      }
-    };
-    windows_default = new (class WindowComponent {
-      constructor() {
-        window.xen.constructor.prototype.WindowComponent = this.constructor;
-        window.xen.windows = this;
-      }
-      register(
-        cfg = {
-          name: "Unknown",
-          icon: void 0,
-          width: 500,
-          height: 400,
-          x: 0,
-          y: 0,
-          element: null,
-        },
-      ) {
-        return new Window(cfg, cfg.element);
-      }
-    })();
-  },
-});
-
-// public/xen/js/core/apps.js
-var apps_exports = {};
-__export(apps_exports, {
-  default: () => apps_default,
-});
-var apps_default;
-var init_apps = __esm({
-  "public/xen/js/core/apps.js"() {
-    "use strict";
-    apps_default = new (class AppsComponent {
-      builtins = ["Xen/welcome", "Xen/settings", "Xen/store"];
-      constructor() {
-        window.xen.constructor.prototype.AppsComponent = this.constructor;
-        window.xen.apps = this;
-      }
-      async install(pkg) {
-        if (!this.builtins.includes(pkg)) {
-          return;
+    var import_path_normalize = __toESM(require_lib());
+    var EntryStat = class {
+      constructor(detail, file) {
+        this.detail = detail;
+        this.file = file;
+        this.detail = detail;
+        if (!this.isDirectory()) {
+          this.file = file;
+          this.length = file.size;
         }
       }
-      async getInstalledApps() {
-        return await fetch("/~xen/apps/installed.json").then((res) =>
-          res.json(),
+      content = null;
+      length = 0;
+      isDirectory() {
+        return this.detail.type == "directory";
+      }
+      isFile() {
+        return this.detail.type == "file";
+      }
+    };
+    var vfs = class _vfs {
+      normalize = import_path_normalize.default;
+      base;
+      constructor(path = "") {
+        this.base = new URL(
+          (0, import_path_normalize.default)(location.origin + (path || "").replace(/\/?$/, "/"))
         );
       }
-      async startup() {
-        await xen.wait(1e3);
-        return true;
+      error = class VFSError extends Error {
+        constructor(type) {
+          var types = [
+            /* 0: Path Error */
+            "Invalid Path: /",
+            /* 1: Missing Path */
+            "Missing Required Argument: path",
+            /* 2: Missing Content */
+            "Missing Required Argument: content",
+            /* 3: Dir Exists */
+            "Directory Already Exists",
+            /* 4: File Exists */
+            "File Already Exists",
+            /* 5: Not Found */
+            "File Not Found",
+            /* 6: Dir Does Not Exist */
+            "Directory Does Not Exist",
+            /* 7: Not A Directory */
+            "Not A Directory",
+            /* 8: Not A File */
+            "Not A File"
+          ];
+          super(types[type]);
+        }
+      };
+      directory = class directory extends _vfs {
+        constructor(path = "") {
+          super(path);
+        }
+      };
+      get loading() {
+        return caches.open("vfs");
       }
-    })();
-  },
-});
-
-// public/xen/js/core/battery.js
-var battery_exports = {};
-var bar, bound, data;
-var init_battery = __esm({
-  async "public/xen/js/core/battery.js"() {
-    "use strict";
-    bar = document.getElementById("os-battery-bar");
-    bound = 215;
-    data = await window.xen.battery;
-    bar.style.width = `${(data.level * bound).toFixed(0)}px`;
-    data.addEventListener("levelchange", async function (event) {
-      bar.style.width = `${(data.level * bound).toFixed(0)}px`;
-    });
-  },
-});
-
-// public/xen/js/core/weather.js
-var weather_exports = {};
-async function getWeather(lat, lon, timezone) {
-  return await fetch(
-    `https://api.open-meteo.com/v1/forecast?hourly=temperature_2m,apparent_temperature,precipitation,weathercode,windspeed_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timeformat=unixtime&latitude=${lat}&longitude=${lon}&timezone=${timezone}  `,
-    {},
-  )
-    .then((res) => res.json())
-    .then((data3) => {
-      return {
-        current: parseCurrentWeather(data3),
-        daily: parseDailyWeather(data3),
-        hourly: parseHourlyWeather(data3),
-      };
-    });
-}
-function parseCurrentWeather({ current_weather, daily }) {
-  const {
-    temperature: currentTemp,
-    windspeed: windSpeed,
-    weathercode: iconCode,
-  } = current_weather;
-  const {
-    temperature_2m_max: [maxTemp],
-    temperature_2m_min: [minTemp],
-    apparent_temperature_max: [maxFeelsLike],
-    apparent_temperature_min: [minFeelsLike],
-    precipitation_sum: [precip],
-  } = daily;
-  return {
-    currentTemp: Math.round(currentTemp),
-    highTemp: Math.round(maxTemp),
-    lowTemp: Math.round(minTemp),
-    highFeelsLike: Math.round(maxFeelsLike),
-    lowFeelsLike: Math.round(minFeelsLike),
-    windSpeed: Math.round(windSpeed),
-    precip: Math.round(precip * 100) / 100,
-    iconCode,
-  };
-}
-function parseDailyWeather({ daily }) {
-  return daily.time.map((time, index) => {
-    return {
-      timestamp: time * 1e3,
-      iconCode: daily.weathercode[index],
-      maxTemp: Math.round(daily.temperature_2m_max[index]),
+      async mkdir(path) {
+        if (!path)
+          throw new this.error(1);
+        const fs = await this.loading;
+        await fs.put(
+          new URL((0, import_path_normalize.default)(this.base.href + path)),
+          new Response(null, {
+            headers: {
+              "x-detail": JSON.stringify({
+                type: "directory"
+              })
+            }
+          })
+        );
+        return void 0;
+      }
+      async openDir(path) {
+        if (!path)
+          throw new this.error(1);
+        const fs = await this.loading;
+        const dir = await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path + "/")));
+        if (!dir)
+          throw new this.error(6);
+        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
+        if (detail.type != "directory")
+          throw new this.error(7);
+        return new this.directory(path);
+      }
+      async writeFile(path, content, details = {}) {
+        if (!path)
+          throw new this.error(1);
+        if (!content)
+          throw new this.error(2);
+        if (path == "/")
+          throw new this.error(0);
+        const fs = await this.loading;
+        let contentType = "text/plain";
+        if (Array.isArray(content)) {
+          contentType = "application/json";
+          content = new Blob([JSON.stringify(content)]);
+        } else if (content.constructor == Object) {
+          contentType = "application/json";
+          content = new Blob([JSON.stringify(content)]);
+        } else if (typeof content == "string") {
+          contentType = "text/plain";
+          content = new Blob([content]);
+        }
+        details.type = "file";
+        await fs.put(
+          new URL((0, import_path_normalize.default)(this.base.href + path)),
+          new Response(content, {
+            headers: {
+              "x-detail": JSON.stringify(details),
+              "content-length": content.size.toString(),
+              "content-type": contentType
+            }
+          })
+        );
+        return void 0;
+      }
+      async readFile(path, encoding = null) {
+        if (!path)
+          throw new this.error(1);
+        const fs = await this.loading;
+        if (await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)))) {
+          return await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path))).then((response) => encoding == "utf-8" ? response.text() : response.blob());
+        } else {
+          throw new this.error(5);
+        }
+      }
+      async unlink(path) {
+        if (!path)
+          throw new this.error(1);
+        const fs = await this.loading;
+        await fs.delete(new URL((0, import_path_normalize.default)(this.base.href + path)));
+        return void 0;
+      }
+      async stat(path) {
+        if (!path)
+          throw new this.error(1);
+        const fs = await this.loading;
+        const file = await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)));
+        if (!file)
+          throw new this.error(5);
+        const detail = JSON.parse(file.headers.get("x-detail") || "{}");
+        return new EntryStat(detail, await file.blob());
+      }
     };
-  });
-}
-function parseHourlyWeather({ hourly, current_weather }) {
-  return hourly.time
-    .map((time, index) => {
-      return {
-        timestamp: time * 1e3,
-        iconCode: hourly.weathercode[index],
-        temp: Math.round(hourly.temperature_2m[index]),
-        feelsLike: Math.round(hourly.apparent_temperature[index]),
-        windSpeed: Math.round(hourly.windspeed_10m[index]),
-        precip: Math.round(hourly.precipitation[index] * 100) / 100,
+    module2.exports = vfs;
+  }
+});
+
+// public/xen/js/core/WindowManager.ts
+var require_WindowManager = __commonJS({
+  "public/xen/js/core/WindowManager.ts"(exports, module2) {
+    "use strict";
+    var WindowManager = class {
+      windows = [];
+      init = async () => {
       };
-    })
-    .filter(({ timestamp }) => timestamp >= current_weather.time * 1e3);
-}
-var api, data2, weather;
-var init_weather = __esm({
-  async "public/xen/js/core/weather.js"() {
-    "use strict";
-    api = "/ipapi";
-    data2 = await fetch(api).then((res) => res.json());
-    weather = await getWeather(
-      data2.lat,
-      data2.lon,
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
-    );
-    console.log(weather);
-  },
+      getCloseSVG() {
+        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="#F46868"></rect>
+    </svg>`;
+      }
+      getMiniSVG() {
+        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="#ffcd5b"></rect>
+    </svg>`;
+      }
+      getFullSVG() {
+        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="#41a641"></rect>
+    </svg>`;
+      }
+      createWindow = (title, content, id, x = 0, y = 0, width = 0, height = 0) => {
+        const windowElement = document.createElement("div");
+        windowElement.classList.add("drag", "box");
+        windowElement.id = id;
+        windowElement.style.left = `${x}px`;
+        windowElement.style.top = `${y}px`;
+        windowElement.style.width = `${width}px`;
+        windowElement.style.height = `${height}px`;
+        const titleBar = document.createElement("div");
+        titleBar.classList.add("box-header");
+        const titleLabel = document.createElement("div");
+        titleLabel.classList.add("box-header-title");
+        titleLabel.innerText = title;
+        const minimizeButton = document.createElement("span");
+        minimizeButton.classList.add("os-mini");
+        minimizeButton.innerHTML = this.getMiniSVG();
+        minimizeButton.addEventListener("click", () => {
+        });
+        const closeButton = document.createElement("span");
+        closeButton.classList.add("os-exit");
+        closeButton.innerHTML = this.getCloseSVG();
+        closeButton.addEventListener("click", () => {
+          windowElement.remove();
+        });
+        const fullscreenButton = document.createElement("span");
+        fullscreenButton.classList.add("os-full");
+        fullscreenButton.innerHTML = this.getFullSVG();
+        fullscreenButton.addEventListener("click", () => {
+        });
+        const innerBody = document.createElement("div");
+        innerBody.classList.add("box-body-inner");
+        innerBody.appendChild(content);
+        titleBar.appendChild(titleLabel);
+        titleLabel.appendChild(minimizeButton);
+        titleLabel.appendChild(closeButton);
+        titleLabel.appendChild(fullscreenButton);
+        windowElement.appendChild(titleBar);
+        windowElement.appendChild(innerBody);
+        document.getElementById("os-desktop")?.appendChild(windowElement);
+        window.xen.wm.windows.push(windowElement);
+        const drag = windowElement.querySelector(".box-header-title");
+        drag?.addEventListener("mousedown", (e) => {
+          const box = windowElement.getBoundingClientRect();
+          const titleBox = titleBar.getBoundingClientRect();
+          const offsetX = e.clientX - box.left;
+          const offsetY = e.clientY - box.top;
+          windowElement.querySelectorAll("iframe").forEach((iframe) => {
+            iframe.style.pointerEvents = "none";
+          });
+          const mouseMoveHandler = (e2) => {
+            requestAnimationFrame(() => {
+              let left = e2.clientX - offsetX;
+              let top = e2.clientY - offsetY;
+              if (e2.clientX < 0) {
+                left = 0;
+              }
+              if (e2.clientY < 0) {
+                top = 0;
+              }
+              if (left > window.innerWidth) {
+                left = window.innerWidth - box.width;
+              }
+              if (top > window.innerHeight) {
+                top = window.innerHeight - box.height;
+              }
+              windowElement.style.left = `${left}px`;
+              windowElement.style.top = `${top}px`;
+            });
+          };
+          const mouseUpHandler = (e2) => {
+            document.removeEventListener("mousemove", mouseMoveHandler);
+            document.removeEventListener("mouseup", mouseUpHandler);
+            let top = e2.clientY - offsetY;
+            if (top + titleBox.height > window.innerHeight) {
+              windowElement.style.top = `${window.innerHeight - titleBox.height}px`;
+            }
+            windowElement.querySelectorAll("iframe").forEach((iframe) => {
+              iframe.style.pointerEvents = "auto";
+            });
+          };
+          document.addEventListener("mousemove", mouseMoveHandler);
+          document.addEventListener("mouseup", mouseUpHandler);
+        });
+        return windowElement;
+      };
+    };
+    module2.exports = WindowManager;
+  }
 });
 
-// public/xen/js/components.js
-var components_exports = {};
-__export(components_exports, {
-  default: () => components_default,
-});
-var components_default;
-var init_components = __esm({
-  "public/xen/js/components.js"() {
+// node_modules/path-browserify/index.js
+var require_path_browserify = __commonJS({
+  "node_modules/path-browserify/index.js"(exports, module2) {
     "use strict";
-    components_default = Promise.allSettled([
-      console.log("Loading Modules"),
-      Promise.resolve()
-        .then(() => (init_windows(), windows_exports))
-        .then(
-          (module) => (
-            console.debug("Loaded Windows Component"), module.default
-          ),
-        ),
-      Promise.resolve()
-        .then(() => (init_apps(), apps_exports))
-        .then(
-          (module) => (console.debug("Loaded Apps Component"), module.default),
-        ),
-      init_battery()
-        .then(() => battery_exports)
-        .then(
-          (module) => (
-            console.debug("Loaded Battery Component"), module.default
-          ),
-        ),
-      init_weather()
-        .then(() => weather_exports)
-        .then(
-          (module) => (
-            console.debug("Loaded Weather Component"), module.default
-          ),
-        ),
-    ]);
-  },
+    function assertPath(path) {
+      if (typeof path !== "string") {
+        throw new TypeError("Path must be a string. Received " + JSON.stringify(path));
+      }
+    }
+    function normalizeStringPosix(path, allowAboveRoot) {
+      var res = "";
+      var lastSegmentLength = 0;
+      var lastSlash = -1;
+      var dots = 0;
+      var code;
+      for (var i = 0; i <= path.length; ++i) {
+        if (i < path.length)
+          code = path.charCodeAt(i);
+        else if (code === 47)
+          break;
+        else
+          code = 47;
+        if (code === 47) {
+          if (lastSlash === i - 1 || dots === 1) {
+          } else if (lastSlash !== i - 1 && dots === 2) {
+            if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 || res.charCodeAt(res.length - 2) !== 46) {
+              if (res.length > 2) {
+                var lastSlashIndex = res.lastIndexOf("/");
+                if (lastSlashIndex !== res.length - 1) {
+                  if (lastSlashIndex === -1) {
+                    res = "";
+                    lastSegmentLength = 0;
+                  } else {
+                    res = res.slice(0, lastSlashIndex);
+                    lastSegmentLength = res.length - 1 - res.lastIndexOf("/");
+                  }
+                  lastSlash = i;
+                  dots = 0;
+                  continue;
+                }
+              } else if (res.length === 2 || res.length === 1) {
+                res = "";
+                lastSegmentLength = 0;
+                lastSlash = i;
+                dots = 0;
+                continue;
+              }
+            }
+            if (allowAboveRoot) {
+              if (res.length > 0)
+                res += "/..";
+              else
+                res = "..";
+              lastSegmentLength = 2;
+            }
+          } else {
+            if (res.length > 0)
+              res += "/" + path.slice(lastSlash + 1, i);
+            else
+              res = path.slice(lastSlash + 1, i);
+            lastSegmentLength = i - lastSlash - 1;
+          }
+          lastSlash = i;
+          dots = 0;
+        } else if (code === 46 && dots !== -1) {
+          ++dots;
+        } else {
+          dots = -1;
+        }
+      }
+      return res;
+    }
+    function _format(sep, pathObject) {
+      var dir = pathObject.dir || pathObject.root;
+      var base = pathObject.base || (pathObject.name || "") + (pathObject.ext || "");
+      if (!dir) {
+        return base;
+      }
+      if (dir === pathObject.root) {
+        return dir + base;
+      }
+      return dir + sep + base;
+    }
+    var posix = {
+      // path.resolve([from ...], to)
+      resolve: function resolve() {
+        var resolvedPath = "";
+        var resolvedAbsolute = false;
+        var cwd;
+        for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+          var path;
+          if (i >= 0)
+            path = arguments[i];
+          else {
+            if (cwd === void 0)
+              cwd = process.cwd();
+            path = cwd;
+          }
+          assertPath(path);
+          if (path.length === 0) {
+            continue;
+          }
+          resolvedPath = path + "/" + resolvedPath;
+          resolvedAbsolute = path.charCodeAt(0) === 47;
+        }
+        resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
+        if (resolvedAbsolute) {
+          if (resolvedPath.length > 0)
+            return "/" + resolvedPath;
+          else
+            return "/";
+        } else if (resolvedPath.length > 0) {
+          return resolvedPath;
+        } else {
+          return ".";
+        }
+      },
+      normalize: function normalize(path) {
+        assertPath(path);
+        if (path.length === 0)
+          return ".";
+        var isAbsolute = path.charCodeAt(0) === 47;
+        var trailingSeparator = path.charCodeAt(path.length - 1) === 47;
+        path = normalizeStringPosix(path, !isAbsolute);
+        if (path.length === 0 && !isAbsolute)
+          path = ".";
+        if (path.length > 0 && trailingSeparator)
+          path += "/";
+        if (isAbsolute)
+          return "/" + path;
+        return path;
+      },
+      isAbsolute: function isAbsolute(path) {
+        assertPath(path);
+        return path.length > 0 && path.charCodeAt(0) === 47;
+      },
+      join: function join() {
+        if (arguments.length === 0)
+          return ".";
+        var joined;
+        for (var i = 0; i < arguments.length; ++i) {
+          var arg = arguments[i];
+          assertPath(arg);
+          if (arg.length > 0) {
+            if (joined === void 0)
+              joined = arg;
+            else
+              joined += "/" + arg;
+          }
+        }
+        if (joined === void 0)
+          return ".";
+        return posix.normalize(joined);
+      },
+      relative: function relative(from, to) {
+        assertPath(from);
+        assertPath(to);
+        if (from === to)
+          return "";
+        from = posix.resolve(from);
+        to = posix.resolve(to);
+        if (from === to)
+          return "";
+        var fromStart = 1;
+        for (; fromStart < from.length; ++fromStart) {
+          if (from.charCodeAt(fromStart) !== 47)
+            break;
+        }
+        var fromEnd = from.length;
+        var fromLen = fromEnd - fromStart;
+        var toStart = 1;
+        for (; toStart < to.length; ++toStart) {
+          if (to.charCodeAt(toStart) !== 47)
+            break;
+        }
+        var toEnd = to.length;
+        var toLen = toEnd - toStart;
+        var length = fromLen < toLen ? fromLen : toLen;
+        var lastCommonSep = -1;
+        var i = 0;
+        for (; i <= length; ++i) {
+          if (i === length) {
+            if (toLen > length) {
+              if (to.charCodeAt(toStart + i) === 47) {
+                return to.slice(toStart + i + 1);
+              } else if (i === 0) {
+                return to.slice(toStart + i);
+              }
+            } else if (fromLen > length) {
+              if (from.charCodeAt(fromStart + i) === 47) {
+                lastCommonSep = i;
+              } else if (i === 0) {
+                lastCommonSep = 0;
+              }
+            }
+            break;
+          }
+          var fromCode = from.charCodeAt(fromStart + i);
+          var toCode = to.charCodeAt(toStart + i);
+          if (fromCode !== toCode)
+            break;
+          else if (fromCode === 47)
+            lastCommonSep = i;
+        }
+        var out = "";
+        for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
+          if (i === fromEnd || from.charCodeAt(i) === 47) {
+            if (out.length === 0)
+              out += "..";
+            else
+              out += "/..";
+          }
+        }
+        if (out.length > 0)
+          return out + to.slice(toStart + lastCommonSep);
+        else {
+          toStart += lastCommonSep;
+          if (to.charCodeAt(toStart) === 47)
+            ++toStart;
+          return to.slice(toStart);
+        }
+      },
+      _makeLong: function _makeLong(path) {
+        return path;
+      },
+      dirname: function dirname(path) {
+        assertPath(path);
+        if (path.length === 0)
+          return ".";
+        var code = path.charCodeAt(0);
+        var hasRoot = code === 47;
+        var end = -1;
+        var matchedSlash = true;
+        for (var i = path.length - 1; i >= 1; --i) {
+          code = path.charCodeAt(i);
+          if (code === 47) {
+            if (!matchedSlash) {
+              end = i;
+              break;
+            }
+          } else {
+            matchedSlash = false;
+          }
+        }
+        if (end === -1)
+          return hasRoot ? "/" : ".";
+        if (hasRoot && end === 1)
+          return "//";
+        return path.slice(0, end);
+      },
+      basename: function basename(path, ext) {
+        if (ext !== void 0 && typeof ext !== "string")
+          throw new TypeError('"ext" argument must be a string');
+        assertPath(path);
+        var start = 0;
+        var end = -1;
+        var matchedSlash = true;
+        var i;
+        if (ext !== void 0 && ext.length > 0 && ext.length <= path.length) {
+          if (ext.length === path.length && ext === path)
+            return "";
+          var extIdx = ext.length - 1;
+          var firstNonSlashEnd = -1;
+          for (i = path.length - 1; i >= 0; --i) {
+            var code = path.charCodeAt(i);
+            if (code === 47) {
+              if (!matchedSlash) {
+                start = i + 1;
+                break;
+              }
+            } else {
+              if (firstNonSlashEnd === -1) {
+                matchedSlash = false;
+                firstNonSlashEnd = i + 1;
+              }
+              if (extIdx >= 0) {
+                if (code === ext.charCodeAt(extIdx)) {
+                  if (--extIdx === -1) {
+                    end = i;
+                  }
+                } else {
+                  extIdx = -1;
+                  end = firstNonSlashEnd;
+                }
+              }
+            }
+          }
+          if (start === end)
+            end = firstNonSlashEnd;
+          else if (end === -1)
+            end = path.length;
+          return path.slice(start, end);
+        } else {
+          for (i = path.length - 1; i >= 0; --i) {
+            if (path.charCodeAt(i) === 47) {
+              if (!matchedSlash) {
+                start = i + 1;
+                break;
+              }
+            } else if (end === -1) {
+              matchedSlash = false;
+              end = i + 1;
+            }
+          }
+          if (end === -1)
+            return "";
+          return path.slice(start, end);
+        }
+      },
+      extname: function extname(path) {
+        assertPath(path);
+        var startDot = -1;
+        var startPart = 0;
+        var end = -1;
+        var matchedSlash = true;
+        var preDotState = 0;
+        for (var i = path.length - 1; i >= 0; --i) {
+          var code = path.charCodeAt(i);
+          if (code === 47) {
+            if (!matchedSlash) {
+              startPart = i + 1;
+              break;
+            }
+            continue;
+          }
+          if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+          }
+          if (code === 46) {
+            if (startDot === -1)
+              startDot = i;
+            else if (preDotState !== 1)
+              preDotState = 1;
+          } else if (startDot !== -1) {
+            preDotState = -1;
+          }
+        }
+        if (startDot === -1 || end === -1 || // We saw a non-dot character immediately before the dot
+        preDotState === 0 || // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+          return "";
+        }
+        return path.slice(startDot, end);
+      },
+      format: function format(pathObject) {
+        if (pathObject === null || typeof pathObject !== "object") {
+          throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
+        }
+        return _format("/", pathObject);
+      },
+      parse: function parse(path) {
+        assertPath(path);
+        var ret = { root: "", dir: "", base: "", ext: "", name: "" };
+        if (path.length === 0)
+          return ret;
+        var code = path.charCodeAt(0);
+        var isAbsolute = code === 47;
+        var start;
+        if (isAbsolute) {
+          ret.root = "/";
+          start = 1;
+        } else {
+          start = 0;
+        }
+        var startDot = -1;
+        var startPart = 0;
+        var end = -1;
+        var matchedSlash = true;
+        var i = path.length - 1;
+        var preDotState = 0;
+        for (; i >= start; --i) {
+          code = path.charCodeAt(i);
+          if (code === 47) {
+            if (!matchedSlash) {
+              startPart = i + 1;
+              break;
+            }
+            continue;
+          }
+          if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+          }
+          if (code === 46) {
+            if (startDot === -1)
+              startDot = i;
+            else if (preDotState !== 1)
+              preDotState = 1;
+          } else if (startDot !== -1) {
+            preDotState = -1;
+          }
+        }
+        if (startDot === -1 || end === -1 || // We saw a non-dot character immediately before the dot
+        preDotState === 0 || // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+          if (end !== -1) {
+            if (startPart === 0 && isAbsolute)
+              ret.base = ret.name = path.slice(1, end);
+            else
+              ret.base = ret.name = path.slice(startPart, end);
+          }
+        } else {
+          if (startPart === 0 && isAbsolute) {
+            ret.name = path.slice(1, startDot);
+            ret.base = path.slice(1, end);
+          } else {
+            ret.name = path.slice(startPart, startDot);
+            ret.base = path.slice(startPart, end);
+          }
+          ret.ext = path.slice(startDot, end);
+        }
+        if (startPart > 0)
+          ret.dir = path.slice(0, startPart - 1);
+        else if (isAbsolute)
+          ret.dir = "/";
+        return ret;
+      },
+      sep: "/",
+      delimiter: ":",
+      win32: null,
+      posix: null
+    };
+    posix.posix = posix;
+    module2.exports = posix;
+  }
 });
 
-// public/xen/js/startup.js
-var startup_exports = {};
-__export(startup_exports, {
-  default: () => startup_default,
-});
-var startup_default;
-var init_startup = __esm({
-  "public/xen/js/startup.js"() {
+// public/xen/js/core/Loader.ts
+var require_Loader = __commonJS({
+  "public/xen/js/core/Loader.ts"(exports, module2) {
     "use strict";
-    startup_default = new (class Startup {
-      pre = document.getElementById("os-pre");
-      comm = document.getElementById("os-pre-text2");
-      constructor() {
-        window.xen.startup.then(async (timing) => {
-          this.pre.style.transition = "0.4s ease";
-          this.pre.style.opacity = "0";
-          await window.xen.wait(400);
-          this.pre.style.display = "none";
+    var { join } = require_path_browserify();
+    var ModuleLoader = class {
+      load(module3) {
+        return import(join(
+          "../js",
+          module3
+        )).then((imported) => {
+          return imported.default.init();
         });
       }
-    })();
-  },
+      async init(...modules) {
+        for (let module3 of modules) {
+          await this.load(module3);
+        }
+        return true;
+      }
+    };
+    module2.exports = ModuleLoader;
+  }
 });
 
-// public/xen/js/vfs.js
-var import_path_normalize = __toESM(require_lib());
-var vfs = class _vfs {
-  normalize = import_path_normalize.default;
-  constructor(path) {
-    this.base = new URL(
-      (0, import_path_normalize.default)(
-        location.origin + (path || "").replace(/\/?$/, "/"),
-      ),
-    );
-  }
-  error = class VFSError extends Error {
-    constructor(type) {
-      var types = [
-        /* Path Error */
-        "Invalid Path: /",
-        /* Missing Path */
-        "Missing Required Argument: path",
-        /* Missing Content */
-        "Missing Required Argument: content",
-      ];
-      return super(types[type]);
-    }
-  };
-  directory = class directory extends _vfs {
-    constructor() {
-      return super(...arguments);
-    }
-  };
-  get loading() {
-    return caches.open("vfs");
-  }
-  async openDir(path) {
-    return new this.directory(path);
-  }
-  async writeFile(path, content, details = {}) {
-    if (path == "/") throw new this.error(0);
-    if (!path) throw new this.error(1);
-    if (!content) throw new this.error(2);
-    const fs = await this.loading;
-    await fs.put(
-      new URL((0, import_path_normalize.default)(this.base.href + path)),
-      new Response(content, {
-        headers: {
-          "x-detail": JSON.stringify(details),
+// node_modules/js-cookie/dist/js.cookie.js
+var require_js_cookie = __commonJS({
+  "node_modules/js-cookie/dist/js.cookie.js"(exports, module2) {
+    (function(global, factory) {
+      typeof exports === "object" && typeof module2 !== "undefined" ? module2.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, function() {
+        var current = global.Cookies;
+        var exports2 = global.Cookies = factory();
+        exports2.noConflict = function() {
+          global.Cookies = current;
+          return exports2;
+        };
+      }());
+    })(exports, function() {
+      "use strict";
+      function assign(target) {
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            target[key] = source[key];
+          }
+        }
+        return target;
+      }
+      var defaultConverter = {
+        read: function(value) {
+          if (value[0] === '"') {
+            value = value.slice(1, -1);
+          }
+          return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent);
         },
-      }),
-    );
-    return void 0;
+        write: function(value) {
+          return encodeURIComponent(value).replace(
+            /%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,
+            decodeURIComponent
+          );
+        }
+      };
+      function init(converter, defaultAttributes) {
+        function set(name, value, attributes) {
+          if (typeof document === "undefined") {
+            return;
+          }
+          attributes = assign({}, defaultAttributes, attributes);
+          if (typeof attributes.expires === "number") {
+            attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
+          }
+          if (attributes.expires) {
+            attributes.expires = attributes.expires.toUTCString();
+          }
+          name = encodeURIComponent(name).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape);
+          var stringifiedAttributes = "";
+          for (var attributeName in attributes) {
+            if (!attributes[attributeName]) {
+              continue;
+            }
+            stringifiedAttributes += "; " + attributeName;
+            if (attributes[attributeName] === true) {
+              continue;
+            }
+            stringifiedAttributes += "=" + attributes[attributeName].split(";")[0];
+          }
+          return document.cookie = name + "=" + converter.write(value, name) + stringifiedAttributes;
+        }
+        function get(name) {
+          if (typeof document === "undefined" || arguments.length && !name) {
+            return;
+          }
+          var cookies = document.cookie ? document.cookie.split("; ") : [];
+          var jar = {};
+          for (var i = 0; i < cookies.length; i++) {
+            var parts = cookies[i].split("=");
+            var value = parts.slice(1).join("=");
+            try {
+              var found = decodeURIComponent(parts[0]);
+              jar[found] = converter.read(value, found);
+              if (name === found) {
+                break;
+              }
+            } catch (e) {
+            }
+          }
+          return name ? jar[name] : jar;
+        }
+        return Object.create(
+          {
+            set,
+            get,
+            remove: function(name, attributes) {
+              set(
+                name,
+                "",
+                assign({}, attributes, {
+                  expires: -1
+                })
+              );
+            },
+            withAttributes: function(attributes) {
+              return init(this.converter, assign({}, this.attributes, attributes));
+            },
+            withConverter: function(converter2) {
+              return init(assign({}, this.converter, converter2), this.attributes);
+            }
+          },
+          {
+            attributes: { value: Object.freeze(defaultAttributes) },
+            converter: { value: Object.freeze(converter) }
+          }
+        );
+      }
+      var api = init(defaultConverter, { path: "/" });
+      return api;
+    });
   }
-  async readFile(path) {
-    if (!path) throw new this.error(1);
-    const fs = await this.loading;
-    return await fs.match(
-      new URL((0, import_path_normalize.default)(this.base.href + path)),
-    );
-  }
-  async unlink(path) {
-    if (!path) throw new this.error(1);
-    const fs = await this.loading;
-    await fs.delete(
-      new URL((0, import_path_normalize.default)(this.base.href + path)),
-    );
-    return void 0;
-  }
-};
-var vfs_default = vfs;
+});
 
-// public/xen/js/system.js
-var Xen = class {
-  wait(ms) {
-    return new Promise((resolve) => {
-      setTimeout(function () {
-        resolve();
-      }, ms);
-    });
-  }
-  constructor(...modules) {
-    console.log("XEN: Startup");
-    this.fs = new vfs_default("/");
-    this.startup = new Promise(async (resolve) => {
-      const comm = document.getElementById("os-pre-text2");
-      while (document.readyState !== "complete") {
-        console.log(
-          document.querySelectorAll(
-            "script[src]:not([data-loaded]), img[src]:not([data-loaded])",
-          ),
+// public/xen/js/core/Xen.ts
+var require_Xen = __commonJS({
+  "public/xen/js/core/Xen.ts"(exports, module2) {
+    "use strict";
+    var fs = require_FileSystem();
+    var wm = require_WindowManager();
+    var loader = require_Loader();
+    var cookie = require_js_cookie();
+    window.path = require_path_browserify();
+    var Xen2 = class {
+      fs = new fs();
+      wm = new wm();
+      loader = new loader();
+      async startup() {
+        await this.fs.loading;
+        await this.wm.init();
+        if (cookie.get("fs-initiated") !== "true") {
+          await this.stupFileSystem();
+          cookie.set(
+            "fs-initiated",
+            "true",
+            {
+              expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
+              secure: true,
+              sameSite: "strict"
+            }
+          );
+        }
+        await this.loader.init(
+          "components/apps.js",
+          "components/taskbar.js",
+          "components/battery.js"
         );
-        await Promise.allSettled(
+        return true;
+      }
+      async stupFileSystem() {
+        const vfs = this.fs;
+        await vfs.mkdir("/xen");
+        await vfs.mkdir("/xen/system");
+        await vfs.mkdir("/xen/users");
+        await vfs.mkdir("/xen/users/guest");
+        await vfs.mkdir("/xen/users/guest/desktop");
+        await vfs.mkdir("/xen/users/guest/documents");
+        await vfs.mkdir("/xen/users/guest/downloads");
+        await vfs.mkdir("/xen/users/guest/music");
+        await vfs.mkdir("/xen/users/guest/pictures");
+        await vfs.mkdir("/xen/users/guest/videos");
+        await vfs.mkdir("/xen/system/taskbar");
+        await vfs.writeFile("/xen/system/taskbar/pinned.json", [
+          {
+            name: "VSCode",
+            icon: "/xen/img/app/code.png"
+          },
+          {
+            name: "Spotify",
+            icon: "/xen/img/app/spotify.png"
+          },
+          {
+            name: "Discord",
+            icon: "/xen/img/app/discord.png"
+          },
+          {
+            name: "Roblox",
+            icon: "/xen/img/app/roblox.jpg"
+          },
+          {
+            name: "GEForce Now",
+            icon: "/xen/img/app/geforce.png"
+          },
+          {
+            name: "Stack Overflow",
+            icon: "/xen/img/app/stack.svg"
+          }
+        ]);
+        await vfs.mkdir("/xen/system/apps");
+        await vfs.writeFile("/xen/system/apps/installed.json", []);
+        return true;
+      }
+      hideLoader() {
+        const loader2 = document.getElementById("os-pre");
+        if (!loader2)
+          return;
+        loader2.animate(
           [
-            ...document.querySelectorAll(
-              "script[src]:not([data-loaded]), img[src]:not([data-loaded])",
-            ),
-          ].map((node) => {
-            return new Promise(
-              (load, fail) =>
-                (node.complete && (load(), true)) ||
-                node.addEventListener("load", load) ||
-                setTimeout(fail, 5e3),
-            )
-              .then(() => (node.dataset.loaded = "true"))
-              .catch((err) => {
-                console.log(node);
-                throw err;
-              });
-          }),
+            {
+              opacity: 1
+            },
+            {
+              opacity: 0
+            }
+          ],
+          {
+            duration: 500,
+            easing: "ease-in-out"
+          }
         );
-        await this.wait(10);
+        setTimeout(() => {
+          loader2.style.display = "none";
+        }, 500);
       }
-      comm.innerText = "Initializing Components";
-      for (var module of modules) {
-        await this.load(module);
-        console.debug("Loaded Module", module);
-        continue;
-      }
-      comm.innerText = "Downloading apps and content";
-      await window.xen.apps.startup();
-      comm.innerText = ":D";
-      resolve(xen);
-    });
+    };
+    module2.exports = Xen2;
   }
-  get battery() {
-    return navigator.getBattery();
-  }
-  async load(Module) {
-    return await Module.then((module) => module.default);
-  }
-};
+});
 
 // public/xen/js/entry.js
-window.xen = new Xen(
-  Promise.resolve().then(() => (init_components(), components_exports)),
-  Promise.resolve().then(() => (init_startup(), startup_exports)),
-);
+var Xen = require_Xen();
+window.xen = new Xen();
+window.xen.startup().then(() => {
+  console.log(
+    "%cWelcome to XenOS",
+    "color:black; background-color:white; padding:5px; border-radius: 5px; line-height: 26px; font-size:30px;"
+  );
+  window.xen.hideLoader();
+});
+/*! Bundled license information:
+
+js-cookie/dist/js.cookie.js:
+  (*! js-cookie v3.0.5 | MIT *)
+*/

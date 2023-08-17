@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dynamic-pkg/mime": "^1.0.1",
     "@dynamic-pkg/mutation": "^1.0.0",
     "@lukeed/uuid": "^2.0.1",
     "@tomphttp/bare-server-node": "^1.2.5",
@@ -25,6 +26,8 @@
     "express": "^4.18.2",
     "index.js": "^0.0.3",
     "is-odd": "^3.0.1",
+    "join-path": "^1.1.1",
+    "js-cookie": "^3.0.5",
     "mime": "^3.0.0",
     "node-fetch": "^3.2.6",
     "numeric": "^1.2.6",

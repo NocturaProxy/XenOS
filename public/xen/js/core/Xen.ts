@@ -40,8 +40,7 @@ class Xen {
                 {
                     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
                     secure: true,
-                    sameSite: "strict",
-                    domain: location.hostname
+                    sameSite: "strict"
                 }
             );
         }

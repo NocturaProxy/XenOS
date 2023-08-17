@@ -36,6 +36,11 @@
   }
 }
 
+body, html {
+  width: 100vw;
+  height: 100vh;
+}
+
 body {
   overflow: hidden;
   cursor: auto;
@@ -48,72 +53,6 @@ body {
 
 * {
   box-sizing: border-box;
-}
-
-.drag,
-.drag:before {
-  position: absolute;
-  background: #0000001a;
-  backdrop-filter: blur(14px);
-  border-radius: 5px 5px 12px 12px;
-}
-
-.drag {
-  box-shadow: 0 8px 16px rgb(0 0 0/25%);
-  width: 500px;
-  height: 300px;
-  border-radius: 5px 5px 12px 12px;
-  resize: auto;
-  will-change: transform;
-  border: 0.4px solid rgb(255 255 255 / 20%);
-}
-
-.drag:before {
-  content: "";
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  -webkit-filter: blur(10px) saturate(2);
-  -ms-filter: blur(10px) saturate(2);
-  filter: blur(10px) saturate(2);
-}
-
-.box-header-title {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  position: relative;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 12px;
-  line-height: 1.5;
-  cursor: default;
-  height: 25px;
-  padding: 2px 67px 2px 10px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  align-content: center;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  background: #131313;
-  border-radius: 4px 4px 0 0;
-}
-
-.box-body-inner {
-  position: absolute;
-  padding: 0;
-  background: rgba(58, 58, 58, 0.66);
-  height: calc(100% - 25px);
-  z-index: 1;
-  color: #fff;
-  font-size: 12px;
-  overflow: hidden;
-  width: 100%;
-  border-radius: 0px 0px 9px 9px;
 }
 
 .os-launchpad {
@@ -311,23 +250,6 @@ body {
   margin-bottom: -2px;
 }
 
-.os-exit {
-  right: 11px;
-  margin-top: 3px;
-  /* font-size: 20px; */
-  position: absolute;
-  width: 12px;
-  height: 15px;
-}
-
-.os-mini {
-  right: 32px;
-  margin-top: 3px;
-  /* font-size: 20px; */
-  position: absolute;
-  width: 12px;
-  height: 15px;
-}
 .os-dock {
   width: 100%;
   height: 45px;
@@ -409,15 +331,17 @@ body {
   height: 35px;
   transform: translateX(-18px);
   position: relative;
+  z-index: -1;
 }
 
 #os-battery-bar {
   width: 215px;
   position: absolute;
   height: 80px;
+  transition: 0.5s ease;
 }
 
-.os-dock-battery svg {
+.os-dock-battery svg:first-of-type {
   width: 50px;
   height: 35px;
   margin: 0;
@@ -865,6 +789,7 @@ hr {
   position: absolute;
   z-index: 204094049;
   background: #2626263b;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
