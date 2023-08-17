@@ -8,5 +8,6 @@
     "target": "ESNext",
     "allowJs": true,
     "moduleResolution": "node",
-  }
+  },
+  "include": ["public/xen/**/*.ts", "public/xen/**/*.tsx", "public/xen/**/*.js", "public/xen/**/*.jsx"],
 }

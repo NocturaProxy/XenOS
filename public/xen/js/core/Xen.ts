@@ -21,15 +21,40 @@ interface FileSystem {
     stat(path: string): Promise<any>;
 }
 
-
 class Xen {
     fs: FileSystem = new fs();
     wm = new wm();
     loader = new loader();
 
+    taskbar: any;
+    battery: any;
+    apps: any;
+
     async startup() {
         await this.fs.loading;
         await this.wm.init();
+
+        window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
+            apply: (target, thisArg, args) => {
+                if (!thisArg.eventListeners) thisArg.eventListeners = [];
+
+                thisArg.eventListeners.push({
+                    type: args[0],
+                    listener: args[1],
+                    options: args[2] || {}
+                });
+
+                return Reflect.apply(target, thisArg, args);
+            }
+        });
+
+        (window.EventTarget.prototype as any).removeEventListeners = function(event: any) {
+            if (!this.eventListeners) return;
+
+            for (const listener of this.eventListeners.filter(([type, listener, options]: any) => type === event)) {
+                this.removeEventListener(listener.type, listener.listener, listener.options);
+            }
+        }
 
         if (cookie.get("fs-initiated") !== "true") {
             await this.stupFileSystem();
@@ -48,7 +73,7 @@ class Xen {
         await this.loader.init(
             "components/apps.js",
             "components/taskbar.js",
-            "components/battery.js"
+            "components/battery.js",
         );
 
         return true;
@@ -76,29 +101,13 @@ class Xen {
 
         await vfs.writeFile("/xen/system/taskbar/pinned.json", [
             {
-                name: "VSCode",
-                icon: "/xen/img/app/code.png",
+                name: "Welcome",
+                id: "Xen/welcome"
             },
             {
-                name: "Spotify",
-                icon: "/xen/img/app/spotify.png",
+                name: "Settings",
+                id: "Xen/settings"
             },
-            {
-                name: "Discord",
-                icon: "/xen/img/app/discord.png",
-            },
-            {
-                name: "Roblox",
-                icon: "/xen/img/app/roblox.jpg",
-            },
-            {
-                name: "GEForce Now",
-                icon: "/xen/img/app/geforce.png",
-            },
-            {
-                name: "Stack Overflow",
-                icon: "/xen/img/app/stack.svg",
-            }
         ] as any);
 
         // App files

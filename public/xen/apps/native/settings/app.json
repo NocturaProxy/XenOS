@@ -1,8 +1,9 @@
 {
     "name": "Settings",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "type": "default",
     "entry": "index.js",
+    "icon": "icon.png",
     "native": true,
-    "files": []
+    "files": ["app.json", "index.js", "icon.png"]
 }

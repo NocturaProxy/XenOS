@@ -3,6 +3,7 @@
     "version": "1.0.4",
     "type": "static",
     "staticURL": "index.html",
+    "icon": "icon.png",
     "native": true,
     "files": [
         "app.json",

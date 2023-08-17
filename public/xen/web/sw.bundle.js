@@ -887,7 +887,8 @@ async function installNative(data) {
   }
   await fs.writeFile("/xen/system/apps/" + data.app + "/app.json", JSON.stringify(appData));
   const installed = JSON.parse(await fs.readFile("/xen/system/apps/installed.json", "utf-8"));
-  installed.push(data.app);
+  if (!installed.includes(data.app))
+    installed.push(data.app);
   await fs.writeFile("/xen/system/apps/installed.json", JSON.stringify(installed));
   return true;
 }

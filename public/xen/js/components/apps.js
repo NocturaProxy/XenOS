@@ -9,7 +9,7 @@ const appManager = {
 
   init: async function() {
     for (const app of this.nativeApps) {
-      await this.update(app);
+      await this.install(app);
     }
 
     await this.open("Xen/welcome");
@@ -75,15 +75,35 @@ const appManager = {
     }
   },
 
-  open: async function(id) {
+  opening: [],
+
+  open: async function(id, el) {
     const appData = await fetch(`/xen/~/apps/${id}/meta`).then(
       response => response.json()
     );
 
+    if (this.opening.includes(id)) return false;
+    this.opening.push(id);
+
     switch(appData.type) {
-      case "static":
+      case "static": {
+        let complete = false;
+
+        function bounce() {
+          if (complete) return clearInterval(interval);
+
+          if (el) {
+            el.bounce();
+          }
+        }
+
+        bounce();
+
+        let interval = setInterval(bounce, 800);
+
         const app = await this.register({
           name: appData.name,
+          native: appData.native || false,
           type: "static",
           url: path.join(`/xen/~/apps/${id}/`, appData.staticURL),
           x: 100,
@@ -91,17 +111,45 @@ const appManager = {
           width: 700,
           height: 500,
         });
+
+        complete = true;
+        
+        await window.xen.taskbar.appOpen(app.name, app.id);
+
         break;
-      case "default":
+      }
+      case "default": {
+        // scripted app, check appLoader.js
+        await window.xen.apps.loader.load(
+          appData,
+          await fetch(path.join(`/xen/~/apps/${id}`, appData.entry)).then(
+            response => response.text()
+          ),
+          el
+        )
+
         break;
+      }
     }
+
+    this.opening.splice(this.opening.indexOf(id), 1);
+
+    return true;
+  },
+
+  close: async function(id, element) {
+    const app = this.apps.find(a => a.id == id);
+    await window.xen.taskbar.appClose(app.name, id);
+
+    element.remove();
+    return true;
   },
 
   createID: () => {
     return Math.random().toString(36).substr(2, 9);
   },
 
-  register: function(options) {
+  register: async function(options) {
     const { name, type, url, x, y, width, height } = options;
 
     const app = {
@@ -119,16 +167,28 @@ const appManager = {
 
     const frame = document.createElement("iframe");
     frame.classList.add("appFrame");
-    frame.src = path.join(options.url) || "about:blank";
 
+    frame.src = options.url || "about:blank";
+      
     const el = window.xen.wm.createWindow(app.name, frame, app.id, app.x, app.y, app.width, app.height);
 
-    console.log(el);
+    el.style.display = "none";
+
+    await new Promise(resolve => 
+      !options.native ?
+      resolve(el.style.display = "block") :
+      frame.addEventListener("load", () => {
+        el.style.display = "block";
+
+        resolve();
+      })
+    );
 
     return app;
   },
 };
 
 window.xen.apps = appManager;
+appManager.loader = await import("./appLoader.js").then(m => m.default);
 
 export default appManager;

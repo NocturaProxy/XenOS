@@ -15,7 +15,6 @@
   border-radius: 5px 5px 12px 12px;
   resize: auto;
   will-change: transform;
-  border: 0.4px solid rgb(255 255 255 / 20%);
 }
 
 .drag:before {
@@ -177,6 +176,11 @@
 
 .bottomRightResize,
 .bottomLeftResize {
+  height: 19px;
+  width: 19px;
+}
+
+.topRightResize, .topLeftResize {
   height: 19px;
   width: 19px;
 }

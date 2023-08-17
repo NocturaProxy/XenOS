@@ -352,7 +352,7 @@ var require_WindowManager = __commonJS({
         closeButton.classList.add("os-exit");
         closeButton.innerHTML = this.getCloseSVG();
         closeButton.addEventListener("click", () => {
-          windowElement.remove();
+          window.xen.apps.close(id, windowElement);
         });
         const fullscreenButton = document.createElement("span");
         fullscreenButton.classList.add("os-full");
@@ -385,9 +385,12 @@ var require_WindowManager = __commonJS({
           const titleBox = titleBar.getBoundingClientRect();
           const offsetX = e.clientX - box.left;
           const offsetY = e.clientY - box.top;
+          this.focus(id);
+          if (document.querySelector(".os-mini")?.contains(e.target) || document.querySelector(".os-full")?.contains(e.target) || document.querySelector(".os-exit")?.contains(e.target))
+            return false;
           if (windowElement.dataset.mini === "true")
             return false;
-          windowElement.querySelectorAll("iframe").forEach((iframe) => {
+          document.querySelectorAll(".drag iframe").forEach((iframe) => {
             iframe.style.pointerEvents = "none";
           });
           const mouseMoveHandler = (e2) => {
@@ -417,6 +420,9 @@ var require_WindowManager = __commonJS({
             if (top + titleBox.height > window.innerHeight) {
               windowElement.style.top = `${window.innerHeight - titleBox.height}px`;
             }
+            if (top < 0) {
+              windowElement.style.top = `0px`;
+            }
             windowElement.querySelectorAll("iframe").forEach((iframe) => {
               iframe.style.pointerEvents = "auto";
             });
@@ -426,6 +432,15 @@ var require_WindowManager = __commonJS({
         });
         return windowElement;
       };
+      focus(id) {
+        const elem = document.getElementById(id);
+        if (!elem)
+          return;
+        const zIndex = Math.max(
+          ...Array.from(document.querySelectorAll(".box")).map((e) => +(e.style.zIndex || 0))
+        ) || 0;
+        elem.style.zIndex = `${zIndex + 1}`;
+      }
       resizeListener(master) {
         var left = master.querySelector(".leftResize"), right = master.querySelector(".rightResize"), top = master.querySelector(".topResize"), bottom = master.querySelector(".bottomResize");
         var topLeft = master.querySelector(".topLeftResize"), topRight = master.querySelector(".topRightResize"), bottomLeft = master.querySelector(".bottomLeftResize"), bottomRight = master.querySelector(".bottomRightResize");
@@ -559,16 +574,33 @@ var require_WindowManager = __commonJS({
         if (!windowElement)
           return false;
         windowElement.style.transform = "scale(0.15)";
+        windowElement.style.transition = "all 0.7s ease";
         windowElement.dataset.mini = "true";
         windowElement.querySelectorAll("*").forEach((element) => {
           element.style.pointerEvents = "none";
         });
+        const bounds = windowElement.getBoundingClientRect();
+        if (bounds.top > window.innerHeight - 310) {
+          windowElement.style.top = window.innerHeight - 310 + "px";
+        }
+        if (bounds.top < -193) {
+          windowElement.style.top = "-193px";
+        }
+        if (bounds.left < -275) {
+          windowElement.style.left = "-275px";
+        }
+        if (bounds.left > window.innerWidth - 425) {
+          windowElement.style.left = window.innerWidth - 425 + "px";
+        }
+        setTimeout(() => windowElement.style.transition = "", 700);
         const down = (e) => {
           if (e.which !== 1)
             return;
           let startX = e.clientX - e.target.offsetLeft;
           let startY = e.clientY - e.target.offsetTop;
           function move(event) {
+            if (windowElement?.dataset.fullscreen === "true")
+              return;
             let left = event.clientX - startX;
             let top = event.clientY - startY;
             if (top < -193)
@@ -589,9 +621,13 @@ var require_WindowManager = __commonJS({
             if (event.clientX === e.clientX && event.clientY === e.clientY) {
               windowElement.style.transform = "scale(1)";
               windowElement.dataset.mini = "false";
+              windowElement.style.transition = "all 0.7s ease";
               windowElement.querySelectorAll("*").forEach((element) => {
                 element.style.pointerEvents = "auto";
               });
+              if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+                windowElement.style.top = "0";
+              setTimeout(() => windowElement.style.transition = "", 700);
               windowElement.removeEventListener("mousedown", down);
             }
             document.removeEventListener("mousemove", move);
@@ -602,11 +638,58 @@ var require_WindowManager = __commonJS({
         };
         windowElement.addEventListener("mousedown", down);
       };
-      fullscreen = (id) => {
+      unminimize = async (id) => {
         const windowElement = document.getElementById(id);
         if (!windowElement)
           return false;
         windowElement.style.transform = "scale(1)";
+        windowElement.dataset.mini = "false";
+        windowElement.style.transition = "all 0.7s ease";
+        windowElement.querySelectorAll("*").forEach((element) => {
+          element.style.pointerEvents = "auto";
+        });
+        if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+          windowElement.style.top = "0";
+        await new Promise((r) => setTimeout(r, 700));
+        windowElement.style.transition = "";
+        windowElement.removeEventListeners("mousedown");
+        return true;
+      };
+      fullscreen = async (id) => {
+        const windowElement = document.getElementById(id);
+        if (!windowElement)
+          return false;
+        if (windowElement.dataset.mini === "true") {
+          await this.unminimize(id);
+        }
+        windowElement.style.transition = "all 0.15s ease";
+        if (windowElement.dataset.fullscreen === "true") {
+          requestAnimationFrame(async () => {
+            windowElement.style.width = windowElement.dataset.prevWidth || "";
+            windowElement.style.height = windowElement.dataset.prevHeight || "";
+            windowElement.style.top = windowElement.dataset.prevTop || "";
+            windowElement.style.left = windowElement.dataset.prevLeft || "";
+            windowElement.dataset.fullscreen = "false";
+            await new Promise((r) => setTimeout(r, 150));
+            windowElement.style.transition = "";
+          });
+          return window.xen.taskbar.show();
+        }
+        requestAnimationFrame(async () => {
+          windowElement.dataset.prevWidth = windowElement.style.width;
+          windowElement.dataset.prevHeight = windowElement.style.height;
+          windowElement.style.width = "100vw";
+          windowElement.style.height = "100vh";
+          windowElement.dataset.prevTop = windowElement.style.top;
+          windowElement.dataset.prevLeft = windowElement.style.left;
+          windowElement.style.top = "0";
+          windowElement.style.left = "0";
+          window.xen.taskbar.hide();
+          windowElement.dataset.fullscreen = "true";
+          await new Promise((r) => setTimeout(r, 150));
+          windowElement.style.transition = "";
+        });
+        return true;
       };
     };
     module2.exports = WindowManager;
@@ -1056,9 +1139,9 @@ var require_Loader = __commonJS({
         });
       }
       async init(...modules) {
-        for (let module3 of modules) {
-          await this.load(module3);
-        }
+        await Promise.allSettled(
+          modules.map((module3) => this.load(module3))
+        );
         return true;
       }
     };
@@ -1194,9 +1277,31 @@ var require_Xen = __commonJS({
       fs = new fs();
       wm = new wm();
       loader = new loader();
+      taskbar;
+      battery;
+      apps;
       async startup() {
         await this.fs.loading;
         await this.wm.init();
+        window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
+          apply: (target, thisArg, args) => {
+            if (!thisArg.eventListeners)
+              thisArg.eventListeners = [];
+            thisArg.eventListeners.push({
+              type: args[0],
+              listener: args[1],
+              options: args[2] || {}
+            });
+            return Reflect.apply(target, thisArg, args);
+          }
+        });
+        window.EventTarget.prototype.removeEventListeners = function(event) {
+          if (!this.eventListeners)
+            return;
+          for (const listener of this.eventListeners.filter(([type, listener2, options]) => type === event)) {
+            this.removeEventListener(listener.type, listener.listener, listener.options);
+          }
+        };
         if (cookie.get("fs-initiated") !== "true") {
           await this.stupFileSystem();
           cookie.set(
@@ -1231,28 +1336,12 @@ var require_Xen = __commonJS({
         await vfs.mkdir("/xen/system/taskbar");
         await vfs.writeFile("/xen/system/taskbar/pinned.json", [
           {
-            name: "VSCode",
-            icon: "/xen/img/app/code.png"
+            name: "Welcome",
+            id: "Xen/welcome"
           },
           {
-            name: "Spotify",
-            icon: "/xen/img/app/spotify.png"
-          },
-          {
-            name: "Discord",
-            icon: "/xen/img/app/discord.png"
-          },
-          {
-            name: "Roblox",
-            icon: "/xen/img/app/roblox.jpg"
-          },
-          {
-            name: "GEForce Now",
-            icon: "/xen/img/app/geforce.png"
-          },
-          {
-            name: "Stack Overflow",
-            icon: "/xen/img/app/stack.svg"
+            name: "Settings",
+            id: "Xen/settings"
           }
         ]);
         await vfs.mkdir("/xen/system/apps");
