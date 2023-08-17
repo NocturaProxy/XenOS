@@ -11,9 +11,8 @@ console.log("Welcome to XenOS Server");
 try {
   esbuild
     .context({
-      entryPoints: ["public/xen/js/entry.ts"],
+      entryPoints: ["public/xen/js/entry.js"],
       bundle: true,
-      minify: true,
       format: "esm",
       outfile: "public/xen/web/web.bundle.js",
       logLevel: "info",
