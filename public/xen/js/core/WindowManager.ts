@@ -19,7 +19,7 @@ class WindowManager {
 
   getFullSVG() {
     return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
-      <rect width="188" height="185" rx="92.5" fill="#41a641"></rect>
+      <rect width="188" height="185" rx="92.5" fill="rgb(64 190 64)"></rect>
     </svg>`;
   }
 
@@ -44,14 +44,13 @@ class WindowManager {
     minimizeButton.classList.add('os-mini');
     minimizeButton.innerHTML = this.getMiniSVG();
     minimizeButton.addEventListener('click', () => {
-      // Minimize the window logic
+      this.minimizeWindow(id);
     });
 
     const closeButton = document.createElement('span');
     closeButton.classList.add('os-exit');
     closeButton.innerHTML = this.getCloseSVG();
     closeButton.addEventListener('click', () => {
-      // Close the window logic
       windowElement.remove();
     });
 
@@ -59,7 +58,7 @@ class WindowManager {
     fullscreenButton.classList.add('os-full');
     fullscreenButton.innerHTML = this.getFullSVG();
     fullscreenButton.addEventListener('click', () => {
-      // Fullscreen the window logic
+      this.fullscreen(id);
     });
 
     const innerBody = document.createElement('div');
@@ -93,6 +92,9 @@ class WindowManager {
       const titleBox = titleBar.getBoundingClientRect();
       const offsetX = e.clientX - box.left;
       const offsetY = e.clientY - box.top;
+
+      if (windowElement.dataset.mini === "true")
+        return false;
 
       windowElement.querySelectorAll("iframe").forEach((iframe) => {
         iframe.style.pointerEvents = "none";
@@ -271,7 +273,7 @@ class WindowManager {
         });
       };
     
-      document.addEventListener('mousedown', function(e) {
+      document.addEventListener('mousedown', function(e: any) {
         if (e.target!==side) return;
 
         computed = window.getComputedStyle(master);
@@ -305,6 +307,74 @@ class WindowManager {
   			});     
       });
     });
+  }
+
+  minimizeWindow = (id: string) => {
+    const windowElement = document.getElementById(id);
+
+    if (!windowElement) return false;
+
+    windowElement.style.transform = 'scale(0.15)';
+    windowElement.dataset.mini = "true";
+
+    windowElement.querySelectorAll("*").forEach((element: any) => {
+      element.style.pointerEvents = "none";
+    });
+
+    // moving stuff kinda breaks when transform scale(0.15);
+
+    const down = (e: any) => {
+      if (e.which !== 1) return;
+
+      let startX = e.clientX - e.target.offsetLeft;
+      let startY = e.clientY - e.target.offsetTop;
+
+      function move(event: any) {
+  
+        let left = event.clientX - startX;
+        let top = event.clientY - startY;
+  
+        if (top <- 193) top = -193;
+        if (left <- 275) left = -275;
+        if (left > window.innerWidth - 425) left = window.innerWidth - 425;
+        if (top > window.innerHeight - 310) top = window.innerHeight - 310;
+  
+        requestAnimationFrame(() => {
+          e.target.style.position = `absolute`;
+          e.target.style.top = `${top}px`;
+          e.target.style.left = `${left}px`;
+        });
+      }
+
+      const up = (event: any) => {  
+        if (event.clientX === e.clientX && event.clientY === e.clientY) {
+          windowElement.style.transform = 'scale(1)';
+          windowElement.dataset.mini = "false";
+
+          windowElement.querySelectorAll("*").forEach((element: any) => {
+            element.style.pointerEvents = "auto";
+          });
+
+          windowElement.removeEventListener("mousedown", down);
+        }
+
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+      };
+
+      document.addEventListener("mouseup", up);
+      document.addEventListener("mousemove", move);
+    };
+
+    windowElement.addEventListener("mousedown", down);
+  }
+
+  fullscreen = (id: string) => {
+    const windowElement = document.getElementById(id);
+
+    if (!windowElement) return false;
+
+    windowElement.style.transform = 'scale(1)';
   }
 };
 
