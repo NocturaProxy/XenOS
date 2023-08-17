@@ -822,17 +822,6 @@ hr {
   backdrop-filter: blur(20px);
 }
 
-.appFrame {
-  width: 100%;
-  height: 100%;
-  border-color: #ffffff00;
-  overflow: hidden;
-  border: 0;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
 #errorCatter {
   width: -moz-fit-content;
   width: fit-content;

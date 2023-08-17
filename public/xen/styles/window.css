@@ -190,3 +190,13 @@
 .topRightResize {
   cursor: nesw-resize;
 }
+
+.appFrame {
+    width: 100%;
+    height: 100%;
+    border-color: #ffffff00;
+    overflow: hidden;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
