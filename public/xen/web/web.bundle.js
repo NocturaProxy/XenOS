@@ -365,8 +365,16 @@ var require_WindowManager = __commonJS({
         titleLabel.appendChild(minimizeButton);
         titleLabel.appendChild(closeButton);
         titleLabel.appendChild(fullscreenButton);
-        windowElement.appendChild(titleBar);
-        windowElement.appendChild(innerBody);
+        windowElement.append(
+          titleBar,
+          innerBody,
+          ...["left", "top", "right", "bottom", "topLeft", "topRight", "bottomRight", "bottomLeft"].map((direction) => {
+            const div = document.createElement("div");
+            div.classList.add(direction.includes("top") ? "resize" : "dresize", direction + "Resize");
+            return div;
+          })
+        );
+        this.resizeListener(windowElement);
         document.getElementById("os-desktop")?.appendChild(windowElement);
         window.xen.wm.windows.push(windowElement);
         const drag = windowElement.querySelector(".box-header-title");
@@ -414,6 +422,134 @@ var require_WindowManager = __commonJS({
         });
         return windowElement;
       };
+      resizeListener(master) {
+        var left = master.querySelector(".leftResize"), right = master.querySelector(".rightResize"), top = master.querySelector(".topResize"), bottom = master.querySelector(".bottomResize");
+        var topLeft = master.querySelector(".topLeftResize"), topRight = master.querySelector(".topRightResize"), bottomLeft = master.querySelector(".bottomLeftResize"), bottomRight = master.querySelector(".bottomRightResize");
+        [left, right, top, bottom].forEach((side, index) => {
+          var s = ["left", "right", "top", "bottom"][index];
+          var startX;
+          var startY;
+          var computed;
+          var startHeight;
+          var startWidth;
+          var startTop;
+          var startLeft;
+          var mousemove = function(e) {
+            requestAnimationFrame(() => {
+              if (s == "top") {
+                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+              } else if (s == "bottom") {
+                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = startTop;
+              } else if (s == "left") {
+                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+              } else if (s == "right") {
+                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = startLeft;
+              }
+            });
+          };
+          document.addEventListener("mousedown", function(e) {
+            if (e.target !== side)
+              return;
+            computed = window.getComputedStyle(master);
+            startHeight = computed.height + "";
+            startWidth = computed.width + "";
+            startTop = computed.top + "";
+            startLeft = computed.left + "";
+            startX = e.clientX;
+            startY = e.clientY;
+            master.style.transition = "0s";
+            master.querySelectorAll("iframe").forEach(function(iframe) {
+              iframe.style.pointerEvents = "none";
+            });
+            document.addEventListener("mousemove", mousemove);
+          });
+          document.addEventListener("mouseup", function(e) {
+            if (!startX && !startY)
+              return;
+            master.style.transition = "";
+            document.removeEventListener("mousemove", mousemove);
+            master.querySelectorAll("iframe").forEach(function(iframe) {
+              iframe.style.pointerEvents = "all";
+            });
+          });
+        });
+        [topLeft, topRight, bottomLeft, bottomRight].forEach((side, index) => {
+          var s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
+          var startX;
+          var startY;
+          var computed;
+          var startHeight;
+          var startWidth;
+          var startTop;
+          var startLeft;
+          var mousemove = function(e) {
+            requestAnimationFrame(() => {
+              if (s == "topLeft") {
+                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+              } else if (s == "topRight") {
+                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = startLeft;
+              } else if (s == "bottomLeft") {
+                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = startTop;
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+              } else if (s == "bottomRight") {
+                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+                master.style.height = (height > 70 ? height : 70) + "px";
+                master.style.top = startTop;
+                master.style.width = (width > 70 ? width : 70) + "px";
+                master.style.left = startLeft;
+              }
+            });
+          };
+          document.addEventListener("mousedown", function(e) {
+            if (e.target !== side)
+              return;
+            computed = window.getComputedStyle(master);
+            startHeight = computed.height + "";
+            startWidth = computed.width + "";
+            startTop = computed.top + "";
+            startLeft = computed.left + "";
+            startX = e.clientX;
+            startY = e.clientY;
+            master.style.transition = "0s";
+            master.querySelectorAll("iframe").forEach(function(iframe) {
+              iframe.style.pointerEvents = "none";
+            });
+            document.addEventListener("mousemove", mousemove);
+          });
+          document.addEventListener("mouseup", function(e) {
+            if (!startX && !startY)
+              return;
+            master.style.transition = "";
+            document.removeEventListener("mousemove", mousemove);
+            master.querySelectorAll("iframe").forEach(function(iframe) {
+              iframe.style.pointerEvents = "all";
+            });
+          });
+        });
+      }
     };
     module2.exports = WindowManager;
   }
