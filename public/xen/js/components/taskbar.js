@@ -81,4 +81,6 @@ const taskbar = {
     }
 };
 
+window.xen.taskbar = taskbar;
+
 export default taskbar;

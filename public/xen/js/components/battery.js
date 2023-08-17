@@ -59,4 +59,6 @@ const battery = {
     }
 }
 
+window.xen.battery = battery;
+
 export default battery;
