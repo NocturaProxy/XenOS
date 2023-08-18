@@ -770,6 +770,7 @@ hr {
 .start-back svg {
   width: 2em;
   height: 2em;
+  pointer-events: none;
   vertical-align: -0.125em;
 }
 
@@ -790,6 +791,7 @@ hr {
 
 .start-go svg {
   width: 2em;
+  pointer-events: none;
   height: 2em;
   vertical-align: -0.125em;
 }

@@ -68,7 +68,21 @@ class vfs {
   async mkdir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
+    path = path.replace(/\/$/, "");
+
     const fs = await this.loading;
+
+    var relURL = new URL(normalize(this.base.href + path)).pathname;
+    var build = "/";
+
+    for (var segment of relURL.split("/")) {
+      if (!segment) continue;
+      build += segment;
+
+      if (!await this.exists(build)) await this.mkdir(build);
+
+      build += "/";
+    }
 
     await fs.put(
       new URL(normalize(this.base.href + path)),
@@ -87,6 +101,8 @@ class vfs {
   async openDir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
+    path = path.replace(/\/$/, "");
+
     const fs = await this.loading;
 
     const dir = await fs.match(new URL(normalize(this.base.href + path + "/")));
@@ -102,6 +118,8 @@ class vfs {
     if (!path) throw new this.error(1);
     if (!content) throw new this.error(2);
     if (path == "/") throw new this.error(0);
+
+    path = path.replace(/\/$/, "");
 
     const fs = await this.loading;
 
@@ -137,6 +155,8 @@ class vfs {
   async readFile(path: string | undefined, encoding: string | null = null) {
     if (!path) throw new this.error(1);
 
+    path = path.replace(/\/$/, "");
+
     const fs = await this.loading;
 
     if (await fs.match(new URL(normalize(this.base.href + path)))) {
@@ -149,6 +169,8 @@ class vfs {
   async unlink(path: string | undefined) {
     if (!path) throw new this.error(1);
 
+    path = path.replace(/\/$/, "");
+
     const fs = await this.loading;
 
     await fs.delete(new URL(normalize(this.base.href + path)));
@@ -156,8 +178,56 @@ class vfs {
     return undefined;
   }
 
+  async readdir(path: string | undefined) {
+    if (!path) throw new this.error(1);
+
+    path = path.replace(/\/$/, "");
+
+    const fs = await this.loading;
+
+    const dir = await fs.match(new URL(normalize(this.base.href + path)));
+    if (!dir) throw new this.error(6);
+
+    const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
+    if (detail.type != "directory") throw new this.error(7);
+
+    const opened = await fs.keys();
+
+    const files: string[] = [];
+
+    for (const file of opened) {
+      if (file.url.startsWith(new URL(normalize(this.base.href + path)).href)) {
+        let relative = file.url.replace(new URL(normalize(this.base.href + path)).href, "").replace(/^\//, "");
+
+        if (!relative) continue;
+        if (relative.split("/").length > 1) relative = relative.split("/")[0];
+        if (files.includes(relative)) continue;
+
+        files.push(relative);
+      }
+    }
+
+    return files;
+  }
+
+  async exists(path: string | undefined) {
+    if (!path) throw new this.error(1);
+
+    path = path.replace(/\/$/, "");
+
+    try {
+      this.stat(path);
+
+      return true
+    } catch {
+      return false;
+    }
+  }
+
   async stat(path: string | undefined) {
     if (!path) throw new this.error(1);
+
+    path = path.replace(/\/$/, "");
 
     const fs = await this.loading;
 

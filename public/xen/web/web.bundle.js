@@ -217,7 +217,18 @@ var require_FileSystem = __commonJS({
       async mkdir(path) {
         if (!path)
           throw new this.error(1);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
+        var relURL = new URL((0, import_path_normalize.default)(this.base.href + path)).pathname;
+        var build = "/";
+        for (var segment of relURL.split("/")) {
+          if (!segment)
+            continue;
+          build += segment;
+          if (!await this.exists(build))
+            await this.mkdir(build);
+          build += "/";
+        }
         await fs.put(
           new URL((0, import_path_normalize.default)(this.base.href + path)),
           new Response(null, {
@@ -233,6 +244,7 @@ var require_FileSystem = __commonJS({
       async openDir(path) {
         if (!path)
           throw new this.error(1);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
         const dir = await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path + "/")));
         if (!dir)
@@ -249,6 +261,7 @@ var require_FileSystem = __commonJS({
           throw new this.error(2);
         if (path == "/")
           throw new this.error(0);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
         let contentType = "text/plain";
         if (Array.isArray(content)) {
@@ -277,6 +290,7 @@ var require_FileSystem = __commonJS({
       async readFile(path, encoding = null) {
         if (!path)
           throw new this.error(1);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
         if (await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)))) {
           return await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path))).then((response) => encoding == "utf-8" ? response.text() : response.blob());
@@ -287,13 +301,53 @@ var require_FileSystem = __commonJS({
       async unlink(path) {
         if (!path)
           throw new this.error(1);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
         await fs.delete(new URL((0, import_path_normalize.default)(this.base.href + path)));
         return void 0;
       }
+      async readdir(path) {
+        if (!path)
+          throw new this.error(1);
+        path = path.replace(/\/$/, "");
+        const fs = await this.loading;
+        const dir = await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)));
+        if (!dir)
+          throw new this.error(6);
+        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
+        if (detail.type != "directory")
+          throw new this.error(7);
+        const opened = await fs.keys();
+        const files = [];
+        for (const file of opened) {
+          if (file.url.startsWith(new URL((0, import_path_normalize.default)(this.base.href + path)).href)) {
+            let relative = file.url.replace(new URL((0, import_path_normalize.default)(this.base.href + path)).href, "").replace(/^\//, "");
+            if (!relative)
+              continue;
+            if (relative.split("/").length > 1)
+              relative = relative.split("/")[0];
+            if (files.includes(relative))
+              continue;
+            files.push(relative);
+          }
+        }
+        return files;
+      }
+      async exists(path) {
+        if (!path)
+          throw new this.error(1);
+        path = path.replace(/\/$/, "");
+        try {
+          this.stat(path);
+          return true;
+        } catch {
+          return false;
+        }
+      }
       async stat(path) {
         if (!path)
           throw new this.error(1);
+        path = path.replace(/\/$/, "");
         const fs = await this.loading;
         const file = await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)));
         if (!file)
