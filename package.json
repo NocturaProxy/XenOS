@@ -41,7 +41,8 @@
     "util": "^0.12.5",
     "uuidv4": "^6.2.13",
     "walk-parse5": "^2.0.0",
-    "workbox-webpack-plugin": "^6.5.4"
+    "workbox-webpack-plugin": "^6.5.4",
+    "xterm": "^5.2.1"
   },
   "devDependencies": {
     "@types/webpack-dev-server": "^4.7.2",

@@ -55,9 +55,14 @@ body {
   cursor: url("/xen/cursors/default_24.svg"), auto;
 }
 
+input {
+  cursor: url("/xen/cursors/text_24.svg"), auto;
+}
+
 .os-launchpad {
   width: 100%;
   height: 100vh;
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(9px);
   display: flex;
   align-content: center;
@@ -406,6 +411,7 @@ body {
   top: 42px;
   margin-right: 20px;
   position: absolute;
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(8px);
   filter: drop-shadow(black 2px 4px 6px);
   box-shadow: rgba(255, 255, 255, 0.08) 0px 0px 0px 200px inset;
@@ -480,6 +486,7 @@ body {
   border-width: 0.01em;
   border-radius: 7px;
   box-shadow: 0 0 1rem 0 rgb(0 0 0 / 20%);
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(5px);
 }
 .os-dock-tooltip:active {
@@ -513,6 +520,7 @@ body {
 
 .taskBarOptions {
   background: #a8a8a836;
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(6px);
   position: absolute;
   width: 270px;
@@ -671,12 +679,13 @@ hr {
   box-shadow: 0 0 1rem 0 rgb(0 0 0 / 20%);
   background: #44444438;
   border: 0.7px solid rgb(216 216 216 / 23%);
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(8px);
   box-sizing: border-box;
   text-align: center;
   margin: 6px auto;
   transition: 0.3s cubic-bezier(0.25, 0.1, 0.21, 1.54);
-  border-radius: 17px 2px 2px 10px;
+  border-radius: 6px;
 }
 
 .start-app-icon {
@@ -684,10 +693,12 @@ hr {
   height: 47px;
   position: absolute;
   left: 0;
+  padding: 5px;
+  background: white;
   top: 50%;
   transform: translateY(-50%);
   aspect-ratio: 20/20;
-  border-radius: 6px;
+  border-radius: 6px 0 0 6px;
 }
 
 .start-app:hover {
@@ -705,6 +716,7 @@ hr {
 }
 .miniPlayer {
   background: #a8a8a836;
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(6px);
   position: absolute;
   width: 270px;
@@ -840,6 +852,7 @@ hr {
   border-radius: 8px;
   width: 436px;
   height: 190px;
+  -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(20px);
 }
 

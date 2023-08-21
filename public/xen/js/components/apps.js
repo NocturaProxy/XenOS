@@ -6,6 +6,8 @@ const appManager = {
     "Xen/welcome",
     "Xen/settings",
     "Xen/velocity",
+    "Xen/terminal",
+    "Xen/store"
   ],
 
   init: async function() {
