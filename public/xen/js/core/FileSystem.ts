@@ -49,6 +49,7 @@ class vfs {
         /* 6: Dir Does Not Exist */ "Directory Does Not Exist",
         /* 7: Not A Directory */ "Not A Directory",
         /* 8: Not A File */ "Not A File",
+        /* 9: Directory Path Nonexistent */ "Directory Path Nonexistent",
       ];
 
       super(types[type]);
@@ -79,7 +80,11 @@ class vfs {
       if (!segment) continue;
       build += segment;
 
-      if (!await this.exists(build)) await this.mkdir(build);
+      if (build == "/") continue;
+      if (build == path) continue;
+
+      if (!await this.exists(build))
+        await this.mkdir(build);
 
       build += "/";
     }
@@ -216,7 +221,7 @@ class vfs {
     path = path.replace(/\/$/, "");
 
     try {
-      this.stat(path);
+      await this.stat(path);
 
       return true
     } catch {

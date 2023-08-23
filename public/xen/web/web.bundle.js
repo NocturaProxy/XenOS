@@ -201,7 +201,9 @@ var require_FileSystem = __commonJS({
             /* 7: Not A Directory */
             "Not A Directory",
             /* 8: Not A File */
-            "Not A File"
+            "Not A File",
+            /* 9: Directory Path Nonexistent */
+            "Directory Path Nonexistent"
           ];
           super(types[type]);
         }
@@ -225,6 +227,10 @@ var require_FileSystem = __commonJS({
           if (!segment)
             continue;
           build += segment;
+          if (build == "/")
+            continue;
+          if (build == path)
+            continue;
           if (!await this.exists(build))
             await this.mkdir(build);
           build += "/";
@@ -338,7 +344,7 @@ var require_FileSystem = __commonJS({
           throw new this.error(1);
         path = path.replace(/\/$/, "");
         try {
-          this.stat(path);
+          await this.stat(path);
           return true;
         } catch {
           return false;
@@ -1193,9 +1199,9 @@ var require_Loader = __commonJS({
         });
       }
       async init(...modules) {
-        await Promise.allSettled(
-          modules.map((module3) => this.load(module3))
-        );
+        for (const module3 of modules) {
+          await this.load(module3);
+        }
         return true;
       }
     };
@@ -1336,7 +1342,20 @@ var require_Xen = __commonJS({
       apps;
       async startup() {
         await this.fs.loading;
+        if (cookie.get("fs-initiated") !== "true") {
+          await this.stupFileSystem();
+          cookie.set(
+            "fs-initiated",
+            "true",
+            {
+              expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
+              secure: true,
+              sameSite: "strict"
+            }
+          );
+        }
         await this.wm.init();
+        await new Promise((resolve) => setTimeout(resolve, 150));
         window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
           apply: (target, thisArg, args) => {
             if (!thisArg.eventListeners)
@@ -1356,24 +1375,13 @@ var require_Xen = __commonJS({
             this.removeEventListener(listener.type, listener.listener, listener.options);
           }
         };
-        if (cookie.get("fs-initiated") !== "true") {
-          await this.stupFileSystem();
-          cookie.set(
-            "fs-initiated",
-            "true",
-            {
-              expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
-              secure: true,
-              sameSite: "strict"
-            }
-          );
-        }
         await this.loader.init(
           "components/apps.js",
           "components/taskbar.js",
           "components/battery.js",
           "components/cursor.js"
         );
+        await window.xen.apps.open("Xen/welcome");
         return true;
       }
       async stupFileSystem() {

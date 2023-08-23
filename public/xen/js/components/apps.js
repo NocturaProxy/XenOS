@@ -14,8 +14,6 @@ const appManager = {
     for (const app of this.nativeApps) {
       await this.install(app);
     }
-
-    await this.open("Xen/welcome");
   },
 
   install: async function(id) {

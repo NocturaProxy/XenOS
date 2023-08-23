@@ -209,7 +209,9 @@ var require_FileSystem = __commonJS({
             /* 7: Not A Directory */
             "Not A Directory",
             /* 8: Not A File */
-            "Not A File"
+            "Not A File",
+            /* 9: Directory Path Nonexistent */
+            "Directory Path Nonexistent"
           ];
           super(types[type]);
         }
@@ -233,6 +235,10 @@ var require_FileSystem = __commonJS({
           if (!segment)
             continue;
           build += segment;
+          if (build == "/")
+            continue;
+          if (build == path2)
+            continue;
           if (!await this.exists(build))
             await this.mkdir(build);
           build += "/";
@@ -346,7 +352,7 @@ var require_FileSystem = __commonJS({
           throw new this.error(1);
         path2 = path2.replace(/\/$/, "");
         try {
-          this.stat(path2);
+          await this.stat(path2);
           return true;
         } catch {
           return false;

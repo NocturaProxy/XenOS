@@ -32,7 +32,24 @@ class Xen {
 
     async startup() {
         await this.fs.loading;
+
+        if (cookie.get("fs-initiated") !== "true") {
+            await this.stupFileSystem();
+
+            cookie.set(
+                "fs-initiated",
+                "true",
+                {
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
+                    secure: true,
+                    sameSite: "strict"
+                }
+            );
+        }
+
         await this.wm.init();
+
+        await new Promise(resolve => setTimeout(resolve, 150));
 
         window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
             apply: (target, thisArg, args) => {
@@ -56,26 +73,14 @@ class Xen {
             }
         }
 
-        if (cookie.get("fs-initiated") !== "true") {
-            await this.stupFileSystem();
-
-            cookie.set(
-                "fs-initiated",
-                "true",
-                {
-                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
-                    secure: true,
-                    sameSite: "strict"
-                }
-            );
-        }
-
         await this.loader.init(
             "components/apps.js",
             "components/taskbar.js",
             "components/battery.js",
             "components/cursor.js"
         );
+
+        await window.xen.apps.open("Xen/welcome");
 
         return true;
     }

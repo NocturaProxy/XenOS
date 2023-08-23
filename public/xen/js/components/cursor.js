@@ -30,3 +30,9 @@ const CURSOR_MAP = {
     "not-allowed": "/xen/cursors/not-allowed.svg",
     "progress": "/xen/cursors/progress.svg",
 };
+
+export default {
+    async init() {
+        return null;
+    }
+}

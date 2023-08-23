@@ -13,9 +13,9 @@ class ModuleLoader {
     }
 
     async init(...modules: string[]) {
-        await Promise.allSettled(
-            modules.map(module => this.load(module))
-        );
+        for (const module of modules) {
+            await this.load(module);
+        }
 
         return true;
     }
