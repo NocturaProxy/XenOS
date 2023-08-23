@@ -13,7 +13,7 @@ interface Window {
 interface FileSystem {
     loading: Promise<void>;
     readFile(path: string): Promise<string>;
-    writeFile(path: string, data: string): Promise<void>;
+    writeFile(path: string, data: any[] | string | Object): Promise<void>;
     unlink(path: string): Promise<void>;
     openDir(path: string): Promise<void>;
     exists(path: string): Promise<boolean>;
@@ -117,7 +117,7 @@ class Xen {
                 name: "App Store",
                 id: "Xen/store"
             },
-        ] as any);
+        ]);
 
         // App files
 
@@ -125,7 +125,7 @@ class Xen {
 
         await vfs.writeFile("/xen/system/apps/installed.json", [
 
-        ] as any);
+        ]);
 
         return true;
     };
