@@ -299,7 +299,9 @@ var require_FileSystem = __commonJS({
         path = path.replace(/\/$/, "");
         const fs = await this.loading;
         if (await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path)))) {
-          return await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path))).then((response) => encoding == "utf-8" ? response.text() : response.blob());
+          return await fs.match(new URL((0, import_path_normalize.default)(this.base.href + path))).then(
+            (response) => encoding == "utf-8" ? response.text() : response.blob()
+          );
         } else {
           throw new this.error(5);
         }
@@ -389,7 +391,7 @@ var require_WindowManager = __commonJS({
       <rect width="188" height="185" rx="92.5" fill="rgb(64 190 64)"></rect>
     </svg>`;
       }
-      createWindow = (title, content, id, x = 0, y = 0, width = 0, height = 0) => {
+      createWindow = (title, content, id, x = 0, y = 0, width = 0, height = 0, visible = true) => {
         const windowElement = document.createElement("div");
         windowElement.classList.add("drag", "box");
         windowElement.id = id;
@@ -430,12 +432,25 @@ var require_WindowManager = __commonJS({
         windowElement.append(
           titleBar,
           innerBody,
-          ...["left", "top", "right", "bottom", "topLeft", "topRight", "bottomRight", "bottomLeft"].map((direction) => {
+          ...[
+            "left",
+            "top",
+            "right",
+            "bottom",
+            "topLeft",
+            "topRight",
+            "bottomRight",
+            "bottomLeft"
+          ].map((direction) => {
             const div = document.createElement("div");
-            div.classList.add(direction.includes("top") ? "resize" : "dresize", direction + "Resize");
+            div.classList.add(
+              direction.includes("top") ? "resize" : "dresize",
+              direction + "Resize"
+            );
             return div;
           })
         );
+        windowElement.style.display = visible ? "block" : "none";
         this.resizeListener(windowElement);
         document.getElementById("os-desktop")?.appendChild(windowElement);
         window.xen.wm.windows.push(windowElement);
@@ -483,7 +498,7 @@ var require_WindowManager = __commonJS({
             if (top < 0) {
               windowElement.style.top = `0px`;
             }
-            windowElement.querySelectorAll("iframe").forEach((iframe) => {
+            document.querySelectorAll(".drag iframe").forEach((iframe) => {
               iframe.style.pointerEvents = "auto";
             });
           };
@@ -497,7 +512,9 @@ var require_WindowManager = __commonJS({
         if (!elem)
           return;
         const zIndex = Math.max(
-          ...Array.from(document.querySelectorAll(".box")).map((e) => +(e.style.zIndex || 0))
+          ...Array.from(document.querySelectorAll(".box")).map(
+            (e) => +(e.style.zIndex || 0)
+          )
         ) || 0;
         elem.style.zIndex = `${zIndex + 1}`;
       }
@@ -517,8 +534,11 @@ var require_WindowManager = __commonJS({
             requestAnimationFrame(() => {
               if (s == "top") {
                 var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+                if (distTop < 0)
+                  return master.style.top = "0px";
                 master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+                master.style.top = distTop + "px";
               } else if (s == "bottom") {
                 var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
                 master.style.height = (height > 70 ? height : 70) + "px";
@@ -545,7 +565,7 @@ var require_WindowManager = __commonJS({
             startX = e.clientX;
             startY = e.clientY;
             master.style.transition = "0s";
-            master.querySelectorAll("iframe").forEach(function(iframe) {
+            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
               iframe.style.pointerEvents = "none";
             });
             document.addEventListener("mousemove", mousemove);
@@ -555,7 +575,7 @@ var require_WindowManager = __commonJS({
               return;
             master.style.transition = "";
             document.removeEventListener("mousemove", mousemove);
-            master.querySelectorAll("iframe").forEach(function(iframe) {
+            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
               iframe.style.pointerEvents = "all";
             });
           });
@@ -574,15 +594,21 @@ var require_WindowManager = __commonJS({
               if (s == "topLeft") {
                 var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
                 var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+                if (distTop < 0)
+                  return master.style.top = "0px";
                 master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+                master.style.top = distTop + "px";
                 master.style.width = (width > 70 ? width : 70) + "px";
                 master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
               } else if (s == "topRight") {
                 var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
                 var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+                if (distTop < 0)
+                  return master.style.top = "0px";
                 master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = (height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "") + "px";
+                master.style.top = distTop + "px";
                 master.style.width = (width > 70 ? width : 70) + "px";
                 master.style.left = startLeft;
               } else if (s == "bottomLeft") {
@@ -613,7 +639,7 @@ var require_WindowManager = __commonJS({
             startX = e.clientX;
             startY = e.clientY;
             master.style.transition = "0s";
-            master.querySelectorAll("iframe").forEach(function(iframe) {
+            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
               iframe.style.pointerEvents = "none";
             });
             document.addEventListener("mousemove", mousemove);
@@ -623,7 +649,7 @@ var require_WindowManager = __commonJS({
               return;
             master.style.transition = "";
             document.removeEventListener("mousemove", mousemove);
-            master.querySelectorAll("iframe").forEach(function(iframe) {
+            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
               iframe.style.pointerEvents = "all";
             });
           });
@@ -1191,10 +1217,7 @@ var require_Loader = __commonJS({
     var { join } = require_path_browserify();
     var ModuleLoader = class {
       load(module3) {
-        return import(join(
-          "../js",
-          module3
-        )).then((imported) => {
+        return import(join("/xen/web/", module3)).then((imported) => {
           return imported.default.init();
         });
       }
@@ -1324,6 +1347,15 @@ var require_js_cookie = __commonJS({
   }
 });
 
+// public/xen/js/config.json
+var require_config = __commonJS({
+  "public/xen/js/config.json"(exports, module2) {
+    module2.exports = {
+      bare: "https://tomp.app/"
+    };
+  }
+});
+
 // public/xen/js/core/Xen.ts
 var require_Xen = __commonJS({
   "public/xen/js/core/Xen.ts"(exports, module2) {
@@ -1332,11 +1364,13 @@ var require_Xen = __commonJS({
     var wm = require_WindowManager();
     var loader = require_Loader();
     var cookie = require_js_cookie();
+    var config = require_config();
     window.path = require_path_browserify();
     var Xen2 = class {
       fs = new fs();
       wm = new wm();
       loader = new loader();
+      config = config;
       taskbar;
       battery;
       apps;
@@ -1356,30 +1390,40 @@ var require_Xen = __commonJS({
         }
         await this.wm.init();
         await new Promise((resolve) => setTimeout(resolve, 150));
-        window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
-          apply: (target, thisArg, args) => {
-            if (!thisArg.eventListeners)
-              thisArg.eventListeners = [];
-            thisArg.eventListeners.push({
-              type: args[0],
-              listener: args[1],
-              options: args[2] || {}
-            });
-            return Reflect.apply(target, thisArg, args);
+        window.EventTarget.prototype.addEventListener = new Proxy(
+          window.EventTarget.prototype.addEventListener,
+          {
+            apply: (target, thisArg, args) => {
+              if (!thisArg.eventListeners)
+                thisArg.eventListeners = [];
+              thisArg.eventListeners.push({
+                type: args[0],
+                listener: args[1],
+                options: args[2] || {}
+              });
+              return Reflect.apply(target, thisArg, args);
+            }
           }
-        });
+        );
         window.EventTarget.prototype.removeEventListeners = function(event) {
           if (!this.eventListeners)
             return;
-          for (const listener of this.eventListeners.filter(([type, listener2, options]) => type === event)) {
-            this.removeEventListener(listener.type, listener.listener, listener.options);
+          for (const listener of this.eventListeners.filter(
+            ([type, listener2, options]) => type === event
+          )) {
+            this.removeEventListener(
+              listener.type,
+              listener.listener,
+              listener.options
+            );
           }
         };
         await this.loader.init(
           "components/apps.js",
           "components/taskbar.js",
           "components/battery.js",
-          "components/cursor.js"
+          "components/cursor.js",
+          "components/context.js"
         );
         await window.xen.apps.open("Xen/welcome");
         return true;
@@ -1417,6 +1461,11 @@ var require_Xen = __commonJS({
         ]);
         await vfs.mkdir("/xen/system/apps");
         await vfs.writeFile("/xen/system/apps/installed.json", []);
+        await vfs.mkdir("/xen/system/assets");
+        await vfs.writeFile(
+          "/xen/system/assets/inject.bundle.js",
+          await (await fetch("/xen/web/inject.bundle.js")).text()
+        );
         return true;
       }
       hideLoader() {

@@ -1,159 +1,264 @@
 // Loads scripted apps
 
 function __workerCode() {
-    // ALL CODE IN THIS FUNCTION IS RUN IN A SCOPED DEDICATED WORKER
+  // ALL CODE IN THIS FUNCTION IS RUN IN A SCOPED DEDICATED WORKER
 
-    self.__joinPath = (...args) => {
-        return args.map((part, i) => {
-          if (i === 0) {
-            return part.trim().replace(/[\/]*$/g, '')
-          } else {
-            return part.trim().replace(/(^[\/]*|[\/]*$)/g, '')
-          }
-        }).filter(x=>x.length).join('/')
-    };
+  self.__joinPath = (...args) => {
+    return args
+      .map((part, i) => {
+        if (i === 0) {
+          return part.trim().replace(/[\/]*$/g, "");
+        } else {
+          return part.trim().replace(/(^[\/]*|[\/]*$)/g, "");
+        }
+      })
+      .filter((x) => x.length)
+      .join("/");
+  };
 
-    self._readyPromise = new Promise(function(res) {
-        self.addEventListener("message", function(event) {
-            if (event.data.type === "ready") {
-                res();
-            }
-        });
+  self._readyPromise = new Promise(function (res) {
+    self.addEventListener("message", function (event) {
+      if (event.data.type === "ready") {
+        res();
+      }
     });
-    
-    class Window {
-        constructor(data) {
-            console.log("Window created")
-            this.appData = data;
-        }
+  });
 
-        async loadFile(url) {
-            let text;
-
-            if (
-                url.startsWith("data:")
-                || url.startsWith("blob:")
-                || url.startsWith("http://")
-                || url.startsWith("https://")
-            ) {
-                text = await fetch(url).then(function(res) {
-                    return res.text();
-                });
-            } else text = await fetch(__joinPath("/xen/~/apps/", self.__moduleID, url)).then(function(res) {
-                return res.text();
-            });
-
-            await exec(`document.getElementById("${this.appData.id}").querySelector("iframe").contentWindow.document.write(atob("${btoa(text)}"))`);
-        }
+  class Window {
+    constructor(data) {
+      this.appData = data;
     }
 
-    self.xen = {
-        onReady: function(callback) {
-            _readyPromise.then(callback).then(function() {
-                self.postMessage({
-                    type: "ready"
-                });
-            });
-        },
-        register: async function(data) {
-            const app = await exec(`window.xen.apps.register({
+    loadURL(url, opts = {}) {
+      if (
+        !(
+          url.startsWith("data:") ||
+          url.startsWith("blob:") ||
+          url.startsWith("http://") ||
+          url.startsWith("https://")
+        )
+      )
+        url =
+          location.origin + __joinPath("/xen/~/apps/", self.__moduleID, url);
+
+      return new Promise(async (resolve) => {
+        await exec(`
+                    return new Promise(resolve => {
+                        document.getElementById("${
+                          this.appData.id
+                        }").querySelector("iframe").addEventListener("${
+                          opts.event || "load"
+                        }", function(e) {
+                            console.log("${opts.event}");
+
+                            console.log(e.target.readyState);
+                            resolve();
+                        }, {once: true});
+
+                        document.getElementById("${
+                          this.appData.id
+                        }").querySelector("iframe").src = "${url}";
+                    });
+                `);
+
+        resolve();
+      });
+    }
+
+    async loadFile(url, opts) {
+      let text;
+
+      if (
+        url.startsWith("data:") ||
+        url.startsWith("blob:") ||
+        url.startsWith("http://") ||
+        url.startsWith("https://")
+      ) {
+        text = await fetch(url).then(function (res) {
+          return res.text();
+        });
+      } else
+        text = await fetch(
+          location.origin + __joinPath("/xen/~/apps/", self.__moduleID, url),
+        ).then(function (res) {
+          return res.text();
+        });
+
+      await exec(
+        `document.getElementById("${
+          this.appData.id
+        }").querySelector("iframe").contentWindow.document.write(atob("${btoa(
+          text,
+        )}"))`,
+      );
+    }
+
+    async hide(ms = 0) {
+      await exec(
+        `document.getElementById("${this.appData.id}").style.transition = "${(
+          ms / 1000
+        ).toFixed(2)}s opacity ease";`,
+      );
+      await exec(
+        `requestAnimationFrame(() => document.getElementById("${this.appData.id}").style.opacity = "0");`,
+      );
+
+      if (ms) await new Promise((r) => setTimeout(r, ms));
+
+      await exec(
+        `document.getElementById("${this.appData.id}").style.display = "none";`,
+      );
+
+      return true;
+    }
+
+    async show(ms = 0) {
+      await exec(
+        `document.getElementById("${this.appData.id}").style.transition = "${(
+          ms / 1000
+        ).toFixed(2)}s opacity ease";`,
+      );
+      await exec(
+        `requestAnimationFrame(() => document.getElementById("${this.appData.id}").style.opacity = "1");`,
+      );
+
+      if (ms) await new Promise((r) => setTimeout(r, ms));
+
+      await exec(
+        `document.getElementById("${this.appData.id}").style.display = "block";`,
+      );
+
+      return true;
+    }
+  }
+
+  self.xen = {
+    onReady: function (callback) {
+      _readyPromise.then(callback).then(function () {
+        self.postMessage({
+          type: "ready",
+        });
+      });
+    },
+    register: async function (data) {
+      const app = await exec(`return window.xen.apps.register({
                 name: "${data.name}",
                 native: ${data.native || false},
                 type: "${data.type || "default"}",
                 x: ${data.x || 0},
                 y: ${data.y || 0},
                 width: ${data.width || 500},
-                height: ${data.height || 300}
+                height: ${data.height || 300},
+                visible: ${data.visible !== false},
+                menuBar: ${data.menu !== false},
+                focus: ${data.focus !== false},
+                appId: "${self.__moduleID}"
             });`);
 
-            return new Window(app);
-        }
-    };
-    
-    async function exec(script) {
-        const channel = new MessageChannel();
-    
-        return await new Promise((resolve, reject) => {
-            channel.port2.onmessage = (event) => {
-                console.log(event);
-                if (event.data.type === "exec") {
-                    if (event.data.success === true) {
-                        resolve(event.data.result);
-                    } else {
-                        reject();
-                    }
-                }
-            };
+      return new Window(app);
+    },
+  };
 
-            self.postMessage({
-                type: "exec",
-                script: script
-            }, [channel.port1]);
-        });
-    }
+  async function exec(script) {
+    const channel = new MessageChannel();
+
+    return await new Promise((resolve, reject) => {
+      channel.port2.onmessage = (event) => {
+        if (event.data.type === "exec") {
+          if (event.data.success === true) {
+            resolve(event.data.result);
+          } else {
+            reject();
+          }
+        }
+      };
+
+      self.postMessage(
+        {
+          type: "exec",
+          script: script,
+        },
+        [channel.port1],
+      );
+    });
+  }
 }
 
-function createWorker(name, script, id) {
-    script = new Blob([`
+function createWorker(name, script, id, pid) {
+  script = new Blob(
+    [
+      `
 self.__moduleName = "${name}";
 self.__moduleID = "${id}";
+self.__processID = "${pid}";
 
 (${__workerCode.toString()})();
 
 ${script}
-        `], 
-        {
-            type: "application/javascript"
-        }
-    );
+        `,
+    ],
+    {
+      type: "application/javascript",
+    },
+  );
 
-    const worker = new Worker(URL.createObjectURL(script), {
-        type: "module",
-        name: "appLoader-" + name
-    });
+  const worker = new Worker(URL.createObjectURL(script), {
+    type: "module",
+    name: "appLoader-" + pid,
+  });
 
-    return worker;
+  return worker;
 }
 
 const appLoader = {
-    async load(data, script, el) {
-        const worker = createWorker(data.name, script, data.id);
+  load(data, script, el, pid = xen.apps.createID()) {
+    return new Promise(async (resolve) => {
+      console.log(data);
+      const worker = createWorker(data.name, script, data.id, pid);
 
-        let complete = false;
+      let complete = false;
 
-        function bounce() {
-          if (complete) return clearInterval(interval);
+      function bounce() {
+        if (complete) return resolve(), clearInterval(interval);
 
-          if (el) {
-            el.bounce();
-          }
+        if (el) {
+          el.bounce();
+        }
+      }
+
+      let interval = setInterval(bounce, 800);
+
+      bounce();
+
+      worker.postMessage({
+        type: "ready",
+      });
+
+      function clone(obj) {
+        try {
+          return JSON.parse(JSON.stringify(obj));
+        } catch {
+          return obj;
+        }
+      }
+
+      worker.addEventListener("message", async (event) => {
+        if (event.data.type === "ready") {
+          complete = true;
         }
 
-        let interval = setInterval(bounce, 800);
+        if (event.data.type === "exec") {
+          event.ports[0].postMessage({
+            type: "exec",
+            success: true,
+            result: clone(await (0, eval)(`(() => {${event.data.script};})()`)),
+          });
+        }
+      });
 
-        bounce();
-
-        worker.postMessage({
-            type: "ready",
-        });
-
-        worker.addEventListener("message", async (event) => {
-            if (event.data.type === "ready") {
-                complete = true;
-            }
-
-            if (event.data.type === "exec") {
-                console.log(event);
-                event.ports[0].postMessage({
-                    type: "exec",
-                    success: true,
-                    result: await (0, eval)(`(() => {return ${event.data.script};})()`)
-                });
-            }
-        });
-
-        await window.xen.taskbar.appOpen(data.name, data.id);
-    }
+      await window.xen.taskbar.appOpen(data.name, data.id);
+    });
+  },
 };
 
 export default appLoader;

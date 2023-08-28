@@ -1,10 +1,10 @@
 {
-    "name": "Settings",
-    "files": ["app.json", "icon.png", "static/index.html", "static/build.css"],
-    "type": "static",
-    "icon": "./icon.png",
-    "version": "1.0.3",
-    "description": "XenOS Official Settings",
-    "staticURL": "static/index.html",
-    "native": true
+  "name": "Settings",
+  "files": ["app.json", "icon.png", "static/index.html", "static/build.css"],
+  "type": "static",
+  "icon": "./icon.png",
+  "version": "1.0.3",
+  "description": "XenOS Official Settings",
+  "staticURL": "static/index.html",
+  "native": true
 }

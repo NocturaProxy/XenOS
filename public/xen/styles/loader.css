@@ -58,7 +58,7 @@
   color: white;
 }
 
-.os-preload p {
+.os-preload span {
   animation: preload-anim 2s ease-out 100ms infinite normal forwards;
 }
 
@@ -113,7 +113,9 @@
   background-color: #ffffff00;
   border-color: #ffffff00;
   box-shadow: none;
-  cursor: url("/xen/cursors/pointer_24.svg") 6 6, pointer;
+  cursor:
+    url("/xen/cursors/pointer_24.svg") 6 6,
+    pointer;
   font-variant: none;
   font-weight: 100;
   font-family: "IBM PLEX SANS", sans-serif;

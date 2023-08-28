@@ -1,0 +1,110 @@
+{
+  ".solid/index.css": {
+    "file": "assets/index-245ee21e.css",
+    "src": ".solid/index.css"
+  },
+  ".solid/index.html": {
+    "css": ["assets/index-245ee21e.css"],
+    "dynamicImports": [
+      "src/routes/index.tsx",
+      "src/routes/internal/bookmarks.tsx",
+      "src/routes/internal/history.tsx",
+      "src/routes/internal/newTab.tsx",
+      "src/routes/internal/preferences.tsx",
+      "src/routes/internal/view-source.tsx",
+      "src/util/registerSW.ts"
+    ],
+    "file": "assets/index-1fe75362.js",
+    "isEntry": true,
+    "src": ".solid/index.html"
+  },
+  "_Favicon-94b6bc56.js": {
+    "file": "assets/Favicon-94b6bc56.js",
+    "imports": [".solid/index.html"]
+  },
+  "_index-37963400.js": {
+    "file": "assets/index-37963400.js",
+    "imports": [".solid/index.html", "_url-4d36b2c8.js"],
+    "isDynamicEntry": true
+  },
+  "_url-4d36b2c8.js": {
+    "file": "assets/url-4d36b2c8.js",
+    "imports": [".solid/index.html"]
+  },
+  "src/routes/index.tsx": {
+    "dynamicImports": [
+      "src/scripts/registerProtocols.ts",
+      "src/scripts/registerKeybinds.ts",
+      "src/scripts/addonStoreModifier.ts",
+      "_index-37963400.js"
+    ],
+    "file": "assets/index-e544ecbf.js",
+    "imports": [
+      ".solid/index.html",
+      "_Favicon-94b6bc56.js",
+      "_index-37963400.js",
+      "_url-4d36b2c8.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/routes/index.tsx"
+  },
+  "src/routes/internal/bookmarks.tsx": {
+    "file": "assets/bookmarks-66c5c70a.js",
+    "imports": [".solid/index.html"],
+    "isDynamicEntry": true,
+    "src": "src/routes/internal/bookmarks.tsx"
+  },
+  "src/routes/internal/history.tsx": {
+    "dynamicImports": ["_index-37963400.js"],
+    "file": "assets/history-836c2448.js",
+    "imports": [".solid/index.html", "_Favicon-94b6bc56.js"],
+    "isDynamicEntry": true,
+    "src": "src/routes/internal/history.tsx"
+  },
+  "src/routes/internal/newTab.tsx": {
+    "file": "assets/newTab-a888c537.js",
+    "imports": [".solid/index.html", "_url-4d36b2c8.js"],
+    "isDynamicEntry": true,
+    "src": "src/routes/internal/newTab.tsx"
+  },
+  "src/routes/internal/preferences.tsx": {
+    "file": "assets/preferences-49e225ac.js",
+    "imports": [".solid/index.html"],
+    "isDynamicEntry": true,
+    "src": "src/routes/internal/preferences.tsx"
+  },
+  "src/routes/internal/view-source.css": {
+    "file": "assets/view-source-5c045b07.css",
+    "src": "src/routes/internal/view-source.css"
+  },
+  "src/routes/internal/view-source.tsx": {
+    "css": ["assets/view-source-5c045b07.css"],
+    "file": "assets/view-source-df90a0c0.js",
+    "imports": [".solid/index.html"],
+    "isDynamicEntry": true,
+    "src": "src/routes/internal/view-source.tsx"
+  },
+  "src/scripts/addonStoreModifier.ts": {
+    "file": "assets/addonStoreModifier-53a0594b.js",
+    "imports": ["_index-37963400.js", ".solid/index.html", "_url-4d36b2c8.js"],
+    "isDynamicEntry": true,
+    "src": "src/scripts/addonStoreModifier.ts"
+  },
+  "src/scripts/registerKeybinds.ts": {
+    "file": "assets/registerKeybinds-f3c15b5f.js",
+    "imports": [".solid/index.html", "_index-37963400.js", "_url-4d36b2c8.js"],
+    "isDynamicEntry": true,
+    "src": "src/scripts/registerKeybinds.ts"
+  },
+  "src/scripts/registerProtocols.ts": {
+    "file": "assets/registerProtocols-cf7182ec.js",
+    "imports": ["_index-37963400.js", ".solid/index.html", "_url-4d36b2c8.js"],
+    "isDynamicEntry": true,
+    "src": "src/scripts/registerProtocols.ts"
+  },
+  "src/util/registerSW.ts": {
+    "file": "assets/registerSW-51f8a8af.js",
+    "isDynamicEntry": true,
+    "src": "src/util/registerSW.ts"
+  }
+}

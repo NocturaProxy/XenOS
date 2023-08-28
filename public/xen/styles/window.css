@@ -5,7 +5,10 @@
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-radius: 5px 5px 12px 12px;
-  transition: 0.05s left ease, 0.05s top ease, 0.7s transform ease;
+  transition:
+    0.05s left ease,
+    0.05s top ease,
+    0.7s transform ease;
 }
 
 .drag {
@@ -67,27 +70,27 @@
 }
 
 .os-exit {
-    right: 11px;
-    /* font-size: 20px; */
-    position: absolute;
-    width: 12px;
-    height: 15px;
+  right: 11px;
+  /* font-size: 20px; */
+  position: absolute;
+  width: 12px;
+  height: 15px;
 }
-  
+
 .os-full {
-    right: 53px;
-    /* font-size: 20px; */
-    position: absolute;
-    width: 12px;
-    height: 15px;
+  right: 53px;
+  /* font-size: 20px; */
+  position: absolute;
+  width: 12px;
+  height: 15px;
 }
-  
+
 .os-mini {
-    right: 32px;
-    /* font-size: 20px; */
-    position: absolute;
-    width: 12px;
-    height: 15px;
+  right: 32px;
+  /* font-size: 20px; */
+  position: absolute;
+  width: 12px;
+  height: 15px;
 }
 
 .resize,
@@ -124,19 +127,27 @@
 }
 
 .leftResize:hover {
-  cursor: url("/xen/cursors/size_hor_24.svg") 5 5, ew-resize;
+  cursor:
+    url("/xen/cursors/size_hor_24.svg") 5 5,
+    ew-resize;
 }
 
 .rightResize:hover {
-  cursor: url("/xen/cursors/size_hor_24.svg") 14 14, ew-resize;
+  cursor:
+    url("/xen/cursors/size_hor_24.svg") 14 14,
+    ew-resize;
 }
 
 .topResize:hover {
-  cursor: url("/xen/cursors/size_ver_24.svg") 5 5, ns-resize;
+  cursor:
+    url("/xen/cursors/size_ver_24.svg") 5 5,
+    ns-resize;
 }
 
 .bottomResize:hover {
-  cursor: url("/xen/cursors/size_ver_24.svg") 14 14, ns-resize;
+  cursor:
+    url("/xen/cursors/size_ver_24.svg") 14 14,
+    ns-resize;
 }
 
 .topResize,
@@ -186,30 +197,37 @@
   width: 19px;
 }
 
-.topRightResize, .topLeftResize {
+.topRightResize,
+.topLeftResize {
   height: 19px;
   width: 19px;
 }
 
 .topLeftResize {
-  cursor: url("/xen/cursors/size_fdiag_24.svg") 8 8, nwse-resize;
+  cursor:
+    url("/xen/cursors/size_fdiag_24.svg") 8 8,
+    nwse-resize;
 }
 
 .bottomRightResize {
-  cursor: url("/xen/cursors/size_fdiag_24.svg") 14 14, nwse-resize;
+  cursor:
+    url("/xen/cursors/size_fdiag_24.svg") 14 14,
+    nwse-resize;
 }
 
 .bottomLeftResize,
 .topRightResize {
-  cursor: url("/xen/cursors/size_bdiag_24.svg") 8 8, nesw-resize;
+  cursor:
+    url("/xen/cursors/size_bdiag_24.svg") 8 8,
+    nesw-resize;
 }
 
 .appFrame {
-    width: 100%;
-    height: 100%;
-    border-color: #ffffff00;
-    overflow: hidden;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+  width: 100%;
+  height: 100%;
+  border-color: #ffffff00;
+  overflow: hidden;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }

@@ -1,205 +1,292 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
-	<head>
+  <head>
     <script integrity="sha256-9NsIanf8jSVFuiPetrZ1jfLPoMPzZuPz2w3GWvQFgIU=">
-		if (navigator.serviceWorker.controller === null) {
-		navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
-			scope: "/",
-		});
-	
-		navigator.serviceWorker.ready.then(e=>location.reload());
-	}
-	</script>
-		<link href="./xen/styles/index.css" rel="stylesheet" type="text/css"/>
-    	<link href="./xen/styles/loader.css" rel="stylesheet" type="text/css"/>
-		<link href="./xen/styles/window.css" rel="stylesheet" type="text/css"/>
-		<link href="./xen/styles/taskbar.css" rel="stylesheet" type="text/css"/>
-		<link rel="icon" type="image/x-icon" href="./xen/img/logo-small.png" />
-		<link rel="apple-touch-icon" type="image/x-icon" href="./xen/img/logo-small.png" />
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>XenOS</title>
-		<!-- Primary Meta Tags -->
-		<title>XenOS | Highly advanced Web OS</title>
-		<meta name="title" content="XenOS | Highly advanced Web OS" />
-		<meta name="description" content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System " />
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://XenOS-dev.greenworldia.repl.co" />
-		<meta property="og:title" content="XenOS | Highly advanced Web OS" />
-		<meta property="og:description" content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System " />
-		<meta property="og:image" content="https://XenOS-dev.greenworldia.repl.co/xen/img/image-1.png" />
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content="https://XenOS-dev.greenworldia.repl.co" />
-		<meta property="twitter:title" content="XenOS | Highly advanced Web OS" />
-		<meta property="twitter:description" content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System " />
-		<meta property="twitter:image" content="https://XenOS-dev.greenworldia.repl.co/xen/img/image-1.png" />
-		<link rel="manifest" href="./manifest.json" />
-		<!-- Dynamic Stylesheets -->
-		<style id="dynamic-style" disabled="false" nonce="sha256-pg+aUJQeX3r3dfj4esilAvVsVMvh+iTCagyckScaD7M=">
-			.os-dock-item:active {
-				filter: brightness(0.5);
-			}
-		</style>
-		<style id="dynamic-style2" disabled="true" nonce="sha256-tdxd90rTdR0f9tIdFGpIqKd/7yyeTMO/vWN8Fu6/q40=">
-			.os-dock-tooltip:active {
-				filter: brightness(0.5);
-			}
-		</style>
-	</head>
-	<body>
-		<!--  OS preload -->
-		<div id="os-pre" class="os-preload">
-			<p id="os-pre-text">Hang Tight...</p>
-      		<p id="os-pre-text2" style='font-size: 9px; margin-top: -15px;'>
-        		Loading UI
-        		<div id='errorCatter' style='display:none;'onclick="this.focus();this.select()"></div>  
-			</p>
-		</div>
+      if (navigator.serviceWorker.controller === null) {
+        navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
+          scope: "/",
+        });
 
-		<!-- Lockscreen -->
-		<div id="os-lockscreen" class="os-lockscreen" style='display:none;'>
-		<div class='Lock-UserImg' id='locksmith'> </div> 
-		<p id="WelcomeBackUser">Good afternoon.</p>
-		<input class='lock-pw' id='lockscreenInput' type='password'>
-		<div><p class='miscInfo'>00:00 | Profile1 | Locked </p></div>
-		</div>
+        navigator.serviceWorker.ready.then((e) => location.reload());
+      }
+    </script>
+    <link href="./xen/styles/index.css" rel="stylesheet" type="text/css" />
+    <link href="./xen/styles/loader.css" rel="stylesheet" type="text/css" />
+    <link href="./xen/styles/window.css" rel="stylesheet" type="text/css" />
+    <link href="./xen/styles/taskbar.css" rel="stylesheet" type="text/css" />
+    <link
+      href="./xen/styles/contextMenu.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="icon" type="image/x-icon" href="./xen/img/logo-small.png" />
+    <link
+      rel="apple-touch-icon"
+      type="image/x-icon"
+      href="./xen/img/logo-small.png"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>XenOS</title>
+    <!-- Primary Meta Tags -->
+    <title>XenOS | Highly advanced Web OS</title>
+    <meta name="title" content="XenOS | Highly advanced Web OS" />
+    <meta
+      name="description"
+      content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System "
+    />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://XenOS-dev.greenworldia.repl.co" />
+    <meta property="og:title" content="XenOS | Highly advanced Web OS" />
+    <meta
+      property="og:description"
+      content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System "
+    />
+    <meta
+      property="og:image"
+      content="https://XenOS-dev.greenworldia.repl.co/xen/img/image-1.png"
+    />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://XenOS-dev.greenworldia.repl.co"
+    />
+    <meta property="twitter:title" content="XenOS | Highly advanced Web OS" />
+    <meta
+      property="twitter:description"
+      content="XenOS is a highly advanced Web operating system by Nebula Services. With a built in Browser, proxy service, VSCode, and Virtual File System "
+    />
+    <meta
+      property="twitter:image"
+      content="https://XenOS-dev.greenworldia.repl.co/xen/img/image-1.png"
+    />
+    <link rel="manifest" href="./manifest.json" />
+    <!-- Dynamic Stylesheets -->
+    <style
+      id="dynamic-style"
+      disabled="false"
+      nonce="sha256-pg+aUJQeX3r3dfj4esilAvVsVMvh+iTCagyckScaD7M="
+    >
+      .os-dock-item:active {
+        filter: brightness(0.5);
+      }
+    </style>
+    <style
+      id="dynamic-style2"
+      disabled="true"
+      nonce="sha256-tdxd90rTdR0f9tIdFGpIqKd/7yyeTMO/vWN8Fu6/q40="
+    >
+      .os-dock-tooltip:active {
+        filter: brightness(0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <!--  OS preload -->
+    <div id="os-pre" class="os-preload">
+      <p id="os-pre-text">Hang Tight...</p>
+      <span id="os-pre-text2" style="font-size: 9px; margin-top: -15px">
+        Loading UI
+        <div
+          id="errorCatter"
+          style="display: none"
+          onclick="this.focus();this.select()"
+        ></div>
+      </span>
+    </div>
 
-   		<div class="os-preload" style="display: none">
-		<p>Hang on</p>
-		<br />
-		<p>Your screen isn't big enough.</p>
-		</div>
-	
-		<div class="os-prompt">
-		<div> 
-			<h1> Prompt Name </h1>
-			<p> prompt description</p>
-		</div>
-		</div>
-		<!--  OS Setup  -->
-		<div class="os-setup" id="SetupWrapper" style="display: none">
-			<div class="os-setup-wrapper">
-				<p id="SetupText" class="os-setup-p">Welcome to XenOS</p>
-				<div
-					class="os-setup-choiceWrap"
-					id="passWordButtonChoice"
-					style="display: none"
-				>
-					<div id="keybinds" style="display: none">
-						<p class="os-setup-keybind-p">
-							Great! You've completed the XenOS Setup. If you need help, or want to learn more about your system, please visit the help application that can be found on your start menu! Good luck :)
-						</p>
-						<button class="os-setup-button" id="doneButtonFinal">
-							Done
-						</button>
-					</div>
-					<button class="os-setup-button" id="yesButton">
-						Yes, please.
-					</button>
-					<button class="os-setup-button" id="noButton">
-						No, thanks.
-					</button>
-					<input
-						type="password"
-						id="passWordInput"
-						style="display: none"
-					/>
-					<svg
-						id="pwSubmit"
-						style="display: none"
-						xmlns="http://www.w3.org/2000/svg"
-						width="331"
-						height="245"
-						viewBox="0 0 331 245"
-						fill="none"
-					>
-						<rect
-							x="37"
-							y="115"
-							width="242"
-							height="13"
-							rx="6.5"
-							fill="black"
-						/>
-						<path
-							d="M280.5 114.706C286.5 118.17 286.5 126.83 280.5 130.294L246.75 149.78C240.75 153.244 233.25 148.914 233.25 141.986L233.25 103.014C233.25 96.0862 240.75 91.7561 246.75 95.2202L280.5 114.706Z"
-							fill="black"
-						/>
-					</svg>
-				</div>
-			</div>
-		</div>
-		<!--  OS (Desktop) -->
-		<div class="os-body" id="os-desktop">
-      
-		<!--  OS taskbar (Desktop) -->
-		<div class="os-taskbar-cont" id='os-taskbar-resizable'>
-			<div class="os-taskbar-under"></div>
+    <!-- Lockscreen -->
+    <div id="os-lockscreen" class="os-lockscreen" style="display: none">
+      <div class="Lock-UserImg" id="locksmith"></div>
+      <p id="WelcomeBackUser">Good afternoon.</p>
+      <input class="lock-pw" id="lockscreenInput" type="password" />
+      <div><p class="miscInfo">00:00 | Profile1 | Locked</p></div>
+    </div>
 
-			<div class="os-taskbar-menu">
-				<div class="start-over" style="height: 500px; opacity: 1;">
-					<button class="start-go" aria-label="Start Menu Search Button"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path></svg></button>  
-					<div class="start-left" style="opacity: 1;">No Apps</div>
-					<div class="start-right" style="opacity: 1;">press any key to search</div>
-				</div>
+    <div class="os-preload" style="display: none">
+      <p>Hang on</p>
+      <br />
+      <p>Your screen isn't big enough.</p>
+    </div>
 
-				<div class="start-search" style="height: 380px; visibility: hidden; opacity: 0;">
-					<button class="start-back"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M328 112L184 256l144 144"></path></svg></button>
-					<input class="start-input">
-					<div class="start-results">
-						<div class="search-apps"></div>
-					</div>
-				  </div>
-			</div>
+    <div class="os-prompt">
+      <div>
+        <h1>Prompt Name</h1>
+        <p>prompt description</p>
+      </div>
+    </div>
+    <!--  OS Setup  -->
+    <div class="os-setup" id="SetupWrapper" style="display: none">
+      <div class="os-setup-wrapper">
+        <p id="SetupText" class="os-setup-p">Welcome to XenOS</p>
+        <div
+          class="os-setup-choiceWrap"
+          id="passWordButtonChoice"
+          style="display: none"
+        >
+          <div id="keybinds" style="display: none">
+            <p class="os-setup-keybind-p">
+              Great! You've completed the XenOS Setup. If you need help, or want
+              to learn more about your system, please visit the help application
+              that can be found on your start menu! Good luck :)
+            </p>
+            <button class="os-setup-button" id="doneButtonFinal">Done</button>
+          </div>
+          <button class="os-setup-button" id="yesButton">Yes, please.</button>
+          <button class="os-setup-button" id="noButton">No, thanks.</button>
+          <input type="password" id="passWordInput" style="display: none" />
+          <svg
+            id="pwSubmit"
+            style="display: none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="331"
+            height="245"
+            viewBox="0 0 331 245"
+            fill="none"
+          >
+            <rect
+              x="37"
+              y="115"
+              width="242"
+              height="13"
+              rx="6.5"
+              fill="black"
+            />
+            <path
+              d="M280.5 114.706C286.5 118.17 286.5 126.83 280.5 130.294L246.75 149.78C240.75 153.244 233.25 148.914 233.25 141.986L233.25 103.014C233.25 96.0862 240.75 91.7561 246.75 95.2202L280.5 114.706Z"
+              fill="black"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!--  OS (Desktop) -->
+    <div class="os-body" id="os-desktop">
+      <!--  OS taskbar (Desktop) -->
+      <div class="os-taskbar-cont" id="os-taskbar-resizable">
+        <div class="os-taskbar-under"></div>
 
-			<div class="os-dock">
-				<img alt="XenOS Logo" src='./xen/img/logo-small.png' class='os-startbutton' id="startButton" />
-				<div class="os-dock-apps"></div>
-				<div class="os-dock-battery">
-					<svg
-						class="os-header-items os-battery"
-						xmlns="http://www.w3.org/2000/svg"
-						width="447"
-						height="112"
-						viewBox="0 0 447 112"
-						fill="none"
-					>
-						<rect
-						x="243.5"
-						y="39.5"
-						width="18"
-						height="34"
-						rx="6.5"
-						stroke="#F0F0F0"
-						stroke-width="5"
-						/>
-						<rect
-						x="4"
-						y="4"
-						width="239"
-						height="104"
-						rx="26"
-						stroke="white"
-						stroke-width="8"
-						/>
-						<rect
-						id="os-battery-bar"
-						x="15"
-						y="17"
-						rx="16"
-						fill="white"
-						/>
-					</svg>
-				</div>
-				<div class="os-dock-clock">
-					<span id="os-dock-time">12:56 PM</span>
-					<br />
-					<span id="os-dock-date">8/9/23</span>
-				</div>
-			</div>
-		</div>
-		<script src="./xen/web/web.bundle.js"></script>
-	</body>
+        <div class="os-taskbar-menu">
+          <div class="start-over" style="height: 500px; opacity: 1">
+            <button class="start-go" aria-label="Start Menu Search Button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="ionicon"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-miterlimit="10"
+                  stroke-width="32"
+                ></path>
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-miterlimit="10"
+                  stroke-width="32"
+                  d="M338.29 338.29L448 448"
+                ></path>
+              </svg>
+            </button>
+            <div class="start-left" style="opacity: 1">No Apps</div>
+            <div class="start-right" style="opacity: 1">
+              press any key to search
+            </div>
+          </div>
+
+          <div
+            class="start-search"
+            style="height: 380px; visibility: hidden; opacity: 0"
+          >
+            <button class="start-back">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="48"
+                  d="M328 112L184 256l144 144"
+                ></path>
+              </svg>
+            </button>
+            <input class="start-input" />
+            <div class="start-results">
+              <div class="os-taskbar-separator">Apps</div>
+              <div class="search-apps"></div>
+
+              <div class="os-taskbar-separator">Search</div>
+              <div class="search-search"></div>
+
+              <div class="os-taskbar-separator">News</div>
+              <div class="search-news"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="os-dock">
+          <div style="flex: 0.5">
+            <img
+              alt="XenOS Logo"
+              src="./xen/img/logo-small.png"
+              class="os-startbutton"
+              id="startButton"
+            />
+          </div>
+          <div class="os-dock-apps"></div>
+          <div
+            style="
+              flex: 0.5;
+              height: 100%;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+            "
+          >
+            <div class="os-dock-battery">
+              <svg
+                class="os-header-items os-battery"
+                xmlns="http://www.w3.org/2000/svg"
+                width="447"
+                height="112"
+                viewBox="0 0 447 112"
+                fill="none"
+              >
+                <rect
+                  x="243.5"
+                  y="39.5"
+                  width="18"
+                  height="34"
+                  rx="6.5"
+                  stroke="#F0F0F0"
+                  stroke-width="5"
+                />
+                <rect
+                  x="4"
+                  y="4"
+                  width="239"
+                  height="104"
+                  rx="26"
+                  stroke="white"
+                  stroke-width="8"
+                />
+                <rect id="os-battery-bar" x="15" y="17" rx="16" fill="white" />
+              </svg>
+            </div>
+            <div class="os-dock-clock">
+              <span id="os-dock-time">12:56 PM</span>
+              <br />
+              <span id="os-dock-date">8/9/23</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./xen/web/web.bundle.js"></script>
+  </body>
 </html>

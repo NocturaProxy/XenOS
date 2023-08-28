@@ -7,8 +7,8 @@
     "module": "ESNext",
     "target": "ESNext",
     "allowJs": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules", "public/xen/**/*.d.ts", "public/xen/apps"],
-  "include": ["public/xen/**/*.ts", "public/xen/**/*.tsx"],
+  "include": ["public/xen/**/*.ts", "public/xen/**/*.tsx"]
 }

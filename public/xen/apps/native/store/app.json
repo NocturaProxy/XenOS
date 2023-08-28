@@ -1,10 +1,16 @@
 {
-    "name": "App Store",
-    "files": ["app.json", "icon.png", "static/index.html", "static/build.css", "static/script.js"],
-    "type": "static",
-    "icon": "./icon.png",
-    "version": "0.5",
-    "description": "XenOS Official App Store",
-    "staticURL": "static/index.html",
-    "native": true
+  "name": "App Store",
+  "files": [
+    "app.json",
+    "icon.png",
+    "static/index.html",
+    "static/build.css",
+    "static/script.js"
+  ],
+  "type": "static",
+  "icon": "./icon.png",
+  "version": "0.5",
+  "description": "XenOS Official App Store",
+  "staticURL": "static/index.html",
+  "native": true
 }

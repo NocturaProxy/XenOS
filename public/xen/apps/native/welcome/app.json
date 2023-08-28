@@ -1,14 +1,9 @@
 {
-    "name": "Welcome",
-    "version": "1.0.4",
-    "type": "static",
-    "staticURL": "index.html",
-    "icon": "icon.png",
-    "native": true,
-    "files": [
-        "app.json",
-        "index.html",
-        "fb.png",
-        "icon.png"
-    ]
+  "name": "Welcome",
+  "version": "1.0.4",
+  "type": "static",
+  "staticURL": "index.html",
+  "icon": "icon.png",
+  "native": true,
+  "files": ["app.json", "index.html", "fb.png", "icon.png"]
 }

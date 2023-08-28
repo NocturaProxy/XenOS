@@ -1,0 +1,12 @@
+import { d as r } from "./index-37963400.js";
+import "./index-1fe75362.js";
+import "./url-4d36b2c8.js";
+const e = new r("about");
+e.register("blank", "about:blank");
+e.register("srcdoc", "about:srcdoc");
+e.register("newTab", "/xen/~/apps/Xen/velocity/internal/newTab");
+e.register("preferences", "/xen/~/apps/Xen/velocity/internal/preferences");
+e.register("bookmarks", "/xen/~/apps/Xen/velocity/internal/bookmarks");
+e.register("history", "/xen/~/apps/Xen/velocity/internal/history");
+const o = new r("view-source");
+o.register("*", "/xen/~/apps/Xen/velocity/internal/view-source");

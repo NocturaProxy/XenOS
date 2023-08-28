@@ -10,7 +10,7 @@ class WindowManager {
       <rect width="188" height="185" rx="92.5" fill="#F46868"></rect>
     </svg>`;
   }
-  
+
   getMiniSVG() {
     return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
       <rect width="188" height="185" rx="92.5" fill="#ffcd5b"></rect>
@@ -23,9 +23,18 @@ class WindowManager {
     </svg>`;
   }
 
-  createWindow = (title: string, content: HTMLElement, id: string, x: number = 0, y: number = 0, width: number = 0, height: number = 0) => {
-    const windowElement = document.createElement('div');
-    windowElement.classList.add('drag', 'box');
+  createWindow = (
+    title: string,
+    content: HTMLElement,
+    id: string,
+    x: number = 0,
+    y: number = 0,
+    width: number = 0,
+    height: number = 0,
+    visible: boolean = true,
+  ) => {
+    const windowElement = document.createElement("div");
+    windowElement.classList.add("drag", "box");
 
     windowElement.id = id;
     windowElement.style.left = `${x}px`;
@@ -33,36 +42,36 @@ class WindowManager {
     windowElement.style.width = `${width}px`;
     windowElement.style.height = `${height}px`;
 
-    const titleBar = document.createElement('div');
-    titleBar.classList.add('box-header');
+    const titleBar = document.createElement("div");
+    titleBar.classList.add("box-header");
 
-    const titleLabel = document.createElement('div');
-    titleLabel.classList.add('box-header-title');
+    const titleLabel = document.createElement("div");
+    titleLabel.classList.add("box-header-title");
     titleLabel.innerText = title;
 
-    const minimizeButton = document.createElement('span');
-    minimizeButton.classList.add('os-mini');
+    const minimizeButton = document.createElement("span");
+    minimizeButton.classList.add("os-mini");
     minimizeButton.innerHTML = this.getMiniSVG();
-    minimizeButton.addEventListener('click', () => {
+    minimizeButton.addEventListener("click", () => {
       this.minimizeWindow(id);
     });
 
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('os-exit');
+    const closeButton = document.createElement("span");
+    closeButton.classList.add("os-exit");
     closeButton.innerHTML = this.getCloseSVG();
-    closeButton.addEventListener('click', () => {
+    closeButton.addEventListener("click", () => {
       window.xen.apps.close(id, windowElement);
     });
 
-    const fullscreenButton = document.createElement('span');
-    fullscreenButton.classList.add('os-full');
+    const fullscreenButton = document.createElement("span");
+    fullscreenButton.classList.add("os-full");
     fullscreenButton.innerHTML = this.getFullSVG();
-    fullscreenButton.addEventListener('click', () => {
+    fullscreenButton.addEventListener("click", () => {
       this.fullscreen(id);
     });
 
-    const innerBody = document.createElement('div');
-    innerBody.classList.add('box-body-inner');
+    const innerBody = document.createElement("div");
+    innerBody.classList.add("box-body-inner");
     innerBody.appendChild(content);
 
     titleBar.appendChild(titleLabel);
@@ -72,22 +81,36 @@ class WindowManager {
 
     windowElement.append(
       titleBar,
-      innerBody, 
-      ...['left', 'top', 'right', 'bottom', 'topLeft', 'topRight', 'bottomRight', 'bottomLeft'].map(direction => {
-        const div = document.createElement('div');
-        div.classList.add(direction.includes('top') ? 'resize' : 'dresize', direction + 'Resize');
+      innerBody,
+      ...[
+        "left",
+        "top",
+        "right",
+        "bottom",
+        "topLeft",
+        "topRight",
+        "bottomRight",
+        "bottomLeft",
+      ].map((direction) => {
+        const div = document.createElement("div");
+        div.classList.add(
+          direction.includes("top") ? "resize" : "dresize",
+          direction + "Resize",
+        );
         return div;
-      })
+      }),
     );
 
-    this.resizeListener(windowElement); 
+    windowElement.style.display = visible ? "block" : "none";
+
+    this.resizeListener(windowElement);
 
     document.getElementById("os-desktop")?.appendChild(windowElement);
     window.xen.wm.windows.push(windowElement);
 
-    const drag = windowElement.querySelector('.box-header-title');
+    const drag = windowElement.querySelector(".box-header-title");
 
-    drag?.addEventListener('mousedown', (e: any) => {
+    drag?.addEventListener("mousedown", (e: any) => {
       const box = windowElement.getBoundingClientRect();
       const titleBox = titleBar.getBoundingClientRect();
       const offsetX = e.clientX - box.left;
@@ -99,10 +122,10 @@ class WindowManager {
         document.querySelector(".os-mini")?.contains(e.target) ||
         document.querySelector(".os-full")?.contains(e.target) ||
         document.querySelector(".os-exit")?.contains(e.target)
-      ) return false;
-
-      if (windowElement.dataset.mini === "true")
+      )
         return false;
+
+      if (windowElement.dataset.mini === "true") return false;
 
       document.querySelectorAll(".drag iframe").forEach((iframe: any) => {
         iframe.style.pointerEvents = "none";
@@ -135,8 +158,8 @@ class WindowManager {
       };
 
       const mouseUpHandler = (e: any) => {
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
+        document.removeEventListener("mousemove", mouseMoveHandler);
+        document.removeEventListener("mouseup", mouseUpHandler);
 
         let top = e.clientY - offsetY;
 
@@ -148,13 +171,13 @@ class WindowManager {
           windowElement.style.top = `0px`;
         }
 
-        windowElement.querySelectorAll("iframe").forEach((iframe) => {
+        document.querySelectorAll(".drag iframe").forEach((iframe: any) => {
           iframe.style.pointerEvents = "auto";
         });
       };
 
-      document.addEventListener('mousemove', mouseMoveHandler);
-      document.addEventListener('mouseup', mouseUpHandler);
+      document.addEventListener("mousemove", mouseMoveHandler);
+      document.addEventListener("mouseup", mouseUpHandler);
     });
 
     return windowElement;
@@ -165,27 +188,30 @@ class WindowManager {
 
     if (!elem) return;
 
-    const zIndex = Math.max(
-      ...Array.from(document.querySelectorAll('.box')).map((e: any) => +(e.style.zIndex || 0))
-    ) || 0;
+    const zIndex =
+      Math.max(
+        ...Array.from(document.querySelectorAll(".box")).map(
+          (e: any) => +(e.style.zIndex || 0),
+        ),
+      ) || 0;
 
     elem.style.zIndex = `${zIndex + 1}`;
   }
 
   resizeListener(master: HTMLElement) {
-    var left = master.querySelector('.leftResize'),
-      right = master.querySelector('.rightResize'),
-      top = master.querySelector('.topResize'),
-      bottom = master.querySelector('.bottomResize');
+    var left = master.querySelector(".leftResize"),
+      right = master.querySelector(".rightResize"),
+      top = master.querySelector(".topResize"),
+      bottom = master.querySelector(".bottomResize");
 
-    var topLeft = master.querySelector('.topLeftResize'),
-      topRight = master.querySelector('.topRightResize'),
-      bottomLeft = master.querySelector('.bottomLeftResize'),
-      bottomRight = master.querySelector('.bottomRightResize');
+    var topLeft = master.querySelector(".topLeftResize"),
+      topRight = master.querySelector(".topRightResize"),
+      bottomLeft = master.querySelector(".bottomLeftResize"),
+      bottomRight = master.querySelector(".bottomRightResize");
 
     [left, right, top, bottom].forEach((side, index) => {
-      var s = ['left', 'right', 'top', 'bottom'][index];
-      
+      var s = ["left", "right", "top", "bottom"][index];
+
       var startX: any;
       var startY: any;
       var computed: any;
@@ -193,68 +219,84 @@ class WindowManager {
       var startWidth: any;
       var startTop: any;
       var startLeft: any;
-      
-      var mousemove = function(e: MouseEvent) {
 
+      var mousemove = function (e: MouseEvent) {
         requestAnimationFrame(() => {
-          if (s=='top') {
-            var height = (parseInt(startHeight.replace('px', '')) - (e.clientY - startY));
-            master.style.height = (height>70?height:70)+'px';
-            master.style.top = (height>70?parseInt(startTop.replace('px', '')) + (e.clientY - startY):'')+'px';
-          } else if (s=='bottom') {
-            var height = (parseInt(startHeight.replace('px', '')) + (e.clientY - startY));
-            master.style.height = (height>70?height:70)+'px';
+          if (s == "top") {
+            var height =
+              parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            var distTop: any =
+              height > 70
+                ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
+                : "";
+            if (distTop < 0) return (master.style.top = "0px");
+
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+          } else if (s == "bottom") {
+            var height =
+              parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            master.style.height = (height > 70 ? height : 70) + "px";
             master.style.top = startTop;
-          } else if (s=='left') {
-            var width = (parseInt(startWidth.replace('px', '')) - (e.clientX - startX));
-            master.style.width = (width>70?width:70)+'px';
-            master.style.left = (width>70?parseInt(startLeft.replace('px', '')) + (e.clientX - startX):'')+'px';
-          } else if (s=='right') {
-            var width = (parseInt(startWidth.replace('px', '')) + (e.clientX - startX));
-            master.style.width = (width>70?width:70)+'px';
+          } else if (s == "left") {
+            var width =
+              parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left =
+              (width > 70
+                ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
+                : "") + "px";
+          } else if (s == "right") {
+            var width =
+              parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left = startLeft;
           }
         });
       };
-    
-      document.addEventListener('mousedown', function(e) {
-        if (e.target!==side) return;
+
+      document.addEventListener("mousedown", function (e) {
+        if (e.target !== side) return;
 
         computed = window.getComputedStyle(master);
 
-        startHeight = computed.height+'';
-        startWidth = computed.width+'';
-        startTop = computed.top+'';
-        startLeft = computed.left+'';
-        
+        startHeight = computed.height + "";
+        startWidth = computed.width + "";
+        startTop = computed.top + "";
+        startLeft = computed.left + "";
+
         startX = e.clientX;
         startY = e.clientY;
 
         master.style.transition = "0s";
-        
-  			master.querySelectorAll('iframe').forEach(function(iframe) {
-  				iframe.style.pointerEvents = "none";
-  			});
-        
-        document.addEventListener('mousemove', mousemove);
+
+        document.querySelectorAll(".drag iframe").forEach(function (
+          iframe: any,
+        ) {
+          iframe.style.pointerEvents = "none";
+        });
+
+        document.addEventListener("mousemove", mousemove);
       });
 
-      document.addEventListener('mouseup', function(e) {
-        if (!startX&&!startY) return
+      document.addEventListener("mouseup", function (e) {
+        if (!startX && !startY) return;
 
         master.style.transition = "";
 
-        document.removeEventListener('mousemove', mousemove);   
-        
-  			master.querySelectorAll('iframe').forEach(function(iframe) {
-  				iframe.style.pointerEvents = "all";
-  			});     
+        document.removeEventListener("mousemove", mousemove);
+
+        document.querySelectorAll(".drag iframe").forEach(function (
+          iframe: any,
+        ) {
+          iframe.style.pointerEvents = "all";
+        });
       });
     });
 
     [topLeft, topRight, bottomLeft, bottomRight].forEach((side, index) => {
-      var s = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'][index];
-      
+      var s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
+
       var startX: any;
       var startY: any;
       var computed: any;
@@ -262,73 +304,103 @@ class WindowManager {
       var startWidth: any;
       var startTop: any;
       var startLeft: any;
-      
-      var mousemove = function(e: MouseEvent) {
+
+      var mousemove = function (e: MouseEvent) {
         requestAnimationFrame(() => {
-          if (s=='topLeft') {
-            var height = (parseInt(startHeight.replace('px', '')) - (e.clientY - startY));
-            var width = (parseInt(startWidth.replace('px', '')) - (e.clientX - startX));
-            master.style.height = (height>70?height:70)+'px';
-            master.style.top = (height>70?parseInt(startTop.replace('px', '')) + (e.clientY - startY):'')+'px';
-            master.style.width = (width>70?width:70)+'px';
-            master.style.left = (width>70?parseInt(startLeft.replace('px', '')) + (e.clientX - startX):'')+'px';
-          } else if (s=='topRight') {
-            var height = (parseInt(startHeight.replace('px', '')) - (e.clientY - startY));
-            var width = (parseInt(startWidth.replace('px', '')) + (e.clientX - startX));
-            master.style.height = (height>70?height:70)+'px';
-            master.style.top = (height>70?parseInt(startTop.replace('px', '')) + (e.clientY - startY):'')+'px';
-            master.style.width = (width>70?width:70)+'px';
+          if (s == "topLeft") {
+            var height =
+              parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            var width =
+              parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            var distTop: any =
+              height > 70
+                ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
+                : "";
+            if (distTop < 0) return (master.style.top = "0px");
+
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left =
+              (width > 70
+                ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
+                : "") + "px";
+          } else if (s == "topRight") {
+            var height =
+              parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            var width =
+              parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            var distTop: any =
+              height > 70
+                ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
+                : "";
+            if (distTop < 0) return (master.style.top = "0px");
+
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+            master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left = startLeft;
-          } else if (s=='bottomLeft') {
-            var height = (parseInt(startHeight.replace('px', '')) + (e.clientY - startY));
-            var width = (parseInt(startWidth.replace('px', '')) - (e.clientX - startX));
-            master.style.height = (height>70?height:70)+'px';
-            master.style.top = startTop
-            master.style.width = (width>70?width:70)+'px';
-            master.style.left = (width>70?parseInt(startLeft.replace('px', '')) + (e.clientX - startX):'')+'px';
-          } else if (s=='bottomRight') {
-            var height = (parseInt(startHeight.replace('px', '')) + (e.clientY - startY));
-            var width = (parseInt(startWidth.replace('px', '')) + (e.clientX - startX));
-            master.style.height = (height>70?height:70)+'px';
-            master.style.top = startTop
-            master.style.width = (width>70?width:70)+'px';
+          } else if (s == "bottomLeft") {
+            var height =
+              parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            var width =
+              parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = startTop;
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left =
+              (width > 70
+                ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
+                : "") + "px";
+          } else if (s == "bottomRight") {
+            var height =
+              parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            var width =
+              parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = startTop;
+            master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left = startLeft;
           }
         });
       };
-    
-      document.addEventListener('mousedown', function(e: any) {
-        if (e.target!==side) return;
+
+      document.addEventListener("mousedown", function (e: any) {
+        if (e.target !== side) return;
 
         computed = window.getComputedStyle(master);
 
-        startHeight = computed.height+'';
-        startWidth = computed.width+'';
-        startTop = computed.top+'';
-        startLeft = computed.left+'';
-        
+        startHeight = computed.height + "";
+        startWidth = computed.width + "";
+        startTop = computed.top + "";
+        startLeft = computed.left + "";
+
         startX = e.clientX;
         startY = e.clientY;
 
         master.style.transition = "0s";
-        
-  			master.querySelectorAll('iframe').forEach(function(iframe) {
-  				iframe.style.pointerEvents = "none";
-  			});
-        
-        document.addEventListener('mousemove', mousemove);
+
+        document.querySelectorAll(".drag iframe").forEach(function (
+          iframe: any,
+        ) {
+          iframe.style.pointerEvents = "none";
+        });
+
+        document.addEventListener("mousemove", mousemove);
       });
 
-      document.addEventListener('mouseup', function(e) {
-        if (!startX&&!startY) return;
+      document.addEventListener("mouseup", function (e) {
+        if (!startX && !startY) return;
 
         master.style.transition = "";
 
-        document.removeEventListener('mousemove', mousemove);   
-        
-  			master.querySelectorAll('iframe').forEach(function(iframe) {
-  				iframe.style.pointerEvents = "all";
-  			});     
+        document.removeEventListener("mousemove", mousemove);
+
+        document.querySelectorAll(".drag iframe").forEach(function (
+          iframe: any,
+        ) {
+          iframe.style.pointerEvents = "all";
+        });
       });
     });
   }
@@ -338,7 +410,7 @@ class WindowManager {
 
     if (!windowElement) return false;
 
-    windowElement.style.transform = 'scale(0.15)';
+    windowElement.style.transform = "scale(0.15)";
     windowElement.style.transition = "all 0.7s ease";
     windowElement.dataset.mini = "true";
 
@@ -349,7 +421,7 @@ class WindowManager {
     const bounds = windowElement.getBoundingClientRect();
 
     if (bounds.top > window.innerHeight - 310) {
-      windowElement.style.top = (window.innerHeight - 310) + "px";
+      windowElement.style.top = window.innerHeight - 310 + "px";
     }
 
     if (bounds.top < -193) {
@@ -361,10 +433,10 @@ class WindowManager {
     }
 
     if (bounds.left > window.innerWidth - 425) {
-      windowElement.style.left = (window.innerWidth - 425) + "px";
+      windowElement.style.left = window.innerWidth - 425 + "px";
     }
 
-    setTimeout(() => windowElement.style.transition = "", 700);
+    setTimeout(() => (windowElement.style.transition = ""), 700);
 
     // moving stuff kinda breaks when transform scale(0.15);
 
@@ -376,15 +448,15 @@ class WindowManager {
 
       function move(event: any) {
         if (windowElement?.dataset.fullscreen === "true") return;
-  
+
         let left = event.clientX - startX;
         let top = event.clientY - startY;
-  
-        if (top <- 193) top = -193;
-        if (left <- 275) left = -275;
+
+        if (top < -193) top = -193;
+        if (left < -275) left = -275;
         if (left > window.innerWidth - 425) left = window.innerWidth - 425;
         if (top > window.innerHeight - 310) top = window.innerHeight - 310;
-  
+
         requestAnimationFrame(() => {
           e.target.style.position = `absolute`;
           e.target.style.top = `${top}px`;
@@ -392,11 +464,11 @@ class WindowManager {
         });
       }
 
-      const up = (event: any) => {  
+      const up = (event: any) => {
         // Unminimizing logic
 
         if (event.clientX === e.clientX && event.clientY === e.clientY) {
-          windowElement.style.transform = 'scale(1)';
+          windowElement.style.transform = "scale(1)";
           windowElement.dataset.mini = "false";
 
           windowElement.style.transition = "all 0.7s ease";
@@ -405,9 +477,10 @@ class WindowManager {
             element.style.pointerEvents = "auto";
           });
 
-          if (parseInt(windowElement.style.top.replace('px', '')) < 0) windowElement.style.top = "0";
+          if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+            windowElement.style.top = "0";
 
-          setTimeout(() => windowElement.style.transition = "", 700);
+          setTimeout(() => (windowElement.style.transition = ""), 700);
 
           windowElement.removeEventListener("mousedown", down);
         }
@@ -428,7 +501,7 @@ class WindowManager {
 
     if (!windowElement) return false;
 
-    windowElement.style.transform = 'scale(1)';
+    windowElement.style.transform = "scale(1)";
     windowElement.dataset.mini = "false";
 
     windowElement.style.transition = "all 0.7s ease";
@@ -437,9 +510,10 @@ class WindowManager {
       element.style.pointerEvents = "auto";
     });
 
-    if (parseInt(windowElement.style.top.replace('px', '')) < 0) windowElement.style.top = "0";
+    if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+      windowElement.style.top = "0";
 
-    await new Promise(r => setTimeout(r, 700));
+    await new Promise((r) => setTimeout(r, 700));
 
     windowElement.style.transition = "";
 
@@ -469,7 +543,7 @@ class WindowManager {
 
         windowElement.dataset.fullscreen = "false";
 
-        await new Promise(r => setTimeout(r, 150));
+        await new Promise((r) => setTimeout(r, 150));
 
         windowElement.style.transition = "";
       });
@@ -494,13 +568,13 @@ class WindowManager {
 
       windowElement.dataset.fullscreen = "true";
 
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 150));
 
       windowElement.style.transition = "";
     });
 
     return true;
-  }
-};
+  };
+}
 
 module.exports = WindowManager;

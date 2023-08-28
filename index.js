@@ -1,6 +1,7 @@
 const express = require("express");
 const esbuild = require("esbuild");
 const path = require("path");
+const fs = require("fs");
 const request = require("request");
 const http = require("node:http");
 const createBareServer = require("@tomphttp/bare-server-node");
@@ -14,16 +15,36 @@ try {
       entryPoints: [
         {
           in: "public/xen/js/entry.js",
-          out: "web.bundle"
+          out: "web.bundle",
         },
         {
           in: "public/sw.js",
-          out: "sw.bundle"
-        }
+          out: "sw.bundle",
+        },
+        {
+          in: "public/xen/js/inject/entry.js",
+          out: "inject.bundle",
+        },
       ],
       bundle: true,
       format: "cjs",
       outdir: "public/xen/web/",
+      logLevel: "info",
+      platform: "browser",
+    })
+    .then((ctx) => ctx.watch());
+
+  const files = fs.readdirSync("./public/xen/js/components/");
+
+  esbuild
+    .context({
+      entryPoints: files.map((file) => ({
+        in: "public/xen/js/components/" + file,
+        out: file.replace(".js", ""),
+      })),
+      bundle: true,
+      format: "esm",
+      outdir: "public/xen/web/components",
       logLevel: "info",
       platform: "browser",
     })

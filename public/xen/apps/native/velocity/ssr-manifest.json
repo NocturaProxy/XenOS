@@ -1,0 +1,270 @@
+{
+  "\u0000/Users/jmbry/Velocity/node_modules/base64-js/index.js?commonjs-exports": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/call-bind/index.js?commonjs-module": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/color-string/index.js?commonjs-module": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/events/events.js?commonjs-module": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/filer/dist/filer.js?commonjs-module": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/ieee754/index.js?commonjs-exports": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/inherits/inherits_browser.js?commonjs-module": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/mime-types/index.js?commonjs-exports": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/node-stdlib-browser/node_modules/buffer/index.js?commonjs-exports": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/prismjs/prism.js?commonjs-module": [
+    "/assets/view-source-df90a0c0.js",
+    "/assets/view-source-5c045b07.css"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/process/browser.js?commonjs-module": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/simple-swizzle/index.js?commonjs-module": [],
+  "\u0000/Users/jmbry/Velocity/node_modules/util/support/types.js?commonjs-exports": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000/Users/jmbry/Velocity/node_modules/util/util.js?commonjs-exports": [
+    "/assets/index-37963400.js"
+  ],
+  "\u0000commonjsHelpers.js": [],
+  "\u0000vite/modulepreload-polyfill": [],
+  "\u0000vite/preload-helper": [],
+  ".solid/index.html": [],
+  "node_modules/@solid-primitives/script-loader/dist/index.js": [
+    "/assets/index-e544ecbf.js"
+  ],
+  "node_modules/@solidjs/meta/dist/index.jsx": [],
+  "node_modules/@solidjs/router/dist/components.jsx": [],
+  "node_modules/@solidjs/router/dist/integration.js": [],
+  "node_modules/@solidjs/router/dist/lifecycle.js": [],
+  "node_modules/@solidjs/router/dist/routing.js": [],
+  "node_modules/@solidjs/router/dist/utils.js": [],
+  "node_modules/@thisbeyond/solid-dnd/dist/index.jsx": [
+    "/assets/index-e544ecbf.js"
+  ],
+  "node_modules/@tomphttp/bare-client/dist/BareClient.js": [],
+  "node_modules/@zip.js/zip.js/index.js": ["/assets/index-37963400.js"],
+  "node_modules/@zip.js/zip.js/lib/core/codec-pool.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/codec-worker.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/configuration.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/constants.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/io.js": ["/assets/index-37963400.js"],
+  "node_modules/@zip.js/zip.js/lib/core/streams/aes-crypto-stream.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/codec-stream.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/codecs/crc32.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/codecs/deflate.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/codecs/inflate.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/codecs/sjcl.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/common-crypto.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/crc32-stream.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/stream-adapter.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/zip-crypto-stream.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/streams/zip-entry-stream.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/util/cp437-decode.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/util/decode-text.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/util/encode-text.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/util/mime-type.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/zip-entry.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/core/zip-reader.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/z-worker-inline.js": [
+    "/assets/index-37963400.js"
+  ],
+  "node_modules/@zip.js/zip.js/lib/zip-fs.js": ["/assets/index-37963400.js"],
+  "node_modules/available-typed-arrays/index.js": ["/assets/index-37963400.js"],
+  "node_modules/base64-js/index.js": [],
+  "node_modules/call-bind/callBound.js": ["/assets/index-37963400.js"],
+  "node_modules/call-bind/index.js": ["/assets/index-37963400.js"],
+  "node_modules/color-name/index.js": [],
+  "node_modules/color-string/index.js": [],
+  "node_modules/color/index.js": [],
+  "node_modules/color/node_modules/color-convert/conversions.js": [],
+  "node_modules/color/node_modules/color-convert/index.js": [],
+  "node_modules/color/node_modules/color-convert/route.js": [],
+  "node_modules/color/node_modules/color-name/index.js": [],
+  "node_modules/events/events.js": ["/assets/index-37963400.js"],
+  "node_modules/filer/dist/filer.js": ["/assets/index-37963400.js"],
+  "node_modules/for-each/index.js": ["/assets/index-37963400.js"],
+  "node_modules/function-bind/implementation.js": ["/assets/index-37963400.js"],
+  "node_modules/function-bind/index.js": ["/assets/index-37963400.js"],
+  "node_modules/get-intrinsic/index.js": ["/assets/index-37963400.js"],
+  "node_modules/gopd/index.js": ["/assets/index-37963400.js"],
+  "node_modules/has-proto/index.js": ["/assets/index-37963400.js"],
+  "node_modules/has-symbols/index.js": ["/assets/index-37963400.js"],
+  "node_modules/has-symbols/shams.js": ["/assets/index-37963400.js"],
+  "node_modules/has-tostringtag/shams.js": ["/assets/index-37963400.js"],
+  "node_modules/has/src/index.js": ["/assets/index-37963400.js"],
+  "node_modules/idb/build/index.js": [],
+  "node_modules/idb/build/wrap-idb-value.js": [],
+  "node_modules/ieee754/index.js": [],
+  "node_modules/inherits/inherits_browser.js": ["/assets/index-37963400.js"],
+  "node_modules/is-arguments/index.js": ["/assets/index-37963400.js"],
+  "node_modules/is-arrayish/index.js": [],
+  "node_modules/is-callable/index.js": ["/assets/index-37963400.js"],
+  "node_modules/is-generator-function/index.js": ["/assets/index-37963400.js"],
+  "node_modules/is-typed-array/index.js": ["/assets/index-37963400.js"],
+  "node_modules/mime-db/db.json": [],
+  "node_modules/mime-db/index.js": [],
+  "node_modules/mime-types/index.js": [],
+  "node_modules/node-stdlib-browser/helpers/esbuild/shim.js": [],
+  "node_modules/node-stdlib-browser/node_modules/buffer/index.js": [],
+  "node_modules/path-browserify/index.js": [],
+  "node_modules/prism-themes/themes/prism-one-dark.css": [
+    "/assets/view-source-df90a0c0.js",
+    "/assets/view-source-5c045b07.css"
+  ],
+  "node_modules/prismjs/prism.js": [
+    "/assets/view-source-df90a0c0.js",
+    "/assets/view-source-5c045b07.css"
+  ],
+  "node_modules/process/browser.js": [],
+  "node_modules/simple-swizzle/index.js": [],
+  "node_modules/solid-js/dist/solid.js": [],
+  "node_modules/solid-js/store/dist/store.js": ["/assets/index-e544ecbf.js"],
+  "node_modules/solid-js/web/dist/web.js": [],
+  "node_modules/solid-start/entry-client/StartClient.tsx": [],
+  "node_modules/solid-start/entry-client/mount.tsx": [],
+  "node_modules/solid-start/error-boundary/ErrorBoundary.tsx": [],
+  "node_modules/solid-start/root/Document.tsx": [],
+  "node_modules/solid-start/root/FileRoutes.tsx": [],
+  "node_modules/solid-start/root/Scripts.tsx": [],
+  "node_modules/solid-start/router.tsx": [],
+  "node_modules/solid-start/server/ServerContext.tsx": [],
+  "node_modules/solid-start/server/types.tsx": [],
+  "node_modules/util/support/isBufferBrowser.js": ["/assets/index-37963400.js"],
+  "node_modules/util/support/types.js": ["/assets/index-37963400.js"],
+  "node_modules/util/util.js": ["/assets/index-37963400.js"],
+  "node_modules/uuid/dist/esm-browser/native.js": [],
+  "node_modules/uuid/dist/esm-browser/rng.js": [],
+  "node_modules/uuid/dist/esm-browser/stringify.js": [],
+  "node_modules/uuid/dist/esm-browser/v4.js": [],
+  "node_modules/which-typed-array/index.js": ["/assets/index-37963400.js"],
+  "src/addon/constants.ts": ["/assets/index-37963400.js"],
+  "src/addon/util/getLatestVersion.ts": ["/assets/index-37963400.js"],
+  "src/api/AddonDownloader.ts": ["/assets/index-37963400.js"],
+  "src/api/AddonReader.ts": ["/assets/index-37963400.js"],
+  "src/api/ContextItem.ts": ["/assets/index-37963400.js"],
+  "src/api/History.ts": ["/assets/index-37963400.js"],
+  "src/api/Keybind.ts": ["/assets/index-37963400.js"],
+  "src/api/Popup.ts": ["/assets/index-37963400.js"],
+  "src/api/Protocol.ts": ["/assets/index-37963400.js"],
+  "src/api/RuntimeModifier.ts": ["/assets/index-37963400.js"],
+  "src/api/Tab.ts": ["/assets/index-37963400.js"],
+  "src/api/index.ts": ["/assets/index-37963400.js"],
+  "src/browser.css": [],
+  "src/components/AppMenu/index.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/Bookmark.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/Bookmarks.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/ConstrainDragAxis.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/ContextMenu/Button.tsx": ["/assets/index-37963400.js"],
+  "src/components/ContextMenu/index.tsx": ["/assets/index-37963400.js"],
+  "src/components/Favicon.tsx": ["/assets/Favicon-94b6bc56.js"],
+  "src/components/Popup.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/SEO.tsx": [],
+  "src/components/Tab.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/Tabs.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/Utility.tsx": ["/assets/index-e544ecbf.js"],
+  "src/components/internal/preferences/General.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/Home.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/Keybinds.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/NavButton.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/Search.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/inputs/Dropdown.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/inputs/Keybind.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/components/internal/preferences/inputs/Toggle.tsx": [
+    "/assets/preferences-49e225ac.js"
+  ],
+  "src/data/appState.ts": [],
+  "src/entry-client.tsx": [],
+  "src/manager/addonStateManager.tsx": [
+    "/assets/addonStoreModifier-53a0594b.js"
+  ],
+  "src/manager/addonWorkerManager.ts": [],
+  "src/manager/bookmarkManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/clickManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/contentScriptManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/contextManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/keybindManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/protocolManager.ts": ["/assets/url-4d36b2c8.js"],
+  "src/manager/runtimeManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/tabManager.ts": ["/assets/index-37963400.js"],
+  "src/manager/themeManager.ts": [],
+  "src/manager/xenosManager.ts": ["/assets/index-37963400.js"],
+  "src/root.tsx": [],
+  "src/routes/index.tsx": ["/assets/index-e544ecbf.js"],
+  "src/routes/internal/bookmarks.tsx": ["/assets/bookmarks-66c5c70a.js"],
+  "src/routes/internal/history.tsx": ["/assets/history-836c2448.js"],
+  "src/routes/internal/newTab.tsx": ["/assets/newTab-a888c537.js"],
+  "src/routes/internal/preferences.tsx": ["/assets/preferences-49e225ac.js"],
+  "src/routes/internal/view-source.tsx": [
+    "/assets/view-source-df90a0c0.js",
+    "/assets/view-source-5c045b07.css"
+  ],
+  "src/scripts/addonStoreModifier.ts": [
+    "/assets/addonStoreModifier-53a0594b.js"
+  ],
+  "src/scripts/registerKeybinds.ts": ["/assets/registerKeybinds-f3c15b5f.js"],
+  "src/scripts/registerProtocols.ts": ["/assets/registerProtocols-cf7182ec.js"],
+  "src/util/bareClient.ts": [],
+  "src/util/bindingUtil.ts": [],
+  "src/util/index.ts": [],
+  "src/util/registerSW.ts": ["/assets/registerSW-51f8a8af.js"],
+  "src/util/url.ts": ["/assets/url-4d36b2c8.js"]
+}

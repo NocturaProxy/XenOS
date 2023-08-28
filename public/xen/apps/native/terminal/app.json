@@ -1,9 +1,16 @@
 {
-    "name": "Terminal",
-    "icon": "icon.png",
-    "native": true,
-    "type": "static",
-    "staticURL": "index.html",
-    "version": "1.0.0",
-    "files": ["app.json", "index.html", "terminal.js", "icon.png", "xterm.css", "xterm.js"]
+  "name": "Terminal",
+  "icon": "icon.png",
+  "native": true,
+  "type": "static",
+  "staticURL": "index.html",
+  "version": "1.0.0",
+  "files": [
+    "app.json",
+    "index.html",
+    "terminal.js",
+    "icon.png",
+    "xterm.css",
+    "xterm.js"
+  ]
 }

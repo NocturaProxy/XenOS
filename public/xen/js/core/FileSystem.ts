@@ -9,7 +9,10 @@ class EntryStat {
   content: Blob | null = null;
   length: number = 0;
 
-  constructor(public detail: EntryDetail, public file: any) {
+  constructor(
+    public detail: EntryDetail,
+    public file: any,
+  ) {
     this.detail = detail;
 
     if (!this.isDirectory()) {
@@ -83,8 +86,7 @@ class vfs {
       if (build == "/") continue;
       if (build == path) continue;
 
-      if (!await this.exists(build))
-        await this.mkdir(build);
+      if (!(await this.exists(build))) await this.mkdir(build);
 
       build += "/";
     }
@@ -119,7 +121,11 @@ class vfs {
     return new this.directory(path);
   }
 
-  async writeFile(path: string | undefined, content: Blob | string | any[], details: EntryDetail = {}) {
+  async writeFile(
+    path: string | undefined,
+    content: Blob | string | any[],
+    details: EntryDetail = {},
+  ) {
     if (!path) throw new this.error(1);
     if (!content) throw new this.error(2);
     if (path == "/") throw new this.error(0);
@@ -165,7 +171,11 @@ class vfs {
     const fs = await this.loading;
 
     if (await fs.match(new URL(normalize(this.base.href + path)))) {
-      return await fs.match(new URL(normalize(this.base.href + path))).then((response: any) => encoding == "utf-8" ? response.text() : response.blob());
+      return await fs
+        .match(new URL(normalize(this.base.href + path)))
+        .then((response: any) =>
+          encoding == "utf-8" ? response.text() : response.blob(),
+        );
     } else {
       throw new this.error(5);
     }
@@ -202,7 +212,9 @@ class vfs {
 
     for (const file of opened) {
       if (file.url.startsWith(new URL(normalize(this.base.href + path)).href)) {
-        let relative = file.url.replace(new URL(normalize(this.base.href + path)).href, "").replace(/^\//, "");
+        let relative = file.url
+          .replace(new URL(normalize(this.base.href + path)).href, "")
+          .replace(/^\//, "");
 
         if (!relative) continue;
         if (relative.split("/").length > 1) relative = relative.split("/")[0];
@@ -223,7 +235,7 @@ class vfs {
     try {
       await this.stat(path);
 
-      return true
+      return true;
     } catch {
       return false;
     }

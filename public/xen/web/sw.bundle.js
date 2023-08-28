@@ -307,7 +307,9 @@ var require_FileSystem = __commonJS({
         path2 = path2.replace(/\/$/, "");
         const fs2 = await this.loading;
         if (await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)))) {
-          return await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2))).then((response) => encoding == "utf-8" ? response.text() : response.blob());
+          return await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2))).then(
+            (response) => encoding == "utf-8" ? response.text() : response.blob()
+          );
         } else {
           throw new this.error(5);
         }
@@ -873,6 +875,10 @@ var init_mime = __esm({
 var fs = new (require_FileSystem())();
 var path = require_path_browserify();
 var { default: mime } = (init_mime(), __toCommonJS(mime_exports));
+importScripts("/uv/uv.bundle.js");
+importScripts("/uv/uv.config.js");
+importScripts("/uv/uv.sw.js");
+var uv = new UVServiceWorker();
 self.addEventListener("activate", () => self.clients.claim());
 self.addEventListener("fetch", (event) => {
   const req = event.request;
@@ -880,8 +886,38 @@ self.addEventListener("fetch", (event) => {
     (async (res) => {
       if (req.url.startsWith("chrome-extension://"))
         return await fetch(req);
+      if (req.url.startsWith(location.origin + "/~/uv/"))
+        return await uv.fetch(event);
       if (req.url.startsWith(location.origin + "/xen/~/")) {
         const _url = req.url.replace(location.origin + "/xen/~", "");
+        if (_url.startsWith("/about:")) {
+          switch (_url.slice(7)) {
+            default:
+            case "blank":
+              return new Response("", {
+                headers: {
+                  "Content-Type": "text/html"
+                }
+              });
+            case "srcdoc":
+              return new Response(await req.text(), {
+                headers: {
+                  "Content-Type": "text/html"
+                }
+              });
+          }
+        }
+        if (_url.startsWith("/assets")) {
+          const url = path.join(
+            "/xen/system/assets/",
+            _url.replace("/assets/", "")
+          );
+          return new Response(await fs.readFile(url), {
+            headers: {
+              "Content-Type": mime.lookup(url)
+            }
+          });
+        }
         if (_url.startsWith("/apps")) {
           const app = _url.replace("/apps/", "").split("/").slice(0, 2).join("/");
           const [author, appName] = app.split("/");
@@ -901,27 +937,41 @@ self.addEventListener("fetch", (event) => {
               }
             );
           } else {
-            let content = await fs.readFile(
-              path.join("/xen/system/apps/", app, url)
-            );
-            if (mime.lookup(url) == "text/html") {
-              content = `<base href="/xen/~/apps/${app}/" />${await content.text()}`;
+            let finalURL, content;
+            try {
+              content = await fs.readFile(
+                finalURL = path.join(
+                  "/xen/system/apps/",
+                  app,
+                  url == "/" ? "/index.html" : url
+                )
+              );
+            } catch {
+              content = await fs.readFile(
+                finalURL = path.join(
+                  "/xen/system/apps/",
+                  app,
+                  url == "/" ? "/index.html" : url + ".html"
+                )
+              ).catch(() => {
+                return new Response(`404: ${url} not found`);
+              });
             }
-            return new Response(
-              content,
-              {
-                headers: {
-                  "Content-Type": mime.lookup(url)
-                }
+            if (mime.lookup(finalURL) == "text/html") {
+              content = `<base href="/xen/~/apps/${app}/" /><script src="/xen/~/assets/inject.bundle.js"><\/script>${await content.text()}`;
+            }
+            return new Response(content, {
+              headers: {
+                "Content-Type": mime.lookup(finalURL)
               }
-            );
+            });
           }
         }
       } else {
         const path2 = new URL(req.url).pathname;
         const cache = await caches.open("apps");
         if (!await cache.match(req)) {
-          if (path2.startsWith("/img/") || path2.startsWith("/xen/font/"))
+          if (path2.startsWith("/img/") || path2.startsWith("/xen/font/") || req.destination == "font")
             return res = await fetch(req), await cache.put(req, res), res;
           else
             return await fetch(req);
@@ -936,36 +986,56 @@ var nativePath = "/xen/apps/native/";
 function installApp(data) {
 }
 async function installNative(data) {
-  const appData = await fetch(nativePath + data.app.replace("Xen/", "") + "/app.json").then(
-    (response) => response.json()
-  );
+  const appData = await fetch(
+    nativePath + data.app.replace("Xen/", "") + "/app.json"
+  ).then((response) => response.json());
+  appData.id = data.app;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
-  for (let file of appData.files) {
-    const res = await fetch(nativePath + data.app.replace("Xen/", "") + "/" + file);
-    const blob = await res.blob();
-    await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, blob);
-  }
-  await fs.writeFile("/xen/system/apps/" + data.app + "/app.json", JSON.stringify(appData));
-  const installed = JSON.parse(await fs.readFile("/xen/system/apps/installed.json", "utf-8"));
+  await Promise.all(
+    appData.files.map(async (file) => {
+      const res = await fetch(
+        nativePath + data.app.replace("Xen/", "") + "/" + file
+      );
+      const blob = await res.blob();
+      await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, blob);
+    })
+  );
+  await fs.writeFile(
+    "/xen/system/apps/" + data.app + "/app.json",
+    JSON.stringify(appData)
+  );
+  const installed = JSON.parse(
+    await fs.readFile("/xen/system/apps/installed.json", "utf-8")
+  );
   if (!installed.includes(data.app))
     installed.push(data.app);
-  await fs.writeFile("/xen/system/apps/installed.json", JSON.stringify(installed));
+  await fs.writeFile(
+    "/xen/system/apps/installed.json",
+    JSON.stringify(installed)
+  );
   return true;
 }
 async function updateNative(data) {
-  const appData = await fetch(nativePath + data.app.replace("Xen/", "") + "/app.json").then(
-    (response) => response.json()
+  const appData = await fetch(
+    nativePath + data.app.replace("Xen/", "") + "/app.json"
+  ).then((response) => response.json());
+  const installed = JSON.parse(
+    await fs.readFile(`/xen/system/apps/${data.app}/app.json`, "utf-8")
   );
-  const installed = JSON.parse(await fs.readFile(`/xen/system/apps/${data.app}/app.json`, "utf-8"));
   if (installed.version == appData.version)
     return false;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
   for (let file of appData.files) {
-    const res = await fetch(nativePath + data.app.replace("Xen/", "") + "/" + file);
+    const res = await fetch(
+      nativePath + data.app.replace("Xen/", "") + "/" + file
+    );
     const blob = await res.blob();
     await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, blob);
   }
-  await fs.writeFile("/xen/system/apps/" + data.app + "/app.json", JSON.stringify(appData));
+  await fs.writeFile(
+    "/xen/system/apps/" + data.app + "/app.json",
+    JSON.stringify(appData)
+  );
   return true;
 }
 self.addEventListener("message", async (event) => {
@@ -981,7 +1051,6 @@ self.addEventListener("message", async (event) => {
             error: err.toString()
           });
         });
-        ;
         event.ports[0].postMessage({
           type: "install",
           success: true
