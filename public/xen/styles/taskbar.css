@@ -343,19 +343,19 @@
 }
 
 .wiki-search {
-    height: 100px;
-    align-items: flex-start;
+  height: 100px;
+  align-items: flex-start;
 }
 
 .wiki-info {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: column;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .wiki-title {
-    margin: 0;
+  margin: 0;
 }

@@ -40,15 +40,11 @@ class Xen {
     if (cookie.get("fs-initiated") !== "true") {
       await this.stupFileSystem();
 
-      cookie.set(
-        "fs-initiated",
-        "true",
-        {
-          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
-          secure: true,
-          sameSite: "strict"
-        }
-      );
+      cookie.set("fs-initiated", "true", {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
+        secure: true,
+        sameSite: "strict",
+      });
     }
 
     await this.wm.init();

@@ -1378,15 +1378,11 @@ var require_Xen = __commonJS({
         await this.fs.loading;
         if (cookie.get("fs-initiated") !== "true") {
           await this.stupFileSystem();
-          cookie.set(
-            "fs-initiated",
-            "true",
-            {
-              expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
-              secure: true,
-              sameSite: "strict"
-            }
-          );
+          cookie.set("fs-initiated", "true", {
+            expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
+            secure: true,
+            sameSite: "strict"
+          });
         }
         await this.wm.init();
         await new Promise((resolve) => setTimeout(resolve, 150));

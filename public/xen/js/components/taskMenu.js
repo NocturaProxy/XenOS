@@ -122,22 +122,20 @@ const menu = {
         });
       });
 
-    searchContainer
-        .querySelectorAll(".start-app.ddg-search")
-        .forEach((app) => {
-            app.addEventListener("click", async (e) => {
-                let parser = new DOMParser()
-                    .parseFromString(decodeURIComponent(atob(app.dataset.result)), "text/html");
+    searchContainer.querySelectorAll(".start-app.ddg-search").forEach((app) => {
+      app.addEventListener("click", async (e) => {
+        let parser = new DOMParser().parseFromString(
+          decodeURIComponent(atob(app.dataset.result)),
+          "text/html",
+        );
 
-                const result = parser.querySelector("a:first-of-type").innerText;
+        const result = parser.querySelector("a:first-of-type").innerText;
 
-                this.searchMenu
-                    .querySelector("input")
-                    .value = `${result}`;
+        this.searchMenu.querySelector("input").value = `${result}`;
 
-                return await this.renderSearch(result);
-            });
-        });
+        return await this.renderSearch(result);
+      });
+    });
 
     return true;
   },
@@ -212,32 +210,40 @@ const menu = {
               <img class="start-app-icon" src="https://en.wikipedia.org/static/favicon/wikipedia.ico">
               <div class="wiki-info">
                 <h2 class="wiki-title">${searchResults.Heading}</h2>
-                ${searchResults.AbstractText.length >= 260 ? searchResults.AbstractText.substring(0, 260) + "..." : searchResults.AbstractText}
+                ${
+                  searchResults.AbstractText.length >= 260
+                    ? searchResults.AbstractText.substring(0, 260) + "..."
+                    : searchResults.AbstractText
+                }
               </div>
             </div>`,
           );
         }
-      } catch(e) {
+      } catch (e) {
         data.search = [];
-      };
+      }
 
       if (searchResults.RelatedTopics?.length > 0) {
-        data.search.push(...searchResults.RelatedTopics.map((topic, index) =>
-          topic.FirstURL && index < 4
-            ? `<div class="start-app ddg-search" data-result="${
-                btoa(
-                  encodeURIComponent(topic.Result) || ""
-                )
-              }">
+        data.search.push(
+          ...searchResults.RelatedTopics.map((topic, index) =>
+            topic.FirstURL && index < 4
+              ? `<div class="start-app ddg-search" data-result="${btoa(
+                  encodeURIComponent(topic.Result) || "",
+                )}">
                         <img class="start-app-icon" src="${
                           topic.Icon.URL
                             ? `https://duckduckgo.com${topic.Icon.URL}`
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
                         }">
-                        ${topic.Text.length > 120 ? topic.Text.substring(0, 120) + "..." : topic.Text}
+                        ${
+                          topic.Text.length > 120
+                            ? topic.Text.substring(0, 120) + "..."
+                            : topic.Text
+                        }
                     </div>`
-            : "",
-        ));
+              : "",
+          ),
+        );
       }
 
       const omniResults = await fetch(window.xen.config.bare + "v2/", {
