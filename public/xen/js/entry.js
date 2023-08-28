@@ -9,4 +9,7 @@ window.xen.startup().then(() => {
   );
 
   window.xen.hideLoader();
+})/*.catch(err => {
+  console.error(err);
 });
+*/

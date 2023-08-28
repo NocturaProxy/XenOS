@@ -148,6 +148,8 @@ async function installNative(data) {
   appData.id = data.app;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
 
+  await fs.mkdir("/xen/system/apps/" + data.app);
+
   await Promise.all(
     appData.files.map(async (file) => {
       const res = await fetch(
@@ -218,7 +220,7 @@ self.addEventListener("message", async (event) => {
           event.ports[0].postMessage({
             type: "install",
             success: false,
-            error: err.toString(),
+            error: err,
           });
         });
 
@@ -237,7 +239,7 @@ self.addEventListener("message", async (event) => {
           event.ports[0].postMessage({
             type: "update",
             success: false,
-            error: err.toString(),
+            error: err,
           });
         });
 

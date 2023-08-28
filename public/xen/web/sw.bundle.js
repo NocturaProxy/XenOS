@@ -157,225 +157,6 @@ var require_lib = __commonJS({
   }
 });
 
-// public/xen/js/core/FileSystem.ts
-var require_FileSystem = __commonJS({
-  "public/xen/js/core/FileSystem.ts"(exports2, module2) {
-    "use strict";
-    var import_path_normalize = __toESM(require_lib());
-    var EntryStat = class {
-      constructor(detail, file) {
-        this.detail = detail;
-        this.file = file;
-        this.detail = detail;
-        if (!this.isDirectory()) {
-          this.file = file;
-          this.length = file.size;
-        }
-      }
-      content = null;
-      length = 0;
-      isDirectory() {
-        return this.detail.type == "directory";
-      }
-      isFile() {
-        return this.detail.type == "file";
-      }
-    };
-    var vfs = class _vfs {
-      normalize = import_path_normalize.default;
-      base;
-      constructor(path2 = "") {
-        this.base = new URL(
-          (0, import_path_normalize.default)(location.origin + (path2 || "").replace(/\/?$/, "/"))
-        );
-      }
-      error = class VFSError extends Error {
-        constructor(type) {
-          var types = [
-            /* 0: Path Error */
-            "Invalid Path: /",
-            /* 1: Missing Path */
-            "Missing Required Argument: path",
-            /* 2: Missing Content */
-            "Missing Required Argument: content",
-            /* 3: Dir Exists */
-            "Directory Already Exists",
-            /* 4: File Exists */
-            "File Already Exists",
-            /* 5: Not Found */
-            "File Not Found",
-            /* 6: Dir Does Not Exist */
-            "Directory Does Not Exist",
-            /* 7: Not A Directory */
-            "Not A Directory",
-            /* 8: Not A File */
-            "Not A File",
-            /* 9: Directory Path Nonexistent */
-            "Directory Path Nonexistent"
-          ];
-          super(types[type]);
-        }
-      };
-      directory = class directory extends _vfs {
-        constructor(path2 = "") {
-          super(path2);
-        }
-      };
-      get loading() {
-        return caches.open("vfs");
-      }
-      async mkdir(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        var relURL = new URL((0, import_path_normalize.default)(this.base.href + path2)).pathname;
-        var build = "/";
-        for (var segment of relURL.split("/")) {
-          if (!segment)
-            continue;
-          build += segment;
-          if (build == "/")
-            continue;
-          if (build == path2)
-            continue;
-          if (!await this.exists(build))
-            await this.mkdir(build);
-          build += "/";
-        }
-        await fs2.put(
-          new URL((0, import_path_normalize.default)(this.base.href + path2)),
-          new Response(null, {
-            headers: {
-              "x-detail": JSON.stringify({
-                type: "directory"
-              })
-            }
-          })
-        );
-        return void 0;
-      }
-      async openDir(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        const dir = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2 + "/")));
-        if (!dir)
-          throw new this.error(6);
-        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
-        if (detail.type != "directory")
-          throw new this.error(7);
-        return new this.directory(path2);
-      }
-      async writeFile(path2, content, details = {}) {
-        if (!path2)
-          throw new this.error(1);
-        if (!content)
-          throw new this.error(2);
-        if (path2 == "/")
-          throw new this.error(0);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        let contentType2 = "text/plain";
-        if (Array.isArray(content)) {
-          contentType2 = "application/json";
-          content = new Blob([JSON.stringify(content)]);
-        } else if (content.constructor == Object) {
-          contentType2 = "application/json";
-          content = new Blob([JSON.stringify(content)]);
-        } else if (typeof content == "string") {
-          contentType2 = "text/plain";
-          content = new Blob([content]);
-        }
-        details.type = "file";
-        await fs2.put(
-          new URL((0, import_path_normalize.default)(this.base.href + path2)),
-          new Response(content, {
-            headers: {
-              "x-detail": JSON.stringify(details),
-              "content-length": content.size.toString(),
-              "content-type": contentType2
-            }
-          })
-        );
-        return void 0;
-      }
-      async readFile(path2, encoding = null) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        if (await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)))) {
-          return await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2))).then(
-            (response) => encoding == "utf-8" ? response.text() : response.blob()
-          );
-        } else {
-          throw new this.error(5);
-        }
-      }
-      async unlink(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        await fs2.delete(new URL((0, import_path_normalize.default)(this.base.href + path2)));
-        return void 0;
-      }
-      async readdir(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        const dir = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)));
-        if (!dir)
-          throw new this.error(6);
-        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
-        if (detail.type != "directory")
-          throw new this.error(7);
-        const opened = await fs2.keys();
-        const files = [];
-        for (const file of opened) {
-          if (file.url.startsWith(new URL((0, import_path_normalize.default)(this.base.href + path2)).href)) {
-            let relative = file.url.replace(new URL((0, import_path_normalize.default)(this.base.href + path2)).href, "").replace(/^\//, "");
-            if (!relative)
-              continue;
-            if (relative.split("/").length > 1)
-              relative = relative.split("/")[0];
-            if (files.includes(relative))
-              continue;
-            files.push(relative);
-          }
-        }
-        return files;
-      }
-      async exists(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        try {
-          await this.stat(path2);
-          return true;
-        } catch {
-          return false;
-        }
-      }
-      async stat(path2) {
-        if (!path2)
-          throw new this.error(1);
-        path2 = path2.replace(/\/$/, "");
-        const fs2 = await this.loading;
-        const file = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)));
-        if (!file)
-          throw new this.error(5);
-        const detail = JSON.parse(file.headers.get("x-detail") || "{}");
-        return new EntryStat(detail, await file.blob());
-      }
-    };
-    module2.exports = vfs;
-  }
-});
-
 // node_modules/path-browserify/index.js
 var require_path_browserify = __commonJS({
   "node_modules/path-browserify/index.js"(exports2, module2) {
@@ -804,6 +585,241 @@ var require_path_browserify = __commonJS({
   }
 });
 
+// public/xen/js/core/FileSystem.ts
+var require_FileSystem = __commonJS({
+  "public/xen/js/core/FileSystem.ts"(exports2, module2) {
+    "use strict";
+    var import_path_normalize = __toESM(require_lib());
+    var import_path_browserify2 = __toESM(require_path_browserify());
+    var EntryStat = class {
+      constructor(detail, file) {
+        this.detail = detail;
+        this.file = file;
+        this.detail = detail;
+        if (!this.isDirectory()) {
+          this.file = file;
+          this.length = file.size;
+        }
+      }
+      content = null;
+      length = 0;
+      isDirectory() {
+        return this.detail.type == "directory";
+      }
+      isFile() {
+        return this.detail.type == "file";
+      }
+    };
+    var vfs = class _vfs {
+      normalize = import_path_normalize.default;
+      base;
+      constructor(path2 = "") {
+        this.base = new URL(
+          (0, import_path_normalize.default)(location.origin + (path2 || "").replace(/\/?$/, "/"))
+        );
+      }
+      error = class VFSError extends Error {
+        constructor(type) {
+          var types = [
+            /* 0: Path Error */
+            "Invalid Path: /",
+            /* 1: Missing Path */
+            "Missing Required Argument: path",
+            /* 2: Missing Content */
+            "Missing Required Argument: content",
+            /* 3: Dir Exists */
+            "Directory Already Exists",
+            /* 4: File Exists */
+            "File Already Exists",
+            /* 5: Not Found */
+            "File Not Found",
+            /* 6: Dir Does Not Exist */
+            "Directory Does Not Exist",
+            /* 7: Not A Directory */
+            "Not A Directory",
+            /* 8: Not A File */
+            "Not A File",
+            /* 9: Directory Path Nonexistent */
+            "Directory Path Nonexistent"
+          ];
+          super(types[type]);
+        }
+      };
+      directory = class directory extends _vfs {
+        constructor(path2 = "") {
+          super(path2);
+        }
+      };
+      get loading() {
+        return caches.open("vfs").then(async (cache) => {
+          if (!await cache.match(new URL(location.origin + "/")))
+            await cache.put(new URL(location.origin + "/"), new Response(null, {
+              headers: {
+                "x-detail": JSON.stringify({
+                  type: "directory"
+                })
+              }
+            }));
+          return cache;
+        });
+      }
+      async mkdir(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        var relURL = new URL((0, import_path_normalize.default)(this.base.origin + path2)).pathname;
+        var build = "/";
+        for await (var segment of relURL.split("/")) {
+          if (!segment)
+            continue;
+          build += segment;
+          if (build == "/")
+            continue;
+          if (build == path2)
+            continue;
+          if (!await this.exists(build))
+            await this.mkdir(build);
+          build += "/";
+        }
+        await fs2.put(
+          new URL((0, import_path_normalize.default)(this.base.href + path2)),
+          new Response(null, {
+            headers: {
+              "x-detail": JSON.stringify({
+                type: "directory"
+              })
+            }
+          })
+        );
+        return void 0;
+      }
+      async openDir(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        const dir = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)));
+        if (!dir)
+          throw new this.error(6);
+        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
+        if (detail.type != "directory")
+          throw new this.error(7);
+        return new this.directory(path2);
+      }
+      async writeFile(path2, content, details = {}) {
+        if (!path2)
+          throw new this.error(1);
+        if (typeof content == "undefined")
+          throw new this.error(2);
+        if (path2 == "/")
+          throw new this.error(0);
+        path2 = path2.replace(/\/$/, "");
+        if (!await this.exists(import_path_browserify2.default.dirname(path2)))
+          await this.mkdir(import_path_browserify2.default.dirname(path2));
+        const fs2 = await this.loading;
+        let contentType2 = "text/plain";
+        if (Array.isArray(content)) {
+          contentType2 = "application/json";
+          content = new Blob([JSON.stringify(content)]);
+        } else if (content.constructor == Object) {
+          contentType2 = "application/json";
+          content = new Blob([JSON.stringify(content)]);
+        } else if (typeof content == "string") {
+          contentType2 = "text/plain";
+          content = new Blob([content]);
+        } else if (typeof content == "number") {
+          contentType2 = "text/plain";
+          content = new Blob([`${content}`]);
+        }
+        details.type = "file";
+        await fs2.put(
+          new URL((0, import_path_normalize.default)(this.base.href + path2)),
+          new Response(content, {
+            headers: {
+              "x-detail": JSON.stringify(details),
+              "content-length": content.size.toString(),
+              "content-type": contentType2
+            }
+          })
+        );
+        return void 0;
+      }
+      async readFile(path2, encoding = null) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        if (await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)))) {
+          return await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2))).then(
+            (response) => encoding == "utf-8" ? response.text() : response.blob()
+          );
+        } else {
+          throw new this.error(5);
+        }
+      }
+      async unlink(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        await fs2.delete(new URL((0, import_path_normalize.default)(this.base.href + path2)));
+        return void 0;
+      }
+      async readdir(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        const dir = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)));
+        if (!dir)
+          throw new this.error(6);
+        const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
+        if (detail.type != "directory")
+          throw new this.error(7);
+        const opened = await fs2.keys();
+        const files = [];
+        for (const file of opened) {
+          if (file.url.startsWith(new URL((0, import_path_normalize.default)(this.base.href + path2)).href)) {
+            let relative = file.url.replace(new URL((0, import_path_normalize.default)(this.base.href + path2)).href, "").replace(/^\//, "");
+            if (!relative)
+              continue;
+            if (relative.split("/").length > 1)
+              relative = relative.split("/")[0];
+            if (files.includes(relative))
+              continue;
+            files.push(relative);
+          }
+        }
+        return files;
+      }
+      async exists(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        try {
+          await this.stat(path2);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      async stat(path2) {
+        if (!path2)
+          throw new this.error(1);
+        path2 = path2.replace(/\/$/, "");
+        const fs2 = await this.loading;
+        const file = await fs2.match(new URL((0, import_path_normalize.default)(this.base.href + path2)));
+        if (!file)
+          throw new this.error(5);
+        const detail = JSON.parse(file.headers.get("x-detail") || "{}");
+        return new EntryStat(detail, await file.blob());
+      }
+    };
+    module2.exports = vfs;
+  }
+});
+
 // node_modules/@dynamic-pkg/mime/index.js
 var mime_exports = {};
 __export(mime_exports, {
@@ -991,6 +1007,7 @@ async function installNative(data) {
   ).then((response) => response.json());
   appData.id = data.app;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
+  await fs.mkdir("/xen/system/apps/" + data.app);
   await Promise.all(
     appData.files.map(async (file) => {
       const res = await fetch(
@@ -1048,7 +1065,7 @@ self.addEventListener("message", async (event) => {
           event.ports[0].postMessage({
             type: "install",
             success: false,
-            error: err.toString()
+            error: err
           });
         });
         event.ports[0].postMessage({
@@ -1065,7 +1082,7 @@ self.addEventListener("message", async (event) => {
           event.ports[0].postMessage({
             type: "update",
             success: false,
-            error: err.toString()
+            error: err
           });
         });
         event.ports[0].postMessage({

@@ -1,4 +1,5 @@
 import normalize from "path-normalize";
+import Path from "path-browserify";
 
 interface EntryDetail {
   type?: string;
@@ -66,7 +67,18 @@ class vfs {
   };
 
   get loading() {
-    return caches.open("vfs");
+    return caches.open("vfs").then(async cache => {
+      if (!await cache.match(new URL(location.origin + "/")))
+        await cache.put(new URL(location.origin + "/"), new Response(null, {
+          headers: {
+            "x-detail": JSON.stringify({
+              type: "directory",
+            }),
+          },
+        }));
+
+      return cache;
+    });
   }
 
   async mkdir(path: string | undefined) {
@@ -76,10 +88,10 @@ class vfs {
 
     const fs = await this.loading;
 
-    var relURL = new URL(normalize(this.base.href + path)).pathname;
+    var relURL = new URL(normalize(this.base.origin + path)).pathname;
     var build = "/";
 
-    for (var segment of relURL.split("/")) {
+    for await (var segment of relURL.split("/")) {
       if (!segment) continue;
       build += segment;
 
@@ -112,7 +124,7 @@ class vfs {
 
     const fs = await this.loading;
 
-    const dir = await fs.match(new URL(normalize(this.base.href + path + "/")));
+    const dir = await fs.match(new URL(normalize(this.base.href + path)));
     if (!dir) throw new this.error(6);
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
@@ -127,10 +139,12 @@ class vfs {
     details: EntryDetail = {},
   ) {
     if (!path) throw new this.error(1);
-    if (!content) throw new this.error(2);
+    if (typeof content == "undefined") throw new this.error(2);
     if (path == "/") throw new this.error(0);
 
     path = path.replace(/\/$/, "");
+
+    if (!await this.exists(Path.dirname(path))) await this.mkdir(Path.dirname(path));
 
     const fs = await this.loading;
 
@@ -145,6 +159,9 @@ class vfs {
     } else if (typeof content == "string") {
       contentType = "text/plain";
       content = new Blob([content]);
+    } else if (typeof content == "number") {
+      contentType = "text/plain";
+      content = new Blob([`${content}`]);
     }
 
     details.type = "file";

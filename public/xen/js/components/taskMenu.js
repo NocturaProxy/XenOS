@@ -1,5 +1,3 @@
-import { S } from "../../apps/native/velocity/assets/index-1fe75362";
-
 const menu = {
   open: false,
   dock: document.getElementById("os-taskbar-resizable"),

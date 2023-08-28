@@ -41,7 +41,7 @@ const appManager = {
           if (event.data.success === true) {
             resolve();
           } else {
-            reject();
+            reject(event.data.error);
           }
         }
       };
@@ -101,7 +101,7 @@ const appManager = {
             if (event.data.success === true) {
               resolve();
             } else {
-              reject();
+              reject(event.data.error);
             }
           }
         };

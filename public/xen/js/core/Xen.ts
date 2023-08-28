@@ -94,7 +94,7 @@ class Xen {
 
     await window.xen.apps.open("Xen/welcome");
 
-    return true;
+    return;
   }
 
   async stupFileSystem() {
@@ -134,6 +134,10 @@ class Xen {
         name: "App Store",
         id: "Xen/store",
       },
+      {
+        name: "Terminal",
+        id: "Xen/terminal",
+      }
     ]);
 
     // App files
