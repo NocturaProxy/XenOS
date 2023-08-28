@@ -12,7 +12,7 @@ export const run = async (args, process) => {
 
     process.write("\r\n");
     console.log(str);
-    process.write(str);
+    process.write(eval(`"${str}"`));
 
     return true;
 }
