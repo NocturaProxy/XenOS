@@ -61,7 +61,7 @@ class vfs {
   };
 
   directory = class directory extends vfs {
-    constructor(path: string = "") {
+    constructor(path: string = "", public parent: vfs = new vfs()) {
       super(path);
     }
   };
@@ -81,6 +81,8 @@ class vfs {
     });
   }
 
+  parent: any;
+
   async mkdir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
@@ -88,7 +90,7 @@ class vfs {
 
     const fs = await this.loading;
 
-    var relURL = new URL(normalize(this.base.origin + path)).pathname;
+    var relURL = new URL(normalize(this.base.href + path)).pathname;
     var build = "/";
 
     for await (var segment of relURL.split("/")) {
@@ -98,7 +100,7 @@ class vfs {
       if (build == "/") continue;
       if (build == path) continue;
 
-      if (!(await this.exists(build))) await this.mkdir(build);
+      if (!(await this.exists(build))) await (this.parent || this).mkdir(build);
 
       build += "/";
     }
@@ -129,6 +131,8 @@ class vfs {
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
     if (detail.type != "directory") throw new this.error(7);
+
+    path = new URL(normalize(this.base.href + path)).pathname;
 
     return new this.directory(path);
   }

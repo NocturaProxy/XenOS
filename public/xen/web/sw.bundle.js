@@ -646,8 +646,9 @@ var require_FileSystem = __commonJS({
         }
       };
       directory = class directory extends _vfs {
-        constructor(path2 = "") {
+        constructor(path2 = "", parent = new _vfs()) {
           super(path2);
+          this.parent = parent;
         }
       };
       get loading() {
@@ -663,12 +664,13 @@ var require_FileSystem = __commonJS({
           return cache;
         });
       }
+      parent;
       async mkdir(path2) {
         if (!path2)
           throw new this.error(1);
         path2 = path2.replace(/\/$/, "");
         const fs2 = await this.loading;
-        var relURL = new URL((0, import_path_normalize.default)(this.base.origin + path2)).pathname;
+        var relURL = new URL((0, import_path_normalize.default)(this.base.href + path2)).pathname;
         var build = "/";
         for await (var segment of relURL.split("/")) {
           if (!segment)
@@ -679,7 +681,7 @@ var require_FileSystem = __commonJS({
           if (build == path2)
             continue;
           if (!await this.exists(build))
-            await this.mkdir(build);
+            await (this.parent || this).mkdir(build);
           build += "/";
         }
         await fs2.put(
@@ -705,6 +707,7 @@ var require_FileSystem = __commonJS({
         const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
         if (detail.type != "directory")
           throw new this.error(7);
+        path2 = new URL((0, import_path_normalize.default)(this.base.href + path2)).pathname;
         return new this.directory(path2);
       }
       async writeFile(path2, content, details = {}) {
@@ -906,6 +909,13 @@ self.addEventListener("fetch", (event) => {
         return await uv.fetch(event);
       if (req.url.startsWith(location.origin + "/xen/~/")) {
         const _url = req.url.replace(location.origin + "/xen/~", "");
+        if (_url.startsWith("/terminal/commands/")) {
+          const url = path.join(
+            "/xen/apps/native/terminal/commands/",
+            _url.replace("/terminal/commands/", "")
+          );
+          return await fetch(url);
+        }
         if (_url.startsWith("/about:")) {
           switch (_url.slice(7)) {
             default:
@@ -987,7 +997,7 @@ self.addEventListener("fetch", (event) => {
         const path2 = new URL(req.url).pathname;
         const cache = await caches.open("apps");
         if (!await cache.match(req)) {
-          if (path2.startsWith("/img/") || path2.startsWith("/xen/font/") || req.destination == "font")
+          if (path2.startsWith("/img/") || path2.startsWith("/xen/font/") || req.destination == "font" || req.url.startsWith("https://cdn.jsdelivr.net/"))
             return res = await fetch(req), await cache.put(req, res), res;
           else
             return await fetch(req);

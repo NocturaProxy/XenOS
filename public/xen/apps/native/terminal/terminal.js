@@ -27,14 +27,17 @@ class XenTerm {
         this.user = "guest";
     }
 
+    fs = null;
+    dfs = null;
+
     async #setupFS() {
-        try {
-        if (!this.fs) this.fs = await window.top.xen.fs.openDir('/xen/system/apps/Xen/terminal');
+        if (!this.dfs) this.dfs = await window.top.xen.fs.openDir('/xen/users/guest/');
+        if (!this.fs) this._fs = await window.top.xen.fs.openDir('/xen/system/apps/Xen/terminal');
 
-        if (!await this.fs.exists("/lib"))
-            await this.fs.mkdir("/lib");
+        if (!await this._fs.exists("/lib"))
+            await this._fs.mkdir("/lib");
 
-        this.fs = await this.fs.openDir("/lib");
+        this.fs = await this._fs.openDir("/lib");
 
         if (!await this.fs.exists("/cmd"))
             await this.fs.mkdir("/cmd");
@@ -46,12 +49,9 @@ class XenTerm {
             await this.fs.writeFile("/lastlogin.txt", new Date().getTime());
 
         if (!await this.fs.exists("history.txt"))
-            await this.fs.writeFile("/history.txt", "");
+            await this.fs.writeFile("/history.txt", []);
 
         return this.fs;
-        } catch(e) {
-            console.error(e);
-        }
     }
 
     async activate(term) {
@@ -82,33 +82,90 @@ class XenTerm {
         this.return();
     }
 
-    return(text) {
+    return(text = "") {
+        this.typing = text;
         return this.term.write(
-            "\r\n" + c.bold(this.user) + '@' + c.bold('xen') + ':~$ '
+            "\r\n" + c.bold(this.user) + '@' + c.bold('xen') + ':~$ ' + text
         );
     }
 
     typing = "";
+    up = 0;
+
+    parseCommand(command) {
+        const args = command.match(/(?:(?:"[^"]+")|(?:[^\s]+))/gmi).map(
+            match => match.startsWith('"') ? match.slice(1, -1) : match
+        );
+
+        return {
+            command: args[0],
+            args: args.slice(1),
+        };
+    }
+
+    rewriteError(err) {
+        return new Error(
+            err
+                .toString()
+                .replace(
+                    new RegExp(
+                        "TypeError: " +
+                        "Failed to fetch dynamically imported module: " +
+                        location.origin +
+                        "/xen/~/apps/Xen/terminal/commands/"
+                    ),
+                    "Command not found: "
+                )
+                .replace(
+                    new RegExp(
+                        ".js$",
+                        "g"
+                    ),
+                    ""
+                )
+        );
+    }
 
     async onKey({ key, domEvent: event }) {
-        const printable =
-            !event.altKey &&
-            !event.altGraphKey &&
-            !event.ctrlKey &&
-            !event.metaKey &&
-            !event.key.includes('Arrow');
-
         if (event.key === 'Enter') {
-            this.typing = "";
+            this.up = 0;
 
-            this.return();
+            if (this.typing.length > 0) {
+                const history = JSON.parse(await this.fs.readFile('/history.txt', 'utf-8'));
+
+                await this.fs.writeFile('/history.txt', (history.push(this.typing), history));
+
+                const { command, args } = this.parseCommand(this.typing);
+
+                if (command === 'clear') {
+                    this.term.clear();
+                    this.return();
+                } else {
+                    return import("/xen/~/terminal/commands/" + command + ".js").then(async ({ help, run }) => {
+                        return run(args, {
+                            fs: this.dfs,
+                            term: this.term,
+                            write: this.term.write.bind(this.term),
+                        });
+                    }).catch(async (err) => {
+                        this.term.write("\r\n");
+                        this.term.write(c.redBright(this.rewriteError(err).message));
+                    }).finally(() => {
+                        this.return();
+                    });
+                }
+            } else {
+                this.typing = "";
+
+                this.return();
+            }
         } else if (event.key === 'Backspace') {
             if (this.typing.length > 0) {
                 this.typing = this.typing.slice(0, -1);
 
                 this.term.write('\b \b');
             } else {
-                this.term.write('\b');
+                return;
             }
         } else if (event.key === "Tab") {
             const files = await this.fs.readdir("/cmd");
@@ -128,21 +185,50 @@ class XenTerm {
 
                 this.return();
             } else {
-                this.term.write('\t');
+                this.typing += '    ';
+                this.term.write('    ');
             }
-        } else if (printable) {
+        } else if (
+            !event.altKey &&
+            !event.altGraphKey &&
+            !event.ctrlKey &&
+            !event.metaKey &&
+            !event.key.includes('Arrow')
+        ) {
             this.typing += event.key;
 
             this.term.write(event.key);
         } else if (event.key === 'ArrowUp') {
-            const history = await this.fs.readFile('/history.txt', 'utf-8');
+            const history = JSON.parse(await this.fs.readFile('/history.txt', 'utf-8'));
 
-            const lines = history.split('\n');
+            if (this.up < history.length) {
+                this.up++;
 
-            if (lines.length > 0) {
-                this.typing = lines[lines.length - 1];
+                this.term.write('\b \b'.repeat(this.typing.length));
 
-                this.term.write('\r\n' + this.typing);
+                this.typing = history[history.length - this.up];
+
+                this.term.write(this.typing);
+            }
+        } else if (event.key === "ArrowDown") {
+            const history = JSON.parse(await this.fs.readFile("/history.txt", "utf-8"));
+
+            if (this.up > 1) {
+                this.up--;
+
+                this.term.write("\b \b".repeat(this.typing.length));
+
+                this.typing = history[history.length - this.up];
+
+                this.term.write(this.typing);
+            } else {
+                this.up = 0;
+
+                this.term.write("\b \b".repeat(this.typing.length));
+
+                this.typing = "";
+
+                this.term.write("");
             }
         }
     }

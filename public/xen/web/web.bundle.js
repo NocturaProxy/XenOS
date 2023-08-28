@@ -638,8 +638,9 @@ var require_FileSystem = __commonJS({
         }
       };
       directory = class directory extends _vfs {
-        constructor(path = "") {
+        constructor(path = "", parent = new _vfs()) {
           super(path);
+          this.parent = parent;
         }
       };
       get loading() {
@@ -655,12 +656,13 @@ var require_FileSystem = __commonJS({
           return cache;
         });
       }
+      parent;
       async mkdir(path) {
         if (!path)
           throw new this.error(1);
         path = path.replace(/\/$/, "");
         const fs = await this.loading;
-        var relURL = new URL((0, import_path_normalize.default)(this.base.origin + path)).pathname;
+        var relURL = new URL((0, import_path_normalize.default)(this.base.href + path)).pathname;
         var build = "/";
         for await (var segment of relURL.split("/")) {
           if (!segment)
@@ -671,7 +673,7 @@ var require_FileSystem = __commonJS({
           if (build == path)
             continue;
           if (!await this.exists(build))
-            await this.mkdir(build);
+            await (this.parent || this).mkdir(build);
           build += "/";
         }
         await fs.put(
@@ -697,6 +699,7 @@ var require_FileSystem = __commonJS({
         const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
         if (detail.type != "directory")
           throw new this.error(7);
+        path = new URL((0, import_path_normalize.default)(this.base.href + path)).pathname;
         return new this.directory(path);
       }
       async writeFile(path, content, details = {}) {

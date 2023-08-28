@@ -23,6 +23,15 @@ self.addEventListener("fetch", (event) => {
       if (req.url.startsWith(location.origin + "/xen/~/")) {
         const _url = req.url.replace(location.origin + "/xen/~", "");
 
+        if (_url.startsWith("/terminal/commands/")) {
+          const url = path.join(
+            "/xen/apps/native/terminal/commands/",
+            _url.replace("/terminal/commands/", ""),
+          );
+
+          return await fetch(url);
+        }
+
         if (_url.startsWith("/about:")) {
           switch (_url.slice(7)) {
             default:
@@ -124,7 +133,8 @@ self.addEventListener("fetch", (event) => {
           if (
             path.startsWith("/img/") ||
             path.startsWith("/xen/font/") ||
-            req.destination == "font"
+            req.destination == "font" ||
+            req.url.startsWith("https://cdn.jsdelivr.net/")
           )
             return (res = await fetch(req)), await cache.put(req, res), res;
           else return await fetch(req);

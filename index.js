@@ -9,6 +9,8 @@ const PORT = "3000";
 
 console.log("Welcome to XenOS Server");
 
+console.log(process.argv);
+
 try {
   esbuild
     .context({
