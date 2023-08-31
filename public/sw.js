@@ -136,7 +136,7 @@ self.addEventListener("fetch", (event) => {
             req.destination == "font" ||
             req.url.startsWith("https://cdn.jsdelivr.net/")
           )
-            return (res = await fetch(req)), await cache.put(req, res), res;
+            return await fetch(req); //(res = await fetch(req), await cache.put(req, res), res);
           else return await fetch(req);
         } else {
           return (await cache.match(req)) || (await fetch(req));
@@ -255,7 +255,7 @@ self.addEventListener("message", async (event) => {
 
         event.ports[0].postMessage({
           type: "update",
-          success: false,
+          success: true,
         });
       }
       break;

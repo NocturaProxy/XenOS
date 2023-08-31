@@ -8,7 +8,7 @@ export const help = async (args, process) => {
 
 export const run = async (args, process) => {
     const { fs } = process;
-    const [dir] = args;
+    const [ dir = "./" ] = args;
 
     console.log(args);
 
@@ -19,8 +19,6 @@ export const run = async (args, process) => {
     for (const file of files) {
         process.write(file + "\r\n");
     }
-
-    process.write("\r\n");
 
     return true;
 }

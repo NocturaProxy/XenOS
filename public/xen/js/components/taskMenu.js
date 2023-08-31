@@ -317,12 +317,26 @@ document.getElementById("startButton").addEventListener("click", function (e) {
   }
 });
 
-document.addEventListener("keydown", function (e) {
-  if (e.key == "Option" || e.key == "Alt") {
-    if (menu.open) {
-      menu.hide();
-    } else {
-      menu.show();
+document.addEventListener("keydown", async function (e) {
+  if (xen.taskbar.hidden) {
+    if (e.key == "Option" || e.key == "Alt") {
+      if (menu.open) {
+        return;
+      } else {
+        xen.taskbar.show();
+
+        await new Promise((r) => setTimeout(r, 50));
+
+        menu.show();
+      }
+    }
+  } else {
+    if (e.key == "Option" || e.key == "Alt") {
+      if (menu.open) {
+        menu.hide();
+      } else {
+        menu.show();
+      }
     }
   }
 });

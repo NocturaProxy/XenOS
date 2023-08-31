@@ -157,6 +157,45 @@ const taskbar = {
     this.runDate();
     setInterval(this.runDate, 1000);
 
+    let currentY = 0;
+    let moving = false;
+
+    const move = (e) => {
+      currentY = e.clientY;
+
+      const show = async () => {
+        await this.show();
+        moving = false;
+      };
+
+      const hide = async () => {
+        await this.hide();
+        moving = false;
+      };
+
+      if (e.clientY > window.innerHeight - 40 && this.hidden && !moving) {
+        moving = true;
+        setTimeout(() => {
+          if (this.taskMenu.open) return moving = false;
+          if (!(currentY > window.innerHeight - 40)) return hide(moving = false);
+          if (this.hidden == false) return moving = false;
+
+          return show();
+        }, 0);
+      } else if (e.clientY < window.innerHeight - 60 && !moving) {
+        moving = true;
+        setTimeout(() => {
+          if (this.taskMenu.open) return moving = false;
+          if (!(currentY < window.innerHeight - 60)) return show(moving = false);
+          if (this.hidden == true) return moving = false;
+
+          return hide();
+        }, 1000);
+      }
+    };
+
+    document.addEventListener("mousemove", move);
+
     const apps = await this.getApps();
 
     for (let i = 0; i < apps.length; i++) {
@@ -192,31 +231,7 @@ const taskbar = {
 
     this.taskbarElem.style.transform = "";
 
-    let currentY = 0;
-
-    const move = (e) => {
-      currentY = e.clientY;
-
-      if (e.clientY > window.innerHeight - 20 && this.hidden) {
-        setTimeout(() => {
-          if (!(currentY > window.innerHeight - 20)) return;
-          if (this.hidden == false) return;
-
-          this.show();
-          document.removeEventListener("mousemove", move);
-        }, 150);
-      } else if (e.clientY < window.innerHeight - 20) {
-        setTimeout(() => {
-          if (!(currentY < window.innerHeight - 20)) return;
-          if (this.hidden == true) return;
-
-          this.hide();
-          document.removeEventListener("mousemove", move);
-        }, 150);
-      }
-    };
-
-    document.addEventListener("mousemove", move);
+    return true;
   },
   hide: async function () {
     if (this.hidden) return false;
@@ -242,39 +257,7 @@ const taskbar = {
 
     this.taskbarElem.style.transform = "translateY(calc(100% + 20px))";
 
-    let currentY = 0;
-
-    const move = (e) => {
-      currentY = e.clientY;
-
-      const show = () => {
-        this.show();
-        document.removeEventListener("mousemove", move);
-      };
-
-      const hide = () => {
-        this.hide();
-        document.removeEventListener("mousemove", move);
-      };
-
-      if (e.clientY > window.innerHeight - 20 && this.hidden) {
-        setTimeout(() => {
-          if (!(currentY > window.innerHeight - 20)) return hide();
-          if (this.hidden == false) return null;
-
-          return show();
-        }, 250);
-      } else if (e.clientY < window.innerHeight - 20) {
-        setTimeout(() => {
-          if (!(currentY < window.innerHeight - 20)) return show();
-          if (this.hidden == true) return null;
-
-          return hide();
-        }, 250);
-      }
-    };
-
-    document.addEventListener("mousemove", move);
+    return true;
   },
 };
 

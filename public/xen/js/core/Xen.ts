@@ -92,7 +92,7 @@ class Xen {
       "components/context.js",
     );
 
-    await window.xen.apps.open("Xen/welcome");
+    //await window.xen.apps.open("Xen/welcome");
 
     return;
   }

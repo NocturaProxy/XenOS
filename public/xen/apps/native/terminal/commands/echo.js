@@ -11,8 +11,7 @@ export const run = async (args, process) => {
     const [ str ] = args;
 
     process.write("\r\n");
-    console.log(str);
-    process.write(eval(`"${str}"`));
+    process.write(eval(`"${str || ""}"`));
 
     return true;
 }

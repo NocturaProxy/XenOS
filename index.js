@@ -9,8 +9,6 @@ const PORT = "3000";
 
 console.log("Welcome to XenOS Server");
 
-console.log(process.argv);
-
 try {
   esbuild
     .context({
@@ -33,6 +31,7 @@ try {
       outdir: "public/xen/web/",
       logLevel: "info",
       platform: "browser",
+      minify: true,
     })
     .then((ctx) => ctx.watch());
 
@@ -49,6 +48,7 @@ try {
       outdir: "public/xen/web/components",
       logLevel: "info",
       platform: "browser",
+      minify: true,
     })
     .then((ctx) => ctx.watch());
 } catch (e) {

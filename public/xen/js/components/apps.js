@@ -15,7 +15,7 @@ const appManager = {
 
   init: async function () {
     for (const app of this.nativeApps) {
-      await this.install(app);
+      await this.update(app);
     }
   },
 
@@ -108,7 +108,7 @@ const appManager = {
       });
 
       return true;
-    } catch {
+    } catch(e) {
       return await this.install(id);
     }
   },
