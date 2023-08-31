@@ -1,4 +1,5 @@
 const express = require("express");
+const compress = require('express-compression');
 const esbuild = require("esbuild");
 const path = require("path");
 const fs = require("fs");
@@ -59,6 +60,8 @@ const server = http.createServer();
 const app = express(server);
 const bareServer = createBareServer("/bare/");
 
+app.use(compress({ level: 9 }));
+
 app.use((req, res, next) => {
   res.append("Service-Worker-Allowed", "/");
 
@@ -72,16 +75,6 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static("public"));
-
-// media tunnel :beg:
-// This will be removed soon
-app.get("/sw", (req, res) => {
-  res.set("content-type", "application/javascript");
-
-  const url = req.query.proxy;
-
-  request(url).pipe(res);
-});
 
 app.get("/ipapi", async (req, res) => {
   try {

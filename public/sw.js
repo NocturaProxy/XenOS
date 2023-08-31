@@ -126,17 +126,21 @@ self.addEventListener("fetch", (event) => {
         }
       } else {
         const path = new URL(req.url).pathname;
-        const cache = await caches.open("apps");
+        const cache = await caches.open("xen-cache");
 
         // Offline support
         if (!(await cache.match(req))) {
           if (
-            path.startsWith("/img/") ||
+            path.startsWith("/xen/img/") ||
             path.startsWith("/xen/font/") ||
             req.destination == "font" ||
             req.url.startsWith("https://cdn.jsdelivr.net/")
           )
-            return await fetch(req); //(res = await fetch(req), await cache.put(req, res), res);
+            return (
+              res = await fetch(req),
+              cache.put(req.url, res.clone()),
+              res
+            );
           else return await fetch(req);
         } else {
           return (await cache.match(req)) || (await fetch(req));

@@ -1,3 +1,5 @@
+import "../components/rewriter.js";
+
 window.addEventListener("mousemove", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
