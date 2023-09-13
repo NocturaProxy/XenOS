@@ -571,17 +571,3 @@ hr {
   -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(20px);
 }
-
-#errorCatter {
-  width: -moz-fit-content;
-  width: fit-content;
-  height: 183px;
-  border: 1px solid red;
-  background: #000000;
-  color: white;
-  font-size: 14px;
-  margin-top: 31px;
-  overflow: scroll;
-  padding-right: 20px;
-  padding-left: 8px;
-}

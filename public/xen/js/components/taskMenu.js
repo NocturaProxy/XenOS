@@ -359,6 +359,14 @@ document.addEventListener("mousedown", function (e) {
 window.addEventListener("keydown", function (e) {
   return queueMicrotask(async () => {
     if (!menu.open) return;
+    
+    if (
+      e.ctrlKey ||
+      e.metaKey ||
+      e.altKey ||
+      e.altGraphKey ||
+      e.shiftKey
+    ) return;
 
     switch (e.key) {
       case "a":

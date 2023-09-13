@@ -28,6 +28,7 @@ class Xen {
   wm = new wm();
   loader = new loader();
 
+  cookie: Object = cookie;
   config: Object = config;
 
   taskbar: any;

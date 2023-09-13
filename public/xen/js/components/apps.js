@@ -15,7 +15,7 @@ const appManager = {
 
   init: async function () {
     for (const app of this.nativeApps) {
-      await this.update(app);
+      await this.install(app);
     }
   },
 
@@ -182,7 +182,7 @@ const appManager = {
 
     this.opening.splice(this.opening.indexOf(id), 1);
 
-    this.processes.push({ name: id, pid });
+    this.processes.push({ name: id, pid, worker: app instanceof Worker ? app : null });
 
     return app;
   },

@@ -23,6 +23,7 @@
     "device-uuid": "^1.0.4",
     "e": "^0.2.2",
     "esbuild": "^0.18.18",
+    "esbuild-plugin-polyfill-node": "^0.3.0",
     "express": "^4.18.2",
     "express-compression": "^1.0.2",
     "index.js": "^0.0.3",

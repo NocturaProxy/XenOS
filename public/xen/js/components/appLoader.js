@@ -1,5 +1,6 @@
 // Loads scripted apps
 
+
 function __workerCode() {
   // ALL CODE IN THIS FUNCTION IS RUN IN A SCOPED DEDICATED WORKER
 
@@ -142,18 +143,18 @@ function __workerCode() {
     },
     register: async function (data) {
       const app = await exec(`return window.xen.apps.register({
-                name: "${data.name}",
-                native: ${data.native || false},
-                type: "${data.type || "default"}",
-                x: ${data.x || 0},
-                y: ${data.y || 0},
-                width: ${data.width || 500},
-                height: ${data.height || 300},
-                visible: ${data.visible !== false},
-                menuBar: ${data.menu !== false},
-                focus: ${data.focus !== false},
-                appId: "${self.__moduleID}"
-            });`);
+          name: "${data.name}",
+          native: ${data.native || false},
+          type: "${data.type || "default"}",
+          x: ${data.x || 0},
+          y: ${data.y || 0},
+          width: ${data.width || 500},
+          height: ${data.height || 300},
+          visible: ${data.visible !== false},
+          menuBar: ${data.menu !== false},
+          focus: ${data.focus !== false},
+          appId: "${self.__moduleID}"
+      });`);
 
       return new Window(app);
     },
@@ -213,7 +214,6 @@ ${script}
 const appLoader = {
   load(data, script, el, pid = xen.apps.createID()) {
     return new Promise(async (resolve) => {
-      console.log(data);
       const worker = createWorker(data.name, script, data.id, pid);
 
       let complete = false;
@@ -257,6 +257,8 @@ const appLoader = {
       });
 
       await window.xen.taskbar.appOpen(data.name, data.id);
+
+      return resolve(worker);
     });
   },
 };

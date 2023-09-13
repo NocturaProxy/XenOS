@@ -166,31 +166,40 @@ const taskbar = {
       const show = async () => {
         await this.show();
         moving = false;
+
+        if (currentY < window.innerHeight - 60) return hide(moving = true);
       };
 
       const hide = async () => {
         await this.hide();
         moving = false;
+
+        if (currentY > window.innerHeight - 40) return show(moving = true);
       };
 
       if (e.clientY > window.innerHeight - 40 && this.hidden && !moving) {
         moving = true;
+
         setTimeout(() => {
           if (this.taskMenu.open) return moving = false;
           if (!(currentY > window.innerHeight - 40)) return hide(moving = false);
           if (this.hidden == false) return moving = false;
 
           return show();
-        }, 0);
+        }, 100);
       } else if (e.clientY < window.innerHeight - 60 && !moving) {
         moving = true;
+
         setTimeout(() => {
           if (this.taskMenu.open) return moving = false;
           if (!(currentY < window.innerHeight - 60)) return show(moving = false);
           if (this.hidden == true) return moving = false;
 
-          return hide();
-        }, 1000);
+          return setTimeout(() => {
+            if (currentY < window.innerHeight - 60) return hide();
+            else return moving = false;
+          }, 600);
+        }, 100);
       }
     };
 
@@ -212,7 +221,7 @@ const taskbar = {
 
     this.hidden = false;
 
-    this.taskbarElem.animate(
+    const anim = this.taskbarElem.animate(
       [
         {
           transform: "translateY(calc(100% + 20px))",
@@ -227,9 +236,9 @@ const taskbar = {
       },
     );
 
-    await new Promise((r) => setTimeout(r, 500));
-
     this.taskbarElem.style.transform = "";
+
+    await anim.finished;
 
     return true;
   },
@@ -238,7 +247,7 @@ const taskbar = {
 
     this.hidden = true;
 
-    this.taskbarElem.animate(
+    const anim = this.taskbarElem.animate(
       [
         {
           transform: "translateY(0)",
@@ -253,9 +262,9 @@ const taskbar = {
       },
     );
 
-    await new Promise((r) => setTimeout(r, 490));
-
     this.taskbarElem.style.transform = "translateY(calc(100% + 20px))";
+
+    await anim.finished;
 
     return true;
   },

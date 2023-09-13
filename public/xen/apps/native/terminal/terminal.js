@@ -8,6 +8,7 @@ import c from 'https://cdn.jsdelivr.net/npm/ansi-colors@4.1.3/+esm';
 var term = new Terminal({
     fontFamily: "monospace",
     fontWeight: "lighter",
+    fontSize: 13,
     fontWeightBold: "light",
     letterSpacing: 1,
     theme: {
@@ -30,26 +31,29 @@ class XenTerm {
     fs = null;
     dfs = null;
 
+    dir = "/xen/users/guest/";
+    baseDir = "/xen/users/guest/";
+
     async #setupFS() {
         if (!this.dfs) this.dfs = await window.top.xen.fs.openDir('/xen/users/guest/');
         if (!this.fs) this._fs = await window.top.xen.fs.openDir('/xen/system/apps/Xen/terminal');
 
-        if (!await this._fs.exists("/lib"))
-            await this._fs.mkdir("/lib");
+        if (!await this._fs.exists("lib"))
+            await this._fs.mkdir("lib");
 
-        this.fs = await this._fs.openDir("/lib");
+        this.fs = await this._fs.openDir("lib");
 
-        if (!await this.fs.exists("/cmd"))
-            await this.fs.mkdir("/cmd");
+        if (!await this.fs.exists("cmd"))
+            await this.fs.mkdir("cmd");
         
-        if (!await this.fs.exists("/motd.txt"))
-            await this.fs.writeFile("/motd.txt", "Welcome to Xen!");
+        if (!await this.fs.exists("motd.txt"))
+            await this.fs.writeFile("motd.txt", "Welcome to Xen!");
 
-        if (!await this.fs.exists("/lastlogin.txt"))
-            await this.fs.writeFile("/lastlogin.txt", new Date().getTime());
+        if (!await this.fs.exists("lastlogin.txt"))
+            await this.fs.writeFile("lastlogin.txt", new Date().getTime());
 
         if (!await this.fs.exists("history.txt"))
-            await this.fs.writeFile("/history.txt", []);
+            await this.fs.writeFile("history.txt", []);
 
         return this.fs;
     }
@@ -59,13 +63,16 @@ class XenTerm {
 
         this.term = term;
 
+        this.term.options.fontSize = 16;
+
         this.term.writeln(
-            c.bold(await this.fs.readFile('/motd.txt', 'utf-8'))
+            c.bold(await this.fs.readFile('motd.txt', 'utf-8'))
         );
+
         this.term.writeln(
             c.dim(
                 'Last login: ' + new Date(
-                    parseInt(await this.fs.readFile('/lastlogin.txt', 'utf-8'))
+                    parseInt(await this.fs.readFile('lastlogin.txt', 'utf-8'))
                 ).toLocaleString({}, {
                     weekday: 'short',
                     year: 'numeric',
@@ -76,6 +83,9 @@ class XenTerm {
                 })
             )
         );
+
+        this.term.options.fontSize = 13;
+
         // this.term.writeln('\n');
         this.term.onKey(this.onKey.bind(this));
 
@@ -85,8 +95,12 @@ class XenTerm {
     return(text = "") {
         this.typing = text;
         return this.term.write(
-            "\r\n" + c.bold(this.user) + '@' + c.bold('xen') + ':~$ ' + text
+            "\r\n" + c.bold(this.user) + '@' + c.bold('xen') + `: ${ this.dir == this.baseDir ? '~' : top.path.dirname(this.dir.replace(/\/?$/, "/jbjbk")).split("/").pop() || '/' } $ ` + text
         );
+    }
+
+    setDir(dir) {
+        this.dir = dir;
     }
 
     typing = "";
@@ -131,9 +145,9 @@ class XenTerm {
             this.up = 0;
 
             if (this.typing.length > 0) {
-                const history = JSON.parse(await this.fs.readFile('/history.txt', 'utf-8'));
+                const history = JSON.parse(await this.fs.readFile('history.txt', 'utf-8'));
 
-                await this.fs.writeFile('/history.txt', (history.push(this.typing), history));
+                await this.fs.writeFile('history.txt', (history.push(this.typing), history));
 
                 const { command, args } = this.parseCommand(this.typing);
 
@@ -146,6 +160,15 @@ class XenTerm {
                             fs: this.dfs,
                             term: this.term,
                             write: this.term.write.bind(this.term),
+                            path: window.top.path,
+                            colors: c,
+                            changeDir: async (path) => {
+                                this.dfs = await this.dfs.openDir(path);
+
+                                await this.dfs.loading;
+
+                                this.dir = this.dfs.base.pathname;
+                            }
                         });
                     }).catch(async (err) => {
                         this.term.write("\r\n");
@@ -168,7 +191,7 @@ class XenTerm {
                 return;
             }
         } else if (event.key === "Tab") {
-            const files = await this.fs.readdir("/cmd");
+            const files = await this.fs.readdir("cmd");
 
             const matches = files.filter(file => file.startsWith(this.typing));
 
@@ -199,7 +222,7 @@ class XenTerm {
 
             this.term.write(event.key);
         } else if (event.key === 'ArrowUp') {
-            const history = JSON.parse(await this.fs.readFile('/history.txt', 'utf-8'));
+            const history = JSON.parse(await this.fs.readFile('history.txt', 'utf-8'));
 
             if (this.up < history.length) {
                 this.up++;
@@ -211,7 +234,7 @@ class XenTerm {
                 this.term.write(this.typing);
             }
         } else if (event.key === "ArrowDown") {
-            const history = JSON.parse(await this.fs.readFile("/history.txt", "utf-8"));
+            const history = JSON.parse(await this.fs.readFile("history.txt", "utf-8"));
 
             if (this.up > 1) {
                 this.up--;

@@ -56,7 +56,7 @@ class vfs {
         /* 9: Directory Path Nonexistent */ "Directory Path Nonexistent",
       ];
 
-      super(types[type]);
+      super(`FILESYSTEM_ERR_${type}: ${types[type]}`);
     }
   };
 
@@ -65,6 +65,14 @@ class vfs {
       super(path);
     }
   };
+
+  #getPath(path: string | undefined = "") {
+    return new URL(
+        new URL(
+          this.base.origin + Path.normalize(Path.resolve(this.base.pathname, path))
+        ).href.replace(/(.+)\/?$/, "$1")
+    );
+  }
 
   get loading() {
     return caches.open("vfs").then(async cache => {
@@ -86,11 +94,9 @@ class vfs {
   async mkdir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    var relURL = new URL(normalize(this.base.href + path)).pathname;
+    var relURL = this.#getPath(path).pathname;
     var build = "/";
 
     for await (var segment of relURL.split("/")) {
@@ -106,7 +112,7 @@ class vfs {
     }
 
     await fs.put(
-      new URL(normalize(this.base.href + path)),
+      this.#getPath(path),
       new Response(null, {
         headers: {
           "x-detail": JSON.stringify({
@@ -122,17 +128,15 @@ class vfs {
   async openDir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    const dir = await fs.match(new URL(normalize(this.base.href + path)));
+    const dir = await fs.match(this.#getPath(path));
     if (!dir) throw new this.error(6);
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
     if (detail.type != "directory") throw new this.error(7);
 
-    path = new URL(normalize(this.base.href + path)).pathname;
+    path = this.#getPath(path).pathname;
 
     return new this.directory(path);
   }
@@ -145,8 +149,6 @@ class vfs {
     if (!path) throw new this.error(1);
     if (typeof content == "undefined") throw new this.error(2);
     if (path == "/") throw new this.error(0);
-
-    path = path.replace(/\/$/, "");
 
     if (!await this.exists(Path.dirname(path))) await this.mkdir(Path.dirname(path));
 
@@ -171,7 +173,7 @@ class vfs {
     details.type = "file";
 
     await fs.put(
-      new URL(normalize(this.base.href + path)),
+      this.#getPath(path),
       new Response(content, {
         headers: {
           "x-detail": JSON.stringify(details),
@@ -187,13 +189,11 @@ class vfs {
   async readFile(path: string | undefined, encoding: string | null = null) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    if (await fs.match(new URL(normalize(this.base.href + path)))) {
+    if (await fs.match(this.#getPath(path))) {
       return await fs
-        .match(new URL(normalize(this.base.href + path)))
+        .match(this.#getPath(path))
         .then((response: any) =>
           encoding == "utf-8" ? response.text() : response.blob(),
         );
@@ -205,11 +205,27 @@ class vfs {
   async unlink(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    await fs.delete(new URL(normalize(this.base.href + path)));
+    const file = await fs.match(this.#getPath(path));
+
+    if (!file) throw new this.error(5);
+
+    const detail = JSON.parse(file.headers.get("x-detail") || "{}");
+
+    if (detail.type === "directory") {
+      // delete recursive every directory
+
+      const opened = await fs.keys();
+
+      for (const file of opened) {
+        if (file.url.startsWith(this.#getPath(path).href)) {
+          await fs.delete(file.url);
+        }
+      }
+    }
+
+    await fs.delete(this.#getPath(path));
 
     return undefined;
   }
@@ -217,11 +233,9 @@ class vfs {
   async readdir(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    const dir = await fs.match(new URL(normalize(this.base.href + path)));
+    const dir = await fs.match(this.#getPath(path));
     if (!dir) throw new this.error(6);
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
@@ -232,9 +246,9 @@ class vfs {
     const files: string[] = [];
 
     for (const file of opened) {
-      if (file.url.startsWith(new URL(normalize(this.base.href + path)).href)) {
+      if (file.url.startsWith(this.#getPath(path).href)) {
         let relative = file.url
-          .replace(new URL(normalize(this.base.href + path)).href, "")
+          .replace(this.#getPath(path).href, "")
           .replace(/^\//, "");
 
         if (!relative) continue;
@@ -251,8 +265,6 @@ class vfs {
   async exists(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     try {
       await this.stat(path);
 
@@ -265,11 +277,9 @@ class vfs {
   async stat(path: string | undefined) {
     if (!path) throw new this.error(1);
 
-    path = path.replace(/\/$/, "");
-
     const fs = await this.loading;
 
-    const file = await fs.match(new URL(normalize(this.base.href + path)));
+    const file = await fs.match(this.#getPath(path));
     if (!file) throw new this.error(5);
 
     const detail = JSON.parse(file.headers.get("x-detail") || "{}");

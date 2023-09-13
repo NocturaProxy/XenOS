@@ -6,6 +6,10 @@ const fs = require("fs");
 const request = require("request");
 const http = require("node:http");
 const createBareServer = require("@tomphttp/bare-server-node");
+const { polyfillNode: polyfill } = require("esbuild-plugin-polyfill-node");
+
+require("./repoServer");
+
 const PORT = "3000";
 
 console.log("Welcome to XenOS Server");
@@ -32,7 +36,10 @@ try {
       outdir: "public/xen/web/",
       logLevel: "info",
       platform: "browser",
-      minify: true,
+      minify: false,
+      plugins: [
+        polyfill({}),
+      ],
     })
     .then((ctx) => ctx.watch());
 
@@ -49,7 +56,10 @@ try {
       outdir: "public/xen/web/components",
       logLevel: "info",
       platform: "browser",
-      minify: true,
+      minify: false,
+      plugins: [
+        polyfill({}),
+      ],
     })
     .then((ctx) => ctx.watch());
 } catch (e) {
