@@ -236,6 +236,7 @@ const appManager = {
 
     const frame = document.createElement("iframe");
     frame.classList.add("appFrame");
+    
     frame.src = options.url || "/xen/~/about:blank";
 
     const el = window.xen.wm.createWindow(
