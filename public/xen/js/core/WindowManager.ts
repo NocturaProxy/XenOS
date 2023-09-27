@@ -2,7 +2,23 @@ class WindowManager {
   windows = [];
 
   init = async () => {
-    // Initialize window management data structures
+    window.addEventListener("xendrag", (e: any) => {
+      const { id, x, y, type } = e.detail;
+
+      const windowElement = document.getElementById(id);
+
+      if (!windowElement) return;
+
+      var dragTarget = windowElement.querySelector(".box-header-title");
+
+      dragTarget?.dispatchEvent(
+        new MouseEvent(type, {
+          clientX: x,
+          clientY: y,
+          bubbles: true,
+        }),
+      );
+    });
   };
 
   getCloseSVG() {

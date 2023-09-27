@@ -1,291 +1,113 @@
-import normalize from "path-normalize";
-import Path from "path-browserify";
+const Filer = require('filer');
 
-interface EntryDetail {
-  type?: string;
-  size?: number;
-}
+var file = new Filer.FileSystem().promises;
+file.sh = new (Filer.Shell)(file);
+file.buffer = Filer.Buffer;
 
-class EntryStat {
-  content: Blob | null = null;
-  length: number = 0;
+function makeProxy(dir = "/") {
+    var proxy = new Proxy(file, {
+        get(target, prop) {
+            if (prop === 'sh') {
+                return target.sh;
+            }
 
-  constructor(
-    public detail: EntryDetail,
-    public file: any,
-  ) {
-    this.detail = detail;
+            if (prop === "cwd") {
+                return () => dir;
+            }
 
-    if (!this.isDirectory()) {
-      this.file = file;
-      this.length = file.size;
-    }
-  }
+            if (prop === "exists") {
+                return async (...a: any) => {
+                    try {
+                        await proxy.stat(...a);
 
-  isDirectory() {
-    return this.detail.type == "directory";
-  }
+                        return true;
+                    } catch {
+                        return false;
+                    }
+                }
+            }
 
-  isFile() {
-    return this.detail.type == "file";
-  }
-}
+            if (prop === 'openDir') {
+                return async (path: string) => {
+                    path = Filer.path.resolve(
+                        dir,
+                        Filer.path.normalize(path)
+                    );
 
-class vfs {
-  normalize: Function = normalize;
-  base: URL;
+                    if (!(await proxy.exists(path))) {
+                        throw new Filer.Errors.EEXIST("no such file or directory", path);
+                    }
 
-  constructor(path: string = "") {
-    this.base = new URL(
-      normalize(location.origin + (path || "").replace(/\/?$/, "/")),
-    );
-  }
+                    return makeProxy(path);
+                };
+            }
 
-  error = class VFSError extends Error {
-    constructor(type: number) {
-      var types = [
-        /* 0: Path Error */ "Invalid Path: /",
-        /* 1: Missing Path */ "Missing Required Argument: path",
-        /* 2: Missing Content */ "Missing Required Argument: content",
-        /* 3: Dir Exists */ "Directory Already Exists",
-        /* 4: File Exists */ "File Already Exists",
-        /* 5: Not Found */ "File Not Found",
-        /* 6: Dir Does Not Exist */ "Directory Does Not Exist",
-        /* 7: Not A Directory */ "Not A Directory",
-        /* 8: Not A File */ "Not A File",
-        /* 9: Directory Path Nonexistent */ "Directory Path Nonexistent",
-      ];
+            if (prop == "readFile") {
+                return new Proxy(target[prop], {
+                    apply: async (target, thisArg, args) => {
+                        args[0] = Filer.path.resolve(
+                            dir,
+                            Filer.path.normalize(args[0])
+                        );
 
-      super(`FILESYSTEM_ERR_${type}: ${types[type]}`);
-    }
-  };
+                        var result: Uint8Array = await Reflect.apply(target, thisArg, args);
 
-  directory = class directory extends vfs {
-    constructor(path: string = "", public parent: vfs = new vfs()) {
-      super(path);
-    }
-  };
+                        if (args[1] == "buffer") {
+                            return result.buffer;
+                        }
 
-  #getPath(path: string | undefined = "") {
-    return new URL(
-        new URL(
-          this.base.origin + Path.normalize(Path.resolve(this.base.pathname, path))
-        ).href.replace(/(.+)\/?$/, "$1")
-    );
-  }
+                        if (args[1] == "string") {
+                            return Filer.Buffer.from(result).toString();
+                        }
 
-  get loading() {
-    return caches.open("vfs").then(async cache => {
-      if (!await cache.match(new URL(location.origin + "/")))
-        await cache.put(new URL(location.origin + "/"), new Response(null, {
-          headers: {
-            "x-detail": JSON.stringify({
-              type: "directory",
-            }),
-          },
-        }));
+                        if (args[1] == "utf-8") {
+                            return new TextDecoder("utf-8").decode(result);
+                        }
 
-      return cache;
-    });
-  }
+                        return result;
+                    }
+                });
+            }
 
-  parent: any;
+            if (prop == "rmdir") {
+                return new Proxy(target[prop], {
+                    apply: async (target, thisArg, args) => {
+                        args[0] = Filer.path.resolve(
+                            dir,
+                            Filer.path.normalize(args[0])
+                        );
 
-  async mkdir(path: string | undefined) {
-    if (!path) throw new this.error(1);
+                        try {
+                            return await Reflect.apply(target, thisArg, args);
+                        } catch {
+                            await new Promise((resolve, reject) => {
+                                file.sh.rm(args[0], { recursive: true }, resolve);
+                            });
 
-    const fs = await this.loading;
+                            return undefined;
+                        }
+                    }
+                });
+            }
 
-    var relURL = this.#getPath(path).pathname;
-    var build = "/";
+            if (target[prop] instanceof Function) {
+                return new Proxy(target[prop], {
+                    apply: (target, thisArg, args) => {
+                        args[0] = Filer.path.resolve(
+                            dir,
+                            Filer.path.normalize(args[0])
+                        );
 
-    for await (var segment of relURL.split("/")) {
-      if (!segment) continue;
-      build += segment;
+                        return Reflect.apply(target, thisArg, args);
+                    }
+                });
+            }
 
-      if (build == "/") continue;
-      if (build == path) continue;
-
-      if (!(await this.exists(build))) await (this.parent || this).mkdir(build);
-
-      build += "/";
-    }
-
-    await fs.put(
-      this.#getPath(path),
-      new Response(null, {
-        headers: {
-          "x-detail": JSON.stringify({
-            type: "directory",
-          }),
-        },
-      }),
-    );
-
-    return undefined;
-  }
-
-  async openDir(path: string | undefined) {
-    if (!path) throw new this.error(1);
-
-    const fs = await this.loading;
-
-    const dir = await fs.match(this.#getPath(path));
-    if (!dir) throw new this.error(6);
-
-    const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
-    if (detail.type != "directory") throw new this.error(7);
-
-    path = this.#getPath(path).pathname;
-
-    return new this.directory(path);
-  }
-
-  async writeFile(
-    path: string | undefined,
-    content: Blob | string | any[],
-    details: EntryDetail = {},
-  ) {
-    if (!path) throw new this.error(1);
-    if (typeof content == "undefined") throw new this.error(2);
-    if (path == "/") throw new this.error(0);
-
-    if (!await this.exists(Path.dirname(path))) await this.mkdir(Path.dirname(path));
-
-    const fs = await this.loading;
-
-    let contentType = "text/plain";
-
-    if (Array.isArray(content)) {
-      contentType = "application/json";
-      content = new Blob([JSON.stringify(content)]);
-    } else if (content.constructor == Object) {
-      contentType = "application/json";
-      content = new Blob([JSON.stringify(content)]);
-    } else if (typeof content == "string") {
-      contentType = "text/plain";
-      content = new Blob([content]);
-    } else if (typeof content == "number") {
-      contentType = "text/plain";
-      content = new Blob([`${content}`]);
-    }
-
-    details.type = "file";
-
-    await fs.put(
-      this.#getPath(path),
-      new Response(content, {
-        headers: {
-          "x-detail": JSON.stringify(details),
-          "content-length": content.size.toString(),
-          "content-type": contentType,
-        },
-      }),
-    );
-
-    return undefined;
-  }
-
-  async readFile(path: string | undefined, encoding: string | null = null) {
-    if (!path) throw new this.error(1);
-
-    const fs = await this.loading;
-
-    if (await fs.match(this.#getPath(path))) {
-      return await fs
-        .match(this.#getPath(path))
-        .then((response: any) =>
-          encoding == "utf-8" ? response.text() : response.blob(),
-        );
-    } else {
-      throw new this.error(5);
-    }
-  }
-
-  async unlink(path: string | undefined) {
-    if (!path) throw new this.error(1);
-
-    const fs = await this.loading;
-
-    const file = await fs.match(this.#getPath(path));
-
-    if (!file) throw new this.error(5);
-
-    const detail = JSON.parse(file.headers.get("x-detail") || "{}");
-
-    if (detail.type === "directory") {
-      // delete recursive every directory
-
-      const opened = await fs.keys();
-
-      for (const file of opened) {
-        if (file.url.startsWith(this.#getPath(path).href)) {
-          await fs.delete(file.url);
+            return target[prop];
         }
-      }
-    }
+    });
 
-    await fs.delete(this.#getPath(path));
-
-    return undefined;
-  }
-
-  async readdir(path: string | undefined) {
-    if (!path) throw new this.error(1);
-
-    const fs = await this.loading;
-
-    const dir = await fs.match(this.#getPath(path));
-    if (!dir) throw new this.error(6);
-
-    const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
-    if (detail.type != "directory") throw new this.error(7);
-
-    const opened = await fs.keys();
-
-    const files: string[] = [];
-
-    for (const file of opened) {
-      if (file.url.startsWith(this.#getPath(path).href)) {
-        let relative = file.url
-          .replace(this.#getPath(path).href, "")
-          .replace(/^\//, "");
-
-        if (!relative) continue;
-        if (relative.split("/").length > 1) relative = relative.split("/")[0];
-        if (files.includes(relative)) continue;
-
-        files.push(relative);
-      }
-    }
-
-    return files;
-  }
-
-  async exists(path: string | undefined) {
-    if (!path) throw new this.error(1);
-
-    try {
-      await this.stat(path);
-
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async stat(path: string | undefined) {
-    if (!path) throw new this.error(1);
-
-    const fs = await this.loading;
-
-    const file = await fs.match(this.#getPath(path));
-    if (!file) throw new this.error(5);
-
-    const detail = JSON.parse(file.headers.get("x-detail") || "{}");
-
-    return new EntryStat(detail, await file.blob());
-  }
+    return proxy;
 }
 
-module.exports = vfs;
+export default makeProxy("/");

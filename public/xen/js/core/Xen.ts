@@ -1,32 +1,26 @@
-const fs = require("./FileSystem");
+const { default: fs } = require("./FileSystem");
 const wm = require("./WindowManager");
 const loader = require("./Loader");
 const cookie = require("js-cookie");
-
 const config = require("../config.json");
+
+import * as bare from "@tomphttp/bare-client";
 
 window.path = require("path-browserify");
 
-interface Window {
-  xen: Xen;
-  path: any;
-}
-
-interface FileSystem {
-  loading: Promise<void>;
-  readFile(path: string): Promise<string>;
-  writeFile(path: string, data: any[] | string | Object): Promise<void>;
-  unlink(path: string): Promise<void>;
-  openDir(path: string): Promise<void>;
-  exists(path: string): Promise<boolean>;
-  mkdir(path: string): Promise<void>;
-  stat(path: string): Promise<any>;
+declare global {
+  interface Window {
+    xen: Xen;
+    path: any;
+  }
 }
 
 class Xen {
-  fs: FileSystem = new fs();
+  fs: any = fs;
+  buffer = fs.buffer;
   wm = new wm();
   loader = new loader();
+  bare: bare.BareClient | null = null;
 
   cookie: Object = cookie;
   config: Object = config;
@@ -34,12 +28,34 @@ class Xen {
   taskbar: any;
   battery: any;
   apps: any;
+  
+  constructor() {}
+
+  async Worker() {
+    if ("serviceWorker" in navigator) {
+      await navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
+        scope: "/",
+      });
+
+      await navigator.serviceWorker.ready;
+    }
+
+    if (!navigator.serviceWorker.controller) {
+      location.reload();
+    }
+
+    return true;
+  }
 
   async startup() {
-    await this.fs.loading;
+    //await this.fs.loading;
+
+    if (!navigator.serviceWorker.controller) {
+      await this.Worker();
+    }
 
     if (cookie.get("fs-initiated") !== "true") {
-      await this.stupFileSystem();
+      await this.setupFileSystem();
 
       cookie.set("fs-initiated", "true", {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
@@ -47,6 +63,8 @@ class Xen {
         sameSite: "strict",
       });
     }
+
+    this.bare = await bare.createBareClient(location.origin + "/bare/");
 
     await this.wm.init();
 
@@ -91,6 +109,7 @@ class Xen {
       "components/battery.js",
       "components/cursor.js",
       "components/context.js",
+      "components/pwa.js"
     );
 
     //await window.xen.apps.open("Xen/welcome");
@@ -98,62 +117,64 @@ class Xen {
     return;
   }
 
-  async stupFileSystem() {
+  async setupFileSystem() {
     const vfs = this.fs;
 
     // General Files
-    await vfs.mkdir("/xen");
-    await vfs.mkdir("/xen/system");
-    await vfs.mkdir("/xen/users");
+    try {
+      await vfs.mkdir("/xen");
+      
+      await vfs.mkdir("/xen/system");
+      await vfs.mkdir("/xen/users");
 
-    // Use Guest as a placeholder
-    await vfs.mkdir("/xen/users/guest");
-    await vfs.mkdir("/xen/users/guest/desktop");
-    await vfs.mkdir("/xen/users/guest/documents");
-    await vfs.mkdir("/xen/users/guest/downloads");
-    await vfs.mkdir("/xen/users/guest/music");
-    await vfs.mkdir("/xen/users/guest/pictures");
-    await vfs.mkdir("/xen/users/guest/videos");
+      // Use Guest as a placeholder
+      await vfs.mkdir("/xen/users/guest");
+      await vfs.mkdir("/xen/users/guest/desktop");
+      await vfs.mkdir("/xen/users/guest/documents");
+      await vfs.mkdir("/xen/users/guest/downloads");
+      await vfs.mkdir("/xen/users/guest/music");
+      await vfs.mkdir("/xen/users/guest/pictures");
+      await vfs.mkdir("/xen/users/guest/videos");
 
-    // Taskbar files
-    await vfs.mkdir("/xen/system/taskbar");
+      // Taskbar files
+      await vfs.mkdir("/xen/system/taskbar");
+      await vfs.writeFile("/xen/system/taskbar/pinned.json", JSON.stringify([
+        {
+          name: "Welcome",
+          id: "Xen/welcome",
+        },
+        {
+          name: "Settings",
+          id: "Xen/settings",
+        },
+        {
+          name: "Velocity",
+          id: "Xen/velocity",
+        },
+        {
+          name: "App Store",
+          id: "Xen/store",
+        },
+        {
+          name: "Terminal",
+          id: "Xen/terminal",
+        }
+      ]));
 
-    await vfs.writeFile("/xen/system/taskbar/pinned.json", [
-      {
-        name: "Welcome",
-        id: "Xen/welcome",
-      },
-      {
-        name: "Settings",
-        id: "Xen/settings",
-      },
-      {
-        name: "Velocity",
-        id: "Xen/velocity",
-      },
-      {
-        name: "App Store",
-        id: "Xen/store",
-      },
-      {
-        name: "Terminal",
-        id: "Xen/terminal",
-      }
-    ]);
+      // App files
 
-    // App files
+      await vfs.mkdir("/xen/system/apps");
+      await vfs.mkdir("/xen/system/apps/Xen");
+      await vfs.writeFile("/xen/system/apps/installed.json", JSON.stringify([]));
 
-    await vfs.mkdir("/xen/system/apps");
+      // Inject Bundle
 
-    await vfs.writeFile("/xen/system/apps/installed.json", []);
-
-    // Inject Bundle
-
-    await vfs.mkdir("/xen/system/assets");
-    await vfs.writeFile(
-      "/xen/system/assets/inject.bundle.js",
-      await (await fetch("/xen/web/inject.bundle.js")).text(),
-    );
+      await vfs.mkdir("/xen/system/assets");
+      await vfs.writeFile(
+        "/xen/system/assets/inject.bundle.js",
+        await (await fetch("/xen/web/inject.bundle.js")).text(),
+      );
+    } catch (e) {console.error(e)}
 
     return true;
   }

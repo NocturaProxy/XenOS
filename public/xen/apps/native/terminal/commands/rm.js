@@ -12,7 +12,11 @@ export const run = async (args, process) => {
     for (var arg of args) {
         if (arg.startsWith("-") || arg.startsWith("--")) 
             continue;
-        await fs.unlink(arg);
+        try {
+            await fs.unlink(arg);
+        } catch {
+            await fs.rmdir(arg);
+        }
     }
 
     return true;

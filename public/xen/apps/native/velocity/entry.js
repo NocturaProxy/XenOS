@@ -7,6 +7,7 @@ onReady(async () => {
     height: 700,
     name: "Velocity",
     visible: false,
+    menu: false,
   });
 
   self.win = win;

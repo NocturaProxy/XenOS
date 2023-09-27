@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <script integrity="sha256-9NsIanf8jSVFuiPetrZ1jfLPoMPzZuPz2w3GWvQFgIU=">
-      if (navigator.serviceWorker.controller === null) {
-        navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
-          scope: "/",
-        });
-
-        navigator.serviceWorker.ready.then((e) => location.reload());
-      }
-    </script>
     <link href="./xen/styles/index.css" rel="stylesheet" type="text/css" />
     <link href="./xen/styles/loader.css" rel="stylesheet" type="text/css" />
     <link href="./xen/styles/window.css" rel="stylesheet" type="text/css" />
@@ -20,11 +11,11 @@
       rel="stylesheet"
       type="text/css"
     />
-    <link rel="icon" type="image/x-icon" href="./xen/img/logo-small.png" />
+    <link rel="icon" type="image/x-icon" href="./xen/img/xenon-logo.png" />
     <link
       rel="apple-touch-icon"
       type="image/x-icon"
-      href="./xen/img/logo-small.png"
+      href="./xen/img/xenon-logo.png"
     />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -63,7 +54,7 @@
       property="twitter:image"
       content="https://XenOS-dev.greenworldia.repl.co/xen/img/image-1.png"
     />
-    <link rel="manifest" href="./manifest.json" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <!-- Dynamic Stylesheets -->
     <style
       id="dynamic-style"

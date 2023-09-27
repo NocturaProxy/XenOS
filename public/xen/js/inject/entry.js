@@ -1,5 +1,58 @@
 import "../components/rewriter.js";
 
+function dragEvent(event, x, y) {
+  var isDrag = false;
+
+  if (
+    getComputedStyle(event.target).getPropertyValue("app-region") === "drag" ||
+    getComputedStyle(event.target).getPropertyValue("--webkit-app-region") === "drag"
+  ) {
+    isDrag = true;
+  }
+
+  for (var n = event.target; n.parentNode; n = n.parentNode) {
+    if (
+      getComputedStyle(n).getPropertyValue("app-region") === "drag" ||
+      getComputedStyle(n).getPropertyValue("--webkit-app-region") === "drag"
+    ) {
+      isDrag = true;
+      break;
+    }
+  }
+
+  for (var n = event.target; n.parentNode; n = n.parentNode) {
+    if (
+      getComputedStyle(n).getPropertyValue("app-region") === "no-drag" ||
+      getComputedStyle(n).getPropertyValue("--webkit-app-region") === "no-drag"
+    ) {
+      isDrag = false;
+      break;
+    }
+  }
+
+  if (!isDrag) return null;
+  if (event.defaultPrevented) return null;
+
+  if (
+    getComputedStyle(event.target).getPropertyValue("app-region") !== "no-drag" ||
+    getComputedStyle(event.target).getPropertyValue("--webkit-app-region") !== "no-drag"
+  ) {
+    window.top.dispatchEvent(
+      new CustomEvent("xendrag", {
+        bubbles: true,
+        cancelable: true,
+        detail: {
+          x,
+          y,
+          el: event.target,
+          type: event.type,
+          id: window.frameElement.parentNode.parentNode.id
+        },
+      }),
+    );
+  }
+}
+
 window.addEventListener("mousemove", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
@@ -13,6 +66,8 @@ window.addEventListener("mousemove", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 document.addEventListener("mousemove", function (e) {
@@ -28,6 +83,8 @@ document.addEventListener("mousemove", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 window.addEventListener("click", function (e) {
@@ -43,6 +100,8 @@ window.addEventListener("click", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 document.addEventListener("click", function (e) {
@@ -58,6 +117,8 @@ document.addEventListener("click", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 window.addEventListener("mousedown", function (e) {
@@ -73,6 +134,8 @@ window.addEventListener("mousedown", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 document.addEventListener("mousedown", function (e) {
@@ -88,6 +151,8 @@ document.addEventListener("mousedown", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 window.addEventListener("mouseup", function (e) {
@@ -103,6 +168,8 @@ window.addEventListener("mouseup", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
 document.addEventListener("mouseup", function (e) {
@@ -118,4 +185,6 @@ document.addEventListener("mouseup", function (e) {
       screenY: e.screenY + bounds.y,
     }),
   );
+
+  dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });

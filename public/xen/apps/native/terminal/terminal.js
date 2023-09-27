@@ -31,8 +31,8 @@ class XenTerm {
     fs = null;
     dfs = null;
 
-    dir = "/xen/users/guest/";
-    baseDir = "/xen/users/guest/";
+    dir = "/xen/users/guest";
+    baseDir = "/xen/users/guest";
 
     async #setupFS() {
         if (!this.dfs) this.dfs = await window.top.xen.fs.openDir('/xen/users/guest/');
@@ -53,7 +53,7 @@ class XenTerm {
             await this.fs.writeFile("lastlogin.txt", new Date().getTime());
 
         if (!await this.fs.exists("history.txt"))
-            await this.fs.writeFile("history.txt", []);
+            await this.fs.writeFile("history.txt", JSON.stringify([]));
 
         return this.fs;
     }
@@ -146,8 +146,8 @@ class XenTerm {
 
             if (this.typing.length > 0) {
                 const history = JSON.parse(await this.fs.readFile('history.txt', 'utf-8'));
-
-                await this.fs.writeFile('history.txt', (history.push(this.typing), history));
+                history.push(this.typing);
+                await this.fs.writeFile('history.txt', JSON.stringify(history));
 
                 const { command, args } = this.parseCommand(this.typing);
 
@@ -164,11 +164,9 @@ class XenTerm {
                             colors: c,
                             changeDir: async (path) => {
                                 this.dfs = await this.dfs.openDir(path);
-
-                                await this.dfs.loading;
-
-                                this.dir = this.dfs.base.pathname;
-                            }
+                                this.dir = this.dfs.cwd();
+                            },
+                            http: window.top.xen.bare
                         });
                     }).catch(async (err) => {
                         this.term.write("\r\n");

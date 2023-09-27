@@ -109,6 +109,7 @@ const appManager = {
 
       return true;
     } catch(e) {
+      console.log("Fallback: ", id);
       return await this.install(id);
     }
   },
@@ -248,6 +249,11 @@ const appManager = {
       app.height,
       app.visible,
     );
+
+    if ('menuBar' in options && options.menuBar == false) {
+      el.querySelector(".box-header-title").style.display = "none";
+      el.querySelector(".box-body-inner").style.height = "100%";
+    }
 
     if (options.visible !== false)
       await new Promise((resolve) =>

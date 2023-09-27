@@ -50,9 +50,6 @@ function __workerCode() {
                         }").querySelector("iframe").addEventListener("${
                           opts.event || "load"
                         }", function(e) {
-                            console.log("${opts.event}");
-
-                            console.log(e.target.readyState);
                             resolve();
                         }, {once: true});
 
@@ -219,7 +216,7 @@ const appLoader = {
       let complete = false;
 
       function bounce() {
-        if (complete) return resolve(), clearInterval(interval);
+        if (complete) return resolve(worker), clearInterval(interval);
 
         if (el) {
           el.bounce();
@@ -258,7 +255,7 @@ const appLoader = {
 
       await window.xen.taskbar.appOpen(data.name, data.id);
 
-      return resolve(worker);
+      //return resolve(worker);
     });
   },
 };

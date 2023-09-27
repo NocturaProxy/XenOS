@@ -28,9 +28,9 @@ const errorManager = {
                 }
             )
 
-            for (var db of await indexedDB.databases()) {
-                //console.log(db);
-            }
+            // Clear Filesystem
+
+            await window.xen.fs.rmdir("/");
 
             await window.caches.delete("xen-cache");
             await window.caches.delete("xen-apps");
@@ -51,6 +51,9 @@ const errorManager = {
     },
     // Startup Errors
     async startup(err) {
+        console.warn(err);
+        console.warn(err.stack);
+
         document.querySelector("#os-pre-text2").childNodes[0].remove();
         document.querySelector("#os-pre-text2").style.animation = "none";
 

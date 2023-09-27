@@ -95,22 +95,60 @@ const menu = {
     });
 
     searchContainer
-      .querySelectorAll(".start-app.velocity-browser-search")
+      .querySelectorAll(".start-app.wiki-search")
       .forEach((app) => {
         app.addEventListener("click", async (e) => {
-          const url = app.innerText;
+          const url = app.querySelector(".wiki-title").innerText;
 
           await menu.hide();
-          await xen.apps.open(
-            "Xen/velocity",
-            document.querySelector(".os-dock-item[data-id='Xen/velocity']"),
-          );
+
+          if (!xen.apps.apps.find(
+            (app) => app.appId == "Xen/velocity",
+          ))
+            await xen.apps.open(
+              "Xen/velocity",
+              document.querySelector(".os-dock-item[data-id='Xen/velocity']"),
+            );
 
           const { master: el } = xen.apps.apps.find(
             (app) => app.appId == "Xen/velocity",
           );
 
           if (!el) return;
+
+          xen.wm.focus(el.id);
+
+          if (el.querySelector("iframe").contentWindow.Velocity)
+            new (el.querySelector("iframe").contentWindow.Velocity.Tab)(
+              url,
+              true,
+            );
+        });
+      });
+
+    searchContainer
+      .querySelectorAll(".start-app.velocity-browser-search")
+      .forEach((app) => {
+        app.addEventListener("click", async (e) => {
+          const url = app.innerText;
+
+          await menu.hide();
+
+          if (!xen.apps.apps.find(
+            (app) => app.appId == "Xen/velocity",
+          ))
+            await xen.apps.open(
+              "Xen/velocity",
+              document.querySelector(".os-dock-item[data-id='Xen/velocity']"),
+            );
+
+          const { master: el } = xen.apps.apps.find(
+            (app) => app.appId == "Xen/velocity",
+          );
+
+          if (!el) return;
+
+          xen.wm.focus(el.id);
 
           if (el.querySelector("iframe").contentWindow.Velocity)
             new (el.querySelector("iframe").contentWindow.Velocity.Tab)(
@@ -166,6 +204,8 @@ const menu = {
       news: [],
     };
 
+    var bare = window.xen.bare;
+
     term = term.trim();
 
     const apps = await window.xen.apps.getAppsData();
@@ -176,8 +216,6 @@ const menu = {
         .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
         .map((name) => apps.find((app) => app.name == name));
     }
-
-    console.log(data.apps, apps, names, term);
 
     data.apps = data.apps
       .map(
@@ -190,15 +228,9 @@ const menu = {
       .join("\n");
 
     if (term.length > 0) {
-      const searchResults = await fetch(window.xen.config.bare + "v2/", {
+      const searchResults = await bare.fetch(`http://duckduckgo.com/?q=${encodeURIComponent(term)}&format=json`, {
         method: "GET",
-        headers: {
-          "x-bare-headers": JSON.stringify({ host: "duckduckgo.com" }),
-          "x-bare-host": "duckduckgo.com",
-          "x-bare-protocol": "https:",
-          "x-bare-port": 443,
-          "x-bare-path": `/?q=${encodeURIComponent(term)}&format=json`,
-        },
+        redirect: "manual"
       }).then((response) => response.json());
 
       try {
@@ -244,15 +276,9 @@ const menu = {
         );
       }
 
-      const omniResults = await fetch(window.xen.config.bare + "v2/", {
+      const omniResults = await bare.fetch(`http://duckduckgo.com/ac/?q=${encodeURIComponent(term)}&format=json`, {
         method: "GET",
-        headers: {
-          "x-bare-headers": JSON.stringify({ host: "duckduckgo.com" }),
-          "x-bare-host": "duckduckgo.com",
-          "x-bare-protocol": "https:",
-          "x-bare-port": 443,
-          "x-bare-path": `/ac/?q=${encodeURIComponent(term)}&format=json`,
-        },
+        redirect: "manual"
       }).then((response) => response.json());
 
       data.search.push(
@@ -279,8 +305,6 @@ const menu = {
 
       data.search = data.search.join("\n");
     }
-
-    console.log(data);
 
     return Object.fromEntries(
       Object.entries(data).map(([key, value]) => [

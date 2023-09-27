@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const request = require("request");
 const http = require("node:http");
-const createBareServer = require("@tomphttp/bare-server-node");
+const { createBareServer } = require("@tomphttp/bare-server-node");
 const { polyfillNode: polyfill } = require("esbuild-plugin-polyfill-node");
 
 require("./repoServer");
@@ -32,9 +32,9 @@ try {
         },
       ],
       bundle: true,
-      format: "cjs",
+      format: "esm",
       outdir: "public/xen/web/",
-      logLevel: "info",
+      logLevel: "error",
       platform: "browser",
       minify: false,
       plugins: [
@@ -54,7 +54,7 @@ try {
       bundle: true,
       format: "esm",
       outdir: "public/xen/web/components",
-      logLevel: "info",
+      logLevel: "error",
       platform: "browser",
       minify: false,
       plugins: [
@@ -84,7 +84,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static("public"));
+app.use(express.static("public", {
+  maxAge: '0'
+}));
 
 app.get("/ipapi", async (req, res) => {
   try {

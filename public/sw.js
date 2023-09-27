@@ -1,4 +1,6 @@
-const fs = new (require("./xen/js/core/FileSystem.ts"))();
+const Filer = require("filer");
+const { default: fs } = require("./xen/js/core/FileSystem");
+
 const path = require("path-browserify");
 const { default: mime } = require("@dynamic-pkg/mime");
 
@@ -7,8 +9,6 @@ importScripts("/uv/uv.config.js");
 importScripts("/uv/uv.sw.js");
 
 const uv = new UVServiceWorker();
-
-self.addEventListener("activate", () => self.clients.claim());
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
@@ -112,6 +112,12 @@ self.addEventListener("fetch", (event) => {
                   return new Response(`404: ${url} not found`);
                 });
             }
+            
+            content = new Blob([
+              content,
+            ], {
+              type: mime.lookup(finalURL),
+            });
 
             if (mime.lookup(finalURL) == "text/html") {
               content = `<base href="/xen/~/apps/${app}/" /><script src="/xen/~/assets/inject.bundle.js"></script>${await content.text()}`;
@@ -133,8 +139,10 @@ self.addEventListener("fetch", (event) => {
           if (
             path.startsWith("/xen/img/") ||
             path.startsWith("/xen/font/") ||
+            path.startsWith("/xen/cursors/") ||
             req.destination == "font" ||
-            req.url.startsWith("https://cdn.jsdelivr.net/")
+            req.url.startsWith("https://cdn.jsdelivr.net/") ||
+            req.url.startsWith("https://ka-f.fontawesome.com/")
           )
             return (
               res = await fetch(req),
@@ -162,16 +170,31 @@ async function installNative(data) {
   appData.id = data.app;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
 
-  await fs.mkdir("/xen/system/apps/" + data.app);
+  try {
+    await fs.mkdir("/xen/system/apps/" + data.app);
+  } catch {};
 
   await Promise.all(
     appData.files.map(async (file) => {
-      const res = await fetch(
-        nativePath + data.app.replace("Xen/", "") + "/" + file,
-      );
-      const blob = await res.blob();
+      if (await fs.stat(Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file)).catch(() => false)) {
+        const res = await fetch(
+          nativePath + data.app.replace("Xen/", "") + "/" + file,
+        );
+        const blob = await res.blob();
 
-      await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, blob);
+        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
+      } else {
+        try {
+          await fs.mkdir(Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file));
+        } catch(e) {};
+
+        const res = await fetch(
+          nativePath + data.app.replace("Xen/", "") + "/" + file,
+        );
+        const blob = await res.blob();
+
+        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
+      }
     }),
   );
 
@@ -213,7 +236,7 @@ async function updateNative(data) {
     );
     const blob = await res.blob();
 
-    await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, blob);
+    await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
   }
 
   await fs.writeFile(
@@ -231,6 +254,8 @@ self.addEventListener("message", async (event) => {
     case "install":
       if (event.data.native === true) {
         await installNative(event.data).catch((err) => {
+          //console.error(err);
+
           event.ports[0].postMessage({
             type: "install",
             success: false,
@@ -250,6 +275,8 @@ self.addEventListener("message", async (event) => {
     case "update":
       if (event.data.native === true) {
         await updateNative(event.data).catch((err) => {
+          //console.error(err);
+
           event.ports[0].postMessage({
             type: "update",
             success: false,

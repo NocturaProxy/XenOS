@@ -1872,16 +1872,6 @@ const nr = D(
 function ir() {
   return (
     ee(async () => {
-      xt({
-        src: "https://www.googletagmanager.com/gtag/js?id=G-8TFXC6CJTR",
-        onLoad() {
-          window.dataLayer = window.dataLayer || [];
-          function e() {
-            window.dataLayer.push(arguments);
-          }
-          e("js", new Date()), e("config", "G-8TFXC6CJTR");
-        },
-      }),
         await de(
           () => import("./registerKeybinds-f3c15b5f.js"),
           [
