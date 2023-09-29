@@ -85,6 +85,42 @@ const taskbar = {
 
     this.currentApps.push([name, el]);
 
+    el.registerContextMenu({
+      type: "center",
+      get components() {
+        const open = 
+          !!(xen.apps.processes.find(process => process.name === id) ||
+          xen.apps.apps.find(app => app.appId === id));
+
+        var list = [];
+
+        if (open) {
+          list.push({
+            type: "button",
+            text: "Quit",
+            click: () => {
+              if (xen.apps.processes.find(process => process.name === id)) {
+                xen.apps.processes.find(process => process.name === id).worker?.terminate();
+              }
+
+              if (xen.apps.apps.find(app => app.appId === id)) {
+                xen.apps.close(
+                  xen.apps.apps.find(app => app.appId === id).master.id,
+                  xen.apps.apps.find(app => app.appId === id).master
+                );
+              }
+            }
+          })
+        }
+
+        return list;
+      }
+    }, () => {
+      this.ctxOpen = true;
+    }, () => {
+      this.ctxOpen = false;
+    });
+
     return el;
   },
   async appOpen(name, id, elID) {
@@ -167,7 +203,7 @@ const taskbar = {
       currentY = e.clientY;
 
       const show = async () => {
-        if (!this.ctxOpen) return;
+        if (this.ctxOpen) return;
 
         await this.show();
         moving = false;

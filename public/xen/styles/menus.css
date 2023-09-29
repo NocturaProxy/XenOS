@@ -1,11 +1,11 @@
 .context-menu {
   background: white;
-  border-radius: 5px;
+  border-radius: 4px;
   position: absolute;
-  min-width: 140px;
-  font-size: 14px;
+  min-width: 100px;
+  font-size: 13px;
   transition: opacity 0.07s ease;
-  padding: 5px 0;
+  padding: 4px 0;
   opacity: 1;
   z-index: 9999999999999999;
 }
@@ -13,7 +13,7 @@
 .context-btn {
   background: none;
   border: none;
-  padding: 5px;
+  padding: 3px 1px;
   width: 100%;
   text-align: left;
   font-size: 14px;

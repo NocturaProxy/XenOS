@@ -1,44 +1,51 @@
-import { L } from "../../apps/native/velocity/assets/index-1fe75362";
-
 const contextMenu = {
   async init() {
     window.HTMLElement.prototype.registerContextMenu = this.register;
   },
 
-  async register(opts) {
+  async register(opts, onopen = () => {}, onclose = () => {}) {
     this.menus = this.menus || [];
+    var open = false;
 
     var master = document.createElement("div");
     master.classList.add("context-menu");
     master.style.display = "none";
     document.body.appendChild(master);
 
+    onopen = new Proxy(onopen, {
+      apply(t, g, a) {
+        master.innerHTML = "";
+        
+        for (var i = 0; i < opts.components.length; i++) {
+          var component = opts.components[i];
+          var item = document.createElement("div");
+    
+          switch(component.type) {
+            case "button":
+              item.classList.add("context-btn");
+              item.innerHTML = component.text;
+              item.addEventListener("click", component.click);
+              break;
+            case "sep":
+            case "separator":
+              item.classList.add("context-sep");
+              break;
+            case "text":
+            default:
+              item.classList.add("context-text");
+              item.innerHTML = component.text;
+              break;
+          }
+    
+          master.appendChild(item);
+        }
+
+        return Reflect.apply(t, g, a);
+      }
+    })
+
     opts.master = master;
     opts.type = opts.type || "default";
-
-    for (var i = 0; i < opts.components.length; i++) {
-      var component = opts.components[i];
-      var item = document.createElement("div");
-
-      switch(component.type) {
-        case "button":
-          item.classList.add("context-btn");
-          item.innerHTML = component.text;
-          item.addEventListener("click", component.click);
-          break;
-        case "sep":
-        case "separator":
-          item.classList.add("context-sep");
-          break;
-        case "text":
-        default:
-          item.classList.add("context-text");
-          item.innerHTML = component.text;
-          break;
-      }
-
-      master.appendChild(item);
-    }
     
     document.addEventListener("click", (e) => {
       var el;
@@ -50,12 +57,13 @@ const contextMenu = {
         }
       }
 
-      if (e.target.classList.contains("context-btn")) {
+      if (e.target.classList?.contains("context-btn")) {
         el = e.target;
       }
 
       if (!el) {
         master.style.opacity = 0;
+        if (open) onclose(open = false);
         setTimeout(() => master.style.display = "none", 70);
       }
     });
@@ -66,6 +74,8 @@ const contextMenu = {
       if (document.querySelectorAll(".context-menu").length) {
         for (var i = 0; i < document.querySelectorAll(".context-menu").length; i++) {
           if (document.querySelectorAll(".context-menu")[i].style.display == "block") {
+            if (document.querySelectorAll(".context-menu")[i] == master && open)
+              onclose(open = false);
             document.querySelectorAll(".context-menu")[i].style.opacity = 0;
             setTimeout(() => document.querySelectorAll(".context-menu")[i].style.display = "none", 70);
             return;
@@ -94,6 +104,8 @@ const contextMenu = {
           }
           break;
       }
+
+      if (!open) onopen(open = true);
     });
 
     this.menus.push(opts);
