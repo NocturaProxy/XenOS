@@ -88,6 +88,8 @@ const taskbar = {
     return el;
   },
   async appOpen(name, id, elID) {
+    window.xen.favorites.opened(id);
+
     if (this.currentApps.find((a) => a[0] == name)) {
       var appEl = this.currentApps.find((a) => a[0] == name)[1];
 
@@ -153,6 +155,7 @@ const taskbar = {
         dateStyle: "short",
       });
   },
+  ctxOpen: false,
   init: async function () {
     this.runDate();
     setInterval(this.runDate, 1000);
@@ -164,6 +167,8 @@ const taskbar = {
       currentY = e.clientY;
 
       const show = async () => {
+        if (!this.ctxOpen) return;
+
         await this.show();
         moving = false;
 
@@ -171,6 +176,8 @@ const taskbar = {
       };
 
       const hide = async () => {
+        if (this.ctxOpen) return;
+        
         await this.hide();
         moving = false;
 

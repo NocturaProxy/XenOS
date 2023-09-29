@@ -194,6 +194,8 @@ const appManager = {
 
     this.apps.splice(app, 1);
 
+    xen.favorites.closed(id);
+
     element.remove();
     return true;
   },

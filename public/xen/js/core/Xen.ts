@@ -109,7 +109,8 @@ class Xen {
       "components/battery.js",
       "components/cursor.js",
       "components/context.js",
-      "components/pwa.js"
+      "components/pwa.js",
+      "components/favorites.js"
     );
 
     //await window.xen.apps.open("Xen/welcome");

@@ -11045,7 +11045,8 @@ var require_Xen = __commonJS({
           "components/battery.js",
           "components/cursor.js",
           "components/context.js",
-          "components/pwa.js"
+          "components/pwa.js",
+          "components/favorites.js"
         );
         return;
       }

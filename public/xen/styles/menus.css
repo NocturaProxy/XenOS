@@ -1,0 +1,40 @@
+.context-menu {
+  background: white;
+  border-radius: 5px;
+  position: absolute;
+  min-width: 140px;
+  font-size: 14px;
+  transition: opacity 0.07s ease;
+  padding: 5px 0;
+  opacity: 1;
+  z-index: 9999999999999999;
+}
+
+.context-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  transition: 0.1s ease;
+  border-radius: 0;
+}
+
+.context-btn:hover {
+  background: #eaeaea;
+}
+
+.context-btn:active {
+  background: #d8d8d8;
+}
+
+.context-text {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.context-sep {
+  border-top: 1px solid #eaeaea;
+  margin: 3px 0;
+}
