@@ -94,6 +94,14 @@ const taskbar = {
 
         var list = [];
 
+        list.push({
+          type: "button",
+          text: "Open",
+          click: () => {
+
+          }
+        })
+
         if (open) {
           list.push({
             type: "button",
@@ -116,8 +124,12 @@ const taskbar = {
         return list;
       }
     }, () => {
+      el.style.filter = "brightness(0.7)";
+
       this.ctxOpen = true;
     }, () => {
+      el.style.filter = "";
+
       this.ctxOpen = false;
     });
 

@@ -15,7 +15,7 @@ const contextMenu = {
     onopen = new Proxy(onopen, {
       apply(t, g, a) {
         master.innerHTML = "";
-        
+
         for (var i = 0; i < opts.components.length; i++) {
           var component = opts.components[i];
           var item = document.createElement("div");
@@ -83,6 +83,8 @@ const contextMenu = {
         }
       }
 
+      if (!open) onopen(open = true);
+
       master.style.display = "block";
       master.style.opacity = 1;
       var bounds = master.getBoundingClientRect();
@@ -90,6 +92,7 @@ const contextMenu = {
 
       switch(opts.type) {
         case "center":
+          console.log(master.style.top = tBounds.top - 10 - bounds.height + "px");
           master.style.top = tBounds.top - 10 - bounds.height + "px";
           master.style.left = tBounds.left + tBounds.width / 2 - bounds.width / 2 + "px";
           break;
@@ -104,8 +107,6 @@ const contextMenu = {
           }
           break;
       }
-
-      if (!open) onopen(open = true);
     });
 
     this.menus.push(opts);
