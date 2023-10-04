@@ -236,8 +236,7 @@
   font-family: "IBM Plex Sans";
   font-style: normal;
   font-weight: 400;
-  src:
-    url("/xen/apps/native/terminal/IBMPlexSans-Medium.woff") format("woff");
+  src: url("/xen/apps/native/terminal/IBMPlexSans-Medium.woff") format("woff");
 }
 
 .terminal {

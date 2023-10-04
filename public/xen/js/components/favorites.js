@@ -1,15 +1,15 @@
 // determine favorite apps for taskmenu
 
 export default window.xen.favorites = {
-    async init() {
+  async init() {
+    // TODO: init favorite app stuff
+  },
 
-    },
+  opened(id) {
+    return id;
+  },
 
-    opened(id) {
-
-    },
-
-    closed(id) {
-        
-    }
-}
+  closed(id) {
+    return id;
+  },
+};

@@ -1,5 +1,14 @@
+interface XenDragEvent extends Event {
+  detail: {
+    id: string;
+    x: number;
+    y: number;
+    type: string;
+  };
+}
+
 class WindowManager {
-  windows = [];
+  windows: HTMLElement[] = [];
 
   init = async () => {
     window.addEventListener("xendrag", (e: any) => {
@@ -7,9 +16,9 @@ class WindowManager {
 
       const windowElement = document.getElementById(id);
 
-      if (!windowElement) return;
+      if (windowElement == null) return;
 
-      var dragTarget = windowElement.querySelector(".box-header-title");
+      const dragTarget = windowElement.querySelector(".box-header-title");
 
       dragTarget?.dispatchEvent(
         new MouseEvent(type, {
@@ -43,11 +52,11 @@ class WindowManager {
     title: string,
     content: HTMLElement,
     id: string,
-    x: number = 0,
-    y: number = 0,
-    width: number = 0,
-    height: number = 0,
-    visible: boolean = true,
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+    visible = true,
   ) => {
     const windowElement = document.createElement("div");
     windowElement.classList.add("drag", "box");
@@ -138,8 +147,9 @@ class WindowManager {
         document.querySelector(".os-mini")?.contains(e.target) ||
         document.querySelector(".os-full")?.contains(e.target) ||
         document.querySelector(".os-exit")?.contains(e.target)
-      )
+      ) {
         return false;
+      }
 
       if (windowElement.dataset.mini === "true") return false;
 
@@ -177,14 +187,14 @@ class WindowManager {
         document.removeEventListener("mousemove", mouseMoveHandler);
         document.removeEventListener("mouseup", mouseUpHandler);
 
-        let top = e.clientY - offsetY;
+        const top = e.clientY - offsetY;
 
         if (top + titleBox.height > window.innerHeight) {
           windowElement.style.top = `${window.innerHeight - titleBox.height}px`;
         }
 
         if (top < 0) {
-          windowElement.style.top = `0px`;
+          windowElement.style.top = "0px";
         }
 
         document.querySelectorAll(".drag iframe").forEach((iframe: any) => {
@@ -202,7 +212,7 @@ class WindowManager {
   focus(id: string) {
     const elem = document.getElementById(id);
 
-    if (!elem) return;
+    if (elem == null) return;
 
     const zIndex =
       Math.max(
@@ -215,33 +225,33 @@ class WindowManager {
   }
 
   resizeListener(master: HTMLElement) {
-    var left = master.querySelector(".leftResize"),
-      right = master.querySelector(".rightResize"),
-      top = master.querySelector(".topResize"),
-      bottom = master.querySelector(".bottomResize");
+    const left = master.querySelector(".leftResize");
+    const right = master.querySelector(".rightResize");
+    const top = master.querySelector(".topResize");
+    const bottom = master.querySelector(".bottomResize");
 
-    var topLeft = master.querySelector(".topLeftResize"),
-      topRight = master.querySelector(".topRightResize"),
-      bottomLeft = master.querySelector(".bottomLeftResize"),
-      bottomRight = master.querySelector(".bottomRightResize");
+    const topLeft = master.querySelector(".topLeftResize");
+    const topRight = master.querySelector(".topRightResize");
+    const bottomLeft = master.querySelector(".bottomLeftResize");
+    const bottomRight = master.querySelector(".bottomRightResize");
 
     [left, right, top, bottom].forEach((side, index) => {
-      var s = ["left", "right", "top", "bottom"][index];
+      const s = ["left", "right", "top", "bottom"][index];
 
-      var startX: any;
-      var startY: any;
-      var computed: any;
-      var startHeight: any;
-      var startWidth: any;
-      var startTop: any;
-      var startLeft: any;
+      let startX: any;
+      let startY: any;
+      let computed: any;
+      let startHeight: any;
+      let startWidth: any;
+      let startTop: any;
+      let startLeft: any;
 
-      var mousemove = function (e: MouseEvent) {
+      const mousemove = function (e: MouseEvent) {
         requestAnimationFrame(() => {
           if (s == "top") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-            var distTop: any =
+            const distTop: any =
               height > 70
                 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
                 : "";
@@ -250,12 +260,12 @@ class WindowManager {
             master.style.height = (height > 70 ? height : 70) + "px";
             master.style.top = distTop + "px";
           } else if (s == "bottom") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
             master.style.height = (height > 70 ? height : 70) + "px";
             master.style.top = startTop;
           } else if (s == "left") {
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
             master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left =
@@ -263,7 +273,7 @@ class WindowManager {
                 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
                 : "") + "px";
           } else if (s == "right") {
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
             master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left = startLeft;
@@ -295,7 +305,7 @@ class WindowManager {
         document.addEventListener("mousemove", mousemove);
       });
 
-      document.addEventListener("mouseup", function (e) {
+      document.addEventListener("mouseup", function () {
         if (!startX && !startY) return;
 
         master.style.transition = "";
@@ -311,24 +321,24 @@ class WindowManager {
     });
 
     [topLeft, topRight, bottomLeft, bottomRight].forEach((side, index) => {
-      var s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
+      const s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
 
-      var startX: any;
-      var startY: any;
-      var computed: any;
-      var startHeight: any;
-      var startWidth: any;
-      var startTop: any;
-      var startLeft: any;
+      let startX: any;
+      let startY: any;
+      let computed: any;
+      let startHeight: any;
+      let startWidth: any;
+      let startTop: any;
+      let startLeft: any;
 
-      var mousemove = function (e: MouseEvent) {
+      const mousemove = function (e: MouseEvent) {
         requestAnimationFrame(() => {
           if (s == "topLeft") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
-            var distTop: any =
+            const distTop: any =
               height > 70
                 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
                 : "";
@@ -342,11 +352,11 @@ class WindowManager {
                 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
                 : "") + "px";
           } else if (s == "topRight") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
-            var distTop: any =
+            const distTop: any =
               height > 70
                 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY)
                 : "";
@@ -357,9 +367,9 @@ class WindowManager {
             master.style.width = (width > 70 ? width : 70) + "px";
             master.style.left = startLeft;
           } else if (s == "bottomLeft") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
             master.style.height = (height > 70 ? height : 70) + "px";
             master.style.top = startTop;
@@ -369,9 +379,9 @@ class WindowManager {
                 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX)
                 : "") + "px";
           } else if (s == "bottomRight") {
-            var height =
+            const height =
               parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
-            var width =
+            const width =
               parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
             master.style.height = (height > 70 ? height : 70) + "px";
             master.style.top = startTop;
@@ -405,7 +415,7 @@ class WindowManager {
         document.addEventListener("mousemove", mousemove);
       });
 
-      document.addEventListener("mouseup", function (e) {
+      document.addEventListener("mouseup", function () {
         if (!startX && !startY) return;
 
         master.style.transition = "";
@@ -424,7 +434,7 @@ class WindowManager {
   minimizeWindow = (id: string) => {
     const windowElement = document.getElementById(id);
 
-    if (!windowElement) return false;
+    if (windowElement == null) return false;
 
     windowElement.style.transform = "scale(0.15)";
     windowElement.style.transition = "all 0.7s ease";
@@ -459,8 +469,8 @@ class WindowManager {
     const down = (e: any) => {
       if (e.which !== 1) return;
 
-      let startX = e.clientX - e.target.offsetLeft;
-      let startY = e.clientY - e.target.offsetTop;
+      const startX = e.clientX - e.target.offsetLeft;
+      const startY = e.clientY - e.target.offsetTop;
 
       function move(event: any) {
         if (windowElement?.dataset.fullscreen === "true") return;
@@ -474,7 +484,7 @@ class WindowManager {
         if (top > window.innerHeight - 310) top = window.innerHeight - 310;
 
         requestAnimationFrame(() => {
-          e.target.style.position = `absolute`;
+          e.target.style.position = "absolute";
           e.target.style.top = `${top}px`;
           e.target.style.left = `${left}px`;
         });
@@ -493,8 +503,9 @@ class WindowManager {
             element.style.pointerEvents = "auto";
           });
 
-          if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+          if (parseInt(windowElement.style.top.replace("px", "")) < 0) {
             windowElement.style.top = "0";
+          }
 
           setTimeout(() => (windowElement.style.transition = ""), 700);
 
@@ -515,7 +526,7 @@ class WindowManager {
   unminimize = async (id: string) => {
     const windowElement = document.getElementById(id);
 
-    if (!windowElement) return false;
+    if (windowElement == null) return false;
 
     windowElement.style.transform = "scale(1)";
     windowElement.dataset.mini = "false";
@@ -526,8 +537,9 @@ class WindowManager {
       element.style.pointerEvents = "auto";
     });
 
-    if (parseInt(windowElement.style.top.replace("px", "")) < 0)
+    if (parseInt(windowElement.style.top.replace("px", "")) < 0) {
       windowElement.style.top = "0";
+    }
 
     await new Promise((r) => setTimeout(r, 700));
 
@@ -541,7 +553,7 @@ class WindowManager {
   fullscreen = async (id: string) => {
     const windowElement = document.getElementById(id);
 
-    if (!windowElement) return false;
+    if (windowElement == null) return false;
 
     if (windowElement.dataset.mini === "true") {
       await this.unminimize(id);
@@ -593,4 +605,4 @@ class WindowManager {
   };
 }
 
-module.exports = WindowManager;
+export default WindowManager;

@@ -1,8 +1,9 @@
-const Filer = require("filer");
-const { default: fs } = require("./xen/js/core/FileSystem");
+/* global importScripts, UVServiceWorker, caches */
 
-const path = require("path-browserify");
-const { default: mime } = require("@dynamic-pkg/mime");
+import Filer from "filer";
+import fs from "./xen/js/core/FileSystem";
+import path from "path-browserify";
+import mime from "@dynamic-pkg/mime";
 
 importScripts("/uv/uv.bundle.js");
 importScripts("/uv/uv.config.js");
@@ -17,8 +18,9 @@ self.addEventListener("fetch", (event) => {
     (async (res) => {
       if (req.url.startsWith("chrome-extension://")) return await fetch(req);
 
-      if (req.url.startsWith(location.origin + "/~/uv/"))
+      if (req.url.startsWith(location.origin + "/~/uv/")) {
         return await uv.fetch(event);
+      }
 
       if (req.url.startsWith(location.origin + "/xen/~/")) {
         const _url = req.url.replace(location.origin + "/xen/~", "");
@@ -34,15 +36,15 @@ self.addEventListener("fetch", (event) => {
 
         if (_url.startsWith("/about:")) {
           switch (_url.slice(7)) {
-            default:
-            case "blank":
-              return new Response("", {
+            case "srcdoc":
+              return new Response(await req.text(), {
                 headers: {
                   "Content-Type": "text/html",
                 },
               });
-            case "srcdoc":
-              return new Response(await req.text(), {
+            case "blank":
+            default:
+              return new Response("", {
                 headers: {
                   "Content-Type": "text/html",
                 },
@@ -69,12 +71,6 @@ self.addEventListener("fetch", (event) => {
             .split("/")
             .slice(0, 2)
             .join("/");
-          const [author, appName] = app.split("/");
-
-          let native = false;
-
-          if (author == "Xen") native = true;
-
           const url = `/${_url.split("/").slice(4).join("/")}`;
 
           if (url.startsWith("/meta")) {
@@ -96,7 +92,7 @@ self.addEventListener("fetch", (event) => {
                 (finalURL = path.join(
                   "/xen/system/apps/",
                   app,
-                  url == "/" ? "/index.html" : url,
+                  url === "/" ? "/index.html" : url,
                 )),
               );
             } catch {
@@ -105,22 +101,20 @@ self.addEventListener("fetch", (event) => {
                   (finalURL = path.join(
                     "/xen/system/apps/",
                     app,
-                    url == "/" ? "/index.html" : url + ".html",
+                    url === "/" ? "/index.html" : url + ".html",
                   )),
                 )
                 .catch(() => {
                   return new Response(`404: ${url} not found`);
                 });
             }
-            
-            content = new Blob([
-              content,
-            ], {
+
+            content = new Blob([content], {
               type: mime.lookup(finalURL),
             });
 
-            if (mime.lookup(finalURL) == "text/html") {
-              content = `<base href="/xen/~/apps/${app}/" /><script src="/xen/~/assets/inject.bundle.js"></script>${await content.text()}`;
+            if (mime.lookup(finalURL) === "text/html") {
+              content = `<base href='/xen/~/apps/${app}/' /><script src='/xen/~/assets/inject.bundle.js'></script>${await content.text()}`;
             }
 
             return new Response(content, {
@@ -140,16 +134,16 @@ self.addEventListener("fetch", (event) => {
             path.startsWith("/xen/img/") ||
             path.startsWith("/xen/font/") ||
             path.startsWith("/xen/cursors/") ||
-            req.destination == "font" ||
+            req.destination === "font" ||
             req.url.startsWith("https://cdn.jsdelivr.net/") ||
             req.url.startsWith("https://ka-f.fontawesome.com/")
-          )
-            return (
-              res = await fetch(req),
-              cache.put(req.url, res.clone()),
-              res
-            );
-          else return await fetch(req);
+          ) {
+            res = await fetch(req);
+            cache.put(req.url, res.clone());
+            return res;
+          } else {
+            return await fetch(req);
+          }
         } else {
           return (await cache.match(req)) || (await fetch(req));
         }
@@ -158,9 +152,11 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-let nativePath = "/xen/apps/native/";
+const nativePath = "/xen/apps/native/";
 
-function installApp(data) {}
+function installApp(data) {
+  return data;
+}
 
 async function installNative(data) {
   const appData = await fetch(
@@ -172,28 +168,44 @@ async function installNative(data) {
 
   try {
     await fs.mkdir("/xen/system/apps/" + data.app);
-  } catch {};
+  } catch {
+    null;
+  }
 
   await Promise.all(
     appData.files.map(async (file) => {
-      if (await fs.stat(Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file)).catch(() => false)) {
+      if (
+        await fs
+          .stat(Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file))
+          .catch(() => false)
+      ) {
         const res = await fetch(
           nativePath + data.app.replace("Xen/", "") + "/" + file,
         );
         const blob = await res.blob();
 
-        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
+        await fs.writeFile(
+          "/xen/system/apps/" + data.app + "/" + file,
+          Filer.Buffer.from(await blob.arrayBuffer()),
+        );
       } else {
         try {
-          await fs.mkdir(Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file));
-        } catch(e) {};
+          await fs.mkdir(
+            Filer.path.dirname("/xen/system/apps/" + data.app + "/" + file),
+          );
+        } catch (e) {
+          null;
+        }
 
         const res = await fetch(
           nativePath + data.app.replace("Xen/", "") + "/" + file,
         );
         const blob = await res.blob();
 
-        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
+        await fs.writeFile(
+          "/xen/system/apps/" + data.app + "/" + file,
+          Filer.Buffer.from(await blob.arrayBuffer()),
+        );
       }
     }),
   );
@@ -226,17 +238,20 @@ async function updateNative(data) {
     await fs.readFile(`/xen/system/apps/${data.app}/app.json`, "utf-8"),
   );
 
-  if (installed.version == appData.version) return false;
+  if (installed.version === appData.version) return false;
 
   appData.files.splice(appData.files.indexOf("app.json"), 1);
 
-  for (let file of appData.files) {
+  for (const file of appData.files) {
     const res = await fetch(
       nativePath + data.app.replace("Xen/", "") + "/" + file,
     );
     const blob = await res.blob();
 
-    await fs.writeFile("/xen/system/apps/" + data.app + "/" + file, Filer.Buffer.from(await blob.arrayBuffer()));
+    await fs.writeFile(
+      "/xen/system/apps/" + data.app + "/" + file,
+      Filer.Buffer.from(await blob.arrayBuffer()),
+    );
   }
 
   await fs.writeFile(
@@ -254,8 +269,6 @@ self.addEventListener("message", async (event) => {
     case "install":
       if (event.data.native === true) {
         await installNative(event.data).catch((err) => {
-          //console.error(err);
-
           event.ports[0].postMessage({
             type: "install",
             success: false,
@@ -275,8 +288,6 @@ self.addEventListener("message", async (event) => {
     case "update":
       if (event.data.native === true) {
         await updateNative(event.data).catch((err) => {
-          //console.error(err);
-
           event.ports[0].postMessage({
             type: "update",
             success: false,
@@ -291,10 +302,11 @@ self.addEventListener("message", async (event) => {
       }
       break;
     case "uninstall":
+      event.preventDefault();
       break;
   }
 });
 
 // Immediately apply updates
-self.addEventListener("install", (event) => self.skipWaiting());
+self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(clients.claim()));

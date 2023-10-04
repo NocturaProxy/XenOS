@@ -1,52 +1,52 @@
 export const help = async (args, process) => {
-    const { fs } = process;
+  const { fs } = process;
 
-    return `
+  return `
         ping - ping a server
     `;
-}
+};
 
 export const run = async (args, process) => {
-    const { fs, http, term } = process;
-    let [ hostname ] = args;
-    
-    let active = true;
+  const { fs, http, term } = process;
+  let [hostname] = args;
 
-    if (!hostname) throw "";
+  let active = true;
 
-    term.attachCustomKeyEventHandler(async (e) => {
-        if (!active) return;
+  if (!hostname) throw "";
 
-        if (e.key === "c" && e.ctrlKey) {
-            active = false;
-        }
+  term.attachCustomKeyEventHandler(async (e) => {
+    if (!active) return;
+
+    if (e.key === "c" && e.ctrlKey) {
+      active = false;
+    }
+  });
+
+  try {
+    new URL(hostname);
+  } catch {
+    hostname = `http://${hostname}`;
+  }
+
+  for (let i = 0; active; i++) {
+    var start = Date.now();
+
+    let res = await http.fetch(hostname, {
+      redirect: "manual",
     });
 
-    try {
-        new URL(hostname);
-    } catch {
-        hostname = `http://${hostname}`;
-    }
+    var { size } = await res.blob();
 
-    for (let i = 0; active; i++) {
-        var start = Date.now();
+    var end = Date.now();
+    var time = end - start;
 
-        let res = await http.fetch(hostname, {
-            redirect: "manual"
-        });
+    term.write("\r\n");
+    term.write(`PING ${hostname}: ${size} data bytes, ${time}ms`);
 
-        var { size } = await res.blob();
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-        var end = Date.now();
-        var time = end - start;
+    continue;
+  }
 
-        term.write("\r\n");
-        term.write(`PING ${hostname}: ${size} data bytes, ${time}ms`);
-
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        continue;
-    }
-
-    return true;
-}
+  return true;
+};

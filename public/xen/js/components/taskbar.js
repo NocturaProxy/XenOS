@@ -1,7 +1,5 @@
 window.Element.prototype.bounce = async function () {
-  var element = this;
-
-  element.animate(
+  this.animate(
     [
       {
         transform: "translate3d(0, 0, 0)",
@@ -18,9 +16,9 @@ window.Element.prototype.bounce = async function () {
     },
   );
 
-  await new Promise((r) => setTimeout(r, 450));
+  await new Promise((resolve) => setTimeout(resolve, 450));
 
-  element.animate(
+  this.animate(
     [
       {
         transform: "translate3d(0, -10px, 0)",
@@ -36,7 +34,7 @@ window.Element.prototype.bounce = async function () {
     },
   );
 
-  await new Promise((r) => setTimeout(r, 350));
+  await new Promise((resolve) => setTimeout(resolve, 350));
 
   return true;
 };
@@ -51,7 +49,7 @@ const taskbar = {
 
   async getApps() {
     return JSON.parse(
-      await xen.fs.readFile("/xen/system/taskbar/pinned.json", "utf-8"),
+      await window.xen.fs.readFile("/xen/system/taskbar/pinned.json", "utf-8"),
     );
   },
   async createElement(name, id) {
@@ -62,7 +60,7 @@ const taskbar = {
     );
 
     const icon =
-      path.join("/xen/~/apps/", id, appData.icon) ||
+      window.path.join("/xen/~/apps/", id, appData.icon) ||
       "/xen/~/apps/" + id + "/icon.png";
 
     el.classList.add("os-dock-item");
@@ -70,76 +68,88 @@ const taskbar = {
     el.dataset.name = appData.name;
     el.dataset.id = id;
     el.innerHTML = `
-            <img alt="App Logo" src="${icon}">
-            <span class="os-dock-indicator"></span>
+            <img alt='App Logo' src='${icon}'>
+            <span class='os-dock-indicator'></span>
         `;
 
     el.addEventListener("click", async () => {
-      if (el.dataset.open == "true") {
+      if (el.dataset.open === "true") {
         // TODO: App Event Emitter
         return window.xen.apps;
       }
 
-      const app = await xen.apps.open(id, el);
+      // TODO: More app customizations from taskbar
+      await window.xen.apps.open(id, el);
     });
 
     this.currentApps.push([name, el]);
 
-    el.registerContextMenu({
-      type: "center",
-      get components() {
-        const open = 
-          !!(xen.apps.processes.find(process => process.name === id) ||
-          xen.apps.apps.find(app => app.appId === id));
+    el.registerContextMenu(
+      {
+        type: "center",
+        get components() {
+          const open = !!(
+            window.xen.apps.processes.find((process) => process.name === id) ||
+            window.xen.apps.apps.find((app) => app.appId === id)
+          );
+          const list = [];
 
-        var list = [];
-
-        list.push({
-          type: "button",
-          text: "Open",
-          click: () => {
-
-          }
-        })
-
-        if (open) {
           list.push({
             type: "button",
-            text: "Quit",
+            text: "Open",
             click: () => {
-              if (xen.apps.processes.find(process => process.name === id)) {
-                xen.apps.processes.find(process => process.name === id).worker?.terminate();
-              }
+              // TODO: stuff
+            },
+          });
 
-              if (xen.apps.apps.find(app => app.appId === id)) {
-                xen.apps.close(
-                  xen.apps.apps.find(app => app.appId === id).master.id,
-                  xen.apps.apps.find(app => app.appId === id).master
-                );
-              }
-            }
-          })
-        }
+          if (open) {
+            list.push({
+              type: "button",
+              text: "Quit",
+              click: () => {
+                if (
+                  window.xen.apps.processes.find(
+                    (process) => process.name === id,
+                  )
+                ) {
+                  window.xen.apps.processes
+                    .find((process) => process.name === id)
+                    .worker?.terminate();
+                }
 
-        return list;
-      }
-    }, () => {
-      el.style.filter = "brightness(0.7)";
+                if (window.xen.apps.apps.find((app) => app.appId === id)) {
+                  window.xen.apps.close(
+                    window.xen.apps.apps.find((app) => app.appId === id).master
+                      .id,
+                    window.xen.apps.apps.find((app) => app.appId === id).master,
+                  );
+                }
+              },
+            });
+          }
 
-      this.ctxOpen = true;
-    }, () => {
-      el.style.filter = "";
+          return list;
+        },
+      },
+      () => {
+        el.style.filter = "brightness(0.7)";
 
-      this.ctxOpen = false;
-    });
+        this.ctxOpen = true;
+      },
+      () => {
+        el.style.filter = "";
+
+        this.ctxOpen = false;
+      },
+    );
 
     return el;
   },
-  async appOpen(name, id, elID) {
+  async appOpen(name, id) {
     window.xen.favorites.opened(id);
 
-    if (this.currentApps.find((a) => a[0] == name)) {
-      var appEl = this.currentApps.find((a) => a[0] == name)[1];
+    if (this.currentApps.find((a) => a[0] === name)) {
+      const appEl = this.currentApps.find((a) => a[0] === name)[1];
 
       appEl.dataset.open = "true";
 
@@ -147,9 +157,9 @@ const taskbar = {
     } else return this.addApp(...arguments);
   },
   async addApp(name, id) {
-    if (this.currentApps.find((a) => a[0] == name)) return;
+    if (this.currentApps.find((a) => a[0] === name)) return;
 
-    let el = await this.createElement("", id);
+    const el = await this.createElement("", id);
 
     el.style.transform = "scale(0)";
     el.dataset.open = "true";
@@ -158,39 +168,39 @@ const taskbar = {
     this.currentApps.push([name, el]);
     this.dockApps.appendChild(el);
 
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-    requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       el.style.transform = "scale(1)";
     });
 
-    await new Promise((r) => setTimeout(r, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     return el;
   },
-  async appClose(name, id) {
-    if (this.currentApps.find((a) => a[0] == name)) {
-      var appEl = this.currentApps.find((a) => a[0] == name)[1];
+  async appClose(name) {
+    if (this.currentApps.find((a) => a[0] === name)) {
+      const appEl = this.currentApps.find((a) => a[0] === name)[1];
 
       appEl.dataset.open = "false";
 
       appEl.querySelector(".os-dock-indicator").style.opacity = "0";
 
       if (appEl.dataset.temporary) {
-        requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           appEl.style.transform = "scale(0)";
         });
 
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
 
         appEl.remove();
 
         this.currentApps.splice(
-          this.currentApps.findIndex((a) => a[0] == name),
+          this.currentApps.findIndex((app) => app[0] === name),
           1,
         );
       }
-    } else return;
+    }
   },
   runDate() {
     document.getElementById("os-dock-time").innerText =
@@ -220,25 +230,31 @@ const taskbar = {
         await this.show();
         moving = false;
 
-        if (currentY < window.innerHeight - 60) return hide(moving = true);
+        if (currentY < window.innerHeight - 60) return hide((moving = true));
       };
 
       const hide = async () => {
         if (this.ctxOpen) return;
-        
         await this.hide();
         moving = false;
 
-        if (currentY > window.innerHeight - 40) return show(moving = true);
+        if (currentY > window.innerHeight - 40) return show((moving = true));
       };
 
       if (e.clientY > window.innerHeight - 40 && this.hidden && !moving) {
         moving = true;
 
         setTimeout(() => {
-          if (this.taskMenu.open) return moving = false;
-          if (!(currentY > window.innerHeight - 40)) return hide(moving = false);
-          if (this.hidden == false) return moving = false;
+          if (this.taskMenu.open) {
+            moving = false;
+            return;
+          }
+          if (!(currentY > window.innerHeight - 40))
+            return hide((moving = false));
+          if (this.hidden === false) {
+            moving = false;
+            return;
+          }
 
           return show();
         }, 100);
@@ -246,13 +262,22 @@ const taskbar = {
         moving = true;
 
         setTimeout(() => {
-          if (this.taskMenu.open) return moving = false;
-          if (!(currentY < window.innerHeight - 60)) return show(moving = false);
-          if (this.hidden == true) return moving = false;
+          if (this.taskMenu.open) {
+            moving = false;
+            return;
+          }
+          if (!(currentY < window.innerHeight - 60))
+            return show((moving = false));
+          if (this.hidden === true) {
+            moving = false;
+            return;
+          }
 
           return setTimeout(() => {
             if (currentY < window.innerHeight - 60) return hide();
-            else return moving = false;
+            else {
+              moving = false;
+            }
           }, 600);
         }, 100);
       }
@@ -267,8 +292,6 @@ const taskbar = {
         await this.createElement(apps[i].name, apps[i].id),
       );
     }
-
-    return;
   },
   hidden: false,
   show: async function () {

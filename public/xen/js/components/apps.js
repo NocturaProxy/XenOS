@@ -1,8 +1,8 @@
 const appManager = {
   apps: [],
   processes: [],
-  appsStore: await caches.open("xen-apps"),
-  installedApps: await xen.fs
+  appsStore: await window.caches.open("xen-apps"),
+  installedApps: await window.xen.fs
     .readFile("/xen/system/apps/installed.json", "utf-8")
     .then(JSON.parse),
   nativeApps: [
@@ -20,8 +20,9 @@ const appManager = {
   },
 
   install: async function (id) {
-    if (!navigator.serviceWorker.controller)
+    if (!navigator.serviceWorker.controller) {
       throw new Error("Invalid XEN Instance");
+    }
 
     const channel = new MessageChannel();
 
@@ -30,7 +31,7 @@ const appManager = {
         {
           type: "install",
           app: id,
-          repo: location.origin,
+          repo: window.location.origin,
           native: this.nativeApps.includes(id),
         },
         [channel.port2],
@@ -53,35 +54,36 @@ const appManager = {
   getAppsData: async function () {
     return await Promise.all(
       window.xen.apps.installedApps.map(async (app) => {
-        const req = await fetch("/xen/~/apps/" + app + "/meta").then(
-          (response) => response.json(),
+        const req = await fetch(`/xen/~/apps/${app}/meta`).then((response) =>
+          response.json(),
         );
 
         return {
           id: app,
           name: req.name,
-          icon: path.join("/xen/~/apps/", app, req.icon),
+          icon: window.path.join("/xen/~/apps/", app, req.icon),
         };
       }),
     );
   },
 
   getAppData: async function (id) {
-    const req = await fetch("/xen/~/apps/" + id + "/meta").then((response) =>
+    const req = await fetch(`/xen/~/apps/${id}/meta`).then((response) =>
       response.json(),
     );
 
     return {
       id,
       name: req.name,
-      icon: path.join("/xen/~/apps/", id, req.icon),
+      icon: window.path.join("/xen/~/apps/", id, req.icon),
     };
   },
 
   update: async function (id) {
     try {
-      if (!navigator.serviceWorker.controller)
+      if (!navigator.serviceWorker.controller) {
         throw new Error("Invalid XEN Instance");
+      }
 
       const channel = new MessageChannel();
 
@@ -90,7 +92,7 @@ const appManager = {
           {
             type: "update",
             app: id,
-            repo: location.origin,
+            repo: window.location.origin,
             native: this.nativeApps.includes(id),
           },
           [channel.port2],
@@ -108,8 +110,7 @@ const appManager = {
       });
 
       return true;
-    } catch(e) {
-      console.log("Fallback: ", id);
+    } catch (e) {
       return await this.install(id);
     }
   },
@@ -121,29 +122,36 @@ const appManager = {
       response.json(),
     );
 
-    if (this.opening.includes(id)) return false;
+    if (this.opening.includes(id)) {
+      return false;
+    }
+
     this.opening.push(id);
 
-    if (!el) el = await window.xen.taskbar.addApp(appData.name, id);
+    if (!el) {
+      el = await window.xen.taskbar.addApp(appData.name, id);
+    }
 
+    let complete = false;
+
+    function bounce() {
+      if (complete) {
+        return false;
+      }
+
+      if (el) {
+        el.bounce();
+      }
+    }
+
+    const pid = window.xen.apps.createID();
     let app;
-    let pid = xen.apps.createID();
 
     switch (appData.type) {
       case "static": {
-        let complete = false;
-
-        function bounce() {
-          if (complete) return clearInterval(interval);
-
-          if (el) {
-            el.bounce();
-          }
-        }
-
         bounce();
 
-        let interval = setInterval(bounce, 800);
+        setInterval(bounce, 800);
 
         app = await this.register({
           name: appData.name,
@@ -151,7 +159,7 @@ const appManager = {
           type: "static",
           url: appData.staticURL.match(/^https?:\/\//g)
             ? appData.staticURL
-            : path.join(`/xen/~/apps/${id}/`, appData.staticURL),
+            : window.path.join(`/xen/~/apps/${id}/`, appData.staticURL),
           x: 100,
           y: 200,
           width: 700,
@@ -170,9 +178,9 @@ const appManager = {
         // scripted app, check appLoader.js
         app = await window.xen.apps.loader.load(
           appData,
-          await fetch(path.join(`/xen/~/apps/${id}`, appData.entry)).then(
-            (response) => response.text(),
-          ),
+          await fetch(
+            window.path.join(`/xen/~/apps/${id}`, appData.entry),
+          ).then((response) => response.text()),
           el,
           pid,
         );
@@ -183,18 +191,22 @@ const appManager = {
 
     this.opening.splice(this.opening.indexOf(id), 1);
 
-    this.processes.push({ name: id, pid, worker: app instanceof Worker ? app : null });
+    this.processes.push({
+      name: id,
+      pid,
+      worker: app instanceof window.Worker ? app : null,
+    });
 
     return app;
   },
 
   close: async function (id, element) {
-    const app = this.apps.findIndex((a) => a.id == id);
+    const app = this.apps.findIndex((a) => a.id === id);
     await window.xen.taskbar.appClose(this.apps[app].name, id);
 
     this.apps.splice(app, 1);
 
-    xen.favorites.closed(id);
+    window.xen.favorites.closed(id);
 
     element.remove();
     return true;
@@ -251,12 +263,12 @@ const appManager = {
       app.visible,
     );
 
-    if ('menuBar' in options && options.menuBar == false) {
+    if ("menuBar" in options && options.menuBar === false) {
       el.querySelector(".box-header-title").style.display = "none";
       el.querySelector(".box-body-inner").style.height = "100%";
     }
 
-    if (options.visible !== false)
+    if (options.visible !== false) {
       await new Promise((resolve) =>
         !options.native
           ? resolve((el.style.display = "block"))
@@ -266,8 +278,11 @@ const appManager = {
               resolve();
             }),
       );
+    }
 
-    if (focus !== false) await xen.wm.focus(app.id);
+    if (focus !== false) {
+      await window.xen.wm.focus(app.id);
+    }
 
     app.master = el;
 

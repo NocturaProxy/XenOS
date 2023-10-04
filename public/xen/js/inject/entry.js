@@ -1,29 +1,38 @@
 import "../components/rewriter.js";
 
 function dragEvent(event, x, y) {
-  var isDrag = false;
+  let isDrag = false;
 
   if (
-    window.getComputedStyle(event.target).getPropertyValue("app-region") === "drag" ||
-    window.getComputedStyle(event.target).getPropertyValue("--webkit-app-region") === "drag"
+    window.getComputedStyle(event.target).getPropertyValue("app-region") ===
+      "drag" ||
+    window
+      .getComputedStyle(event.target)
+      .getPropertyValue("--webkit-app-region") === "drag"
   ) {
     isDrag = true;
   }
 
-  for (var n = event.target; n.parentNode; n = n.parentNode) {
+  for (let n = event.target; n.parentNode; n = n.parentNode) {
     if (
-      window.getComputedStyle(n).getPropertyValue("app-region") === "drag" ||
-      window.getComputedStyle(n).getPropertyValue("--webkit-app-region") === "drag"
+      window.getComputedStyle(event.target).getPropertyValue("app-region") ===
+        "drag" ||
+      window
+        .getComputedStyle(event.target)
+        .getPropertyValue("--webkit-app-region") === "drag"
     ) {
       isDrag = true;
       break;
     }
   }
 
-  for (var n = event.target; n.parentNode; n = n.parentNode) {
+  for (let n = event.target; n.parentNode; n = n.parentNode) {
     if (
-      window.getComputedStyle(n).getPropertyValue("app-region") === "no-drag" ||
-      window.getComputedStyle(n).getPropertyValue("--webkit-app-region") === "no-drag"
+      window.getComputedStyle(event.target).getPropertyValue("app-region") ===
+        "no-drag" ||
+      window
+        .getComputedStyle(event.target)
+        .getPropertyValue("--webkit-app-region") === "no-drag"
     ) {
       isDrag = false;
       break;
@@ -34,8 +43,11 @@ function dragEvent(event, x, y) {
   if (event.defaultPrevented) return null;
 
   if (
-    window.getComputedStyle(event.target).getPropertyValue("app-region") !== "no-drag" ||
-    window.getComputedStyle(event.target).getPropertyValue("--webkit-app-region") !== "no-drag"
+    window.getComputedStyle(event.target).getPropertyValue("app-region") !==
+      "no-drag" ||
+    window
+      .getComputedStyle(event.target)
+      .getPropertyValue("--webkit-app-region") !== "no-drag"
   ) {
     window.top.dispatchEvent(
       new window.CustomEvent("xendrag", {
@@ -46,18 +58,18 @@ function dragEvent(event, x, y) {
           y,
           el: event.target,
           type: event.type,
-          id: window.frameElement.parentNode.parentNode.id
+          id: window.frameElement.parentNode.parentNode.id,
         },
       }),
     );
   }
 }
 
-window.addEventListener('mousemove', function (e) {
+window.addEventListener("mousemove", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.dispatchEvent(
-    new window.MouseEvent('mousemove', {
+    new window.MouseEvent("mousemove", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -70,11 +82,11 @@ window.addEventListener('mousemove', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-document.addEventListener('mousemove', function (e) {
+document.addEventListener("mousemove", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.document.dispatchEvent(
-    new window.MouseEvent('mousemove', {
+    new window.MouseEvent("mousemove", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -87,11 +99,11 @@ document.addEventListener('mousemove', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-window.addEventListener('click', function (e) {
+window.addEventListener("click", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.dispatchEvent(
-    new window.MouseEvent('click', {
+    new window.MouseEvent("click", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -104,11 +116,11 @@ window.addEventListener('click', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-document.addEventListener('click', function (e) {
+document.addEventListener("click", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.document.dispatchEvent(
-    new window.MouseEvent('click', {
+    new window.MouseEvent("click", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -121,11 +133,11 @@ document.addEventListener('click', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-window.addEventListener('mousedown', function (e) {
+window.addEventListener("mousedown", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.dispatchEvent(
-    new window.MouseEvent('mousedown', {
+    new window.MouseEvent("mousedown", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -138,11 +150,11 @@ window.addEventListener('mousedown', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-document.addEventListener('mousedown', function (e) {
+document.addEventListener("mousedown", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.document.dispatchEvent(
-    new window.MouseEvent('mousedown', {
+    new window.MouseEvent("mousedown", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -155,11 +167,11 @@ document.addEventListener('mousedown', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-window.addEventListener('mouseup', function (e) {
+window.addEventListener("mouseup", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.dispatchEvent(
-    new window.MouseEvent('mouseup', {
+    new window.MouseEvent("mouseup", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,
@@ -172,11 +184,11 @@ window.addEventListener('mouseup', function (e) {
   dragEvent(e, e.clientX + bounds.x, e.clientY + bounds.y);
 });
 
-document.addEventListener('mouseup', function (e) {
+document.addEventListener("mouseup", function (e) {
   const bounds = window.frameElement.getBoundingClientRect();
 
   window.top.document.dispatchEvent(
-    new window.MouseEvent('mouseup', {
+    new window.MouseEvent("mouseup", {
       bubbles: true,
       cancelable: true,
       clientX: e.clientX + bounds.x,

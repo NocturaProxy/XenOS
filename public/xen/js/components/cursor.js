@@ -33,6 +33,6 @@ const CURSOR_MAP = {
 
 export default {
   async init() {
-    return null;
+    return CURSOR_MAP;
   },
 };

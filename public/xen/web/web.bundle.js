@@ -1,6 +1,8 @@
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
@@ -27,7 +29,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 
 // node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js
 var init_dirname = __esm({
@@ -2250,593 +2259,6 @@ var init_buffer = __esm({
 var init_buffer2 = __esm({
   "node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js"() {
     init_buffer();
-  }
-});
-
-// node_modules/@tomphttp/bare-client/dist/index.js
-function safeAdd(x, y) {
-  const lsw = (x & 65535) + (y & 65535);
-  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return msw << 16 | lsw & 65535;
-}
-function bitRotateLeft(num, cnt) {
-  return num << cnt | num >>> 32 - cnt;
-}
-function md5cmn(q, a, b, x, s, t) {
-  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
-}
-function md5ff(a, b, c, d, x, s, t) {
-  return md5cmn(b & c | ~b & d, a, b, x, s, t);
-}
-function md5gg(a, b, c, d, x, s, t) {
-  return md5cmn(b & d | c & ~d, a, b, x, s, t);
-}
-function md5hh(a, b, c, d, x, s, t) {
-  return md5cmn(b ^ c ^ d, a, b, x, s, t);
-}
-function md5ii(a, b, c, d, x, s, t) {
-  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
-}
-function binlMD5(x, len) {
-  x[len >> 5] |= 128 << len % 32;
-  x[(len + 64 >>> 9 << 4) + 14] = len;
-  let a = 1732584193;
-  let b = -271733879;
-  let c = -1732584194;
-  let d = 271733878;
-  for (let i = 0; i < x.length; i += 16) {
-    const olda = a;
-    const oldb = b;
-    const oldc = c;
-    const oldd = d;
-    a = md5ff(a, b, c, d, x[i], 7, -680876936);
-    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
-    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
-    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
-    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
-    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
-    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
-    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
-    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
-    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
-    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
-    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
-    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
-    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
-    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
-    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
-    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
-    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
-    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
-    b = md5gg(b, c, d, a, x[i], 20, -373897302);
-    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
-    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
-    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
-    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
-    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
-    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
-    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
-    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
-    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
-    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
-    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
-    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
-    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
-    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
-    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
-    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
-    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
-    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
-    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
-    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
-    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
-    d = md5hh(d, a, b, c, x[i], 11, -358537222);
-    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
-    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
-    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
-    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
-    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
-    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
-    a = md5ii(a, b, c, d, x[i], 6, -198630844);
-    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
-    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
-    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
-    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
-    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
-    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
-    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
-    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
-    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
-    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
-    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
-    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
-    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
-    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
-    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
-    a = safeAdd(a, olda);
-    b = safeAdd(b, oldb);
-    c = safeAdd(c, oldc);
-    d = safeAdd(d, oldd);
-  }
-  return [a, b, c, d];
-}
-function binl2rstr(input) {
-  let output = "";
-  const length32 = input.length * 32;
-  for (let i = 0; i < length32; i += 8) {
-    output += String.fromCharCode(input[i >> 5] >>> i % 32 & 255);
-  }
-  return output;
-}
-function rstr2binl(input) {
-  const output = [];
-  const outputLen = input.length >> 2;
-  for (let i = 0; i < outputLen; i += 1) {
-    output[i] = 0;
-  }
-  const length8 = input.length * 8;
-  for (let i = 0; i < length8; i += 8) {
-    output[i >> 5] |= (input.charCodeAt(i / 8) & 255) << i % 32;
-  }
-  return output;
-}
-function rstrMD5(s) {
-  return binl2rstr(binlMD5(rstr2binl(s), s.length * 8));
-}
-function rstrHMACMD5(key, data) {
-  let bkey = rstr2binl(key);
-  const ipad = [];
-  const opad = [];
-  if (bkey.length > 16) {
-    bkey = binlMD5(bkey, key.length * 8);
-  }
-  for (let i = 0; i < 16; i += 1) {
-    ipad[i] = bkey[i] ^ 909522486;
-    opad[i] = bkey[i] ^ 1549556828;
-  }
-  const hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
-  return binl2rstr(binlMD5(opad.concat(hash), 512 + 128));
-}
-function rstr2hex(input) {
-  const hexTab = "0123456789abcdef";
-  let output = "";
-  for (let i = 0; i < input.length; i += 1) {
-    const x = input.charCodeAt(i);
-    output += hexTab.charAt(x >>> 4 & 15) + hexTab.charAt(x & 15);
-  }
-  return output;
-}
-function str2rstrUTF8(input) {
-  return unescape(encodeURIComponent(input));
-}
-function rawMD5(s) {
-  return rstrMD5(str2rstrUTF8(s));
-}
-function hexMD5(s) {
-  return rstr2hex(rawMD5(s));
-}
-function rawHMACMD5(k, d) {
-  return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d));
-}
-function hexHMACMD5(k, d) {
-  return rstr2hex(rawHMACMD5(k, d));
-}
-function md5(string, key, raw) {
-  if (!key) {
-    if (!raw) {
-      return hexMD5(string);
-    }
-    return rawMD5(string);
-  }
-  if (!raw) {
-    return hexHMACMD5(key, string);
-  }
-  return rawHMACMD5(key, string);
-}
-function splitHeaders(headers) {
-  const output = new Headers(headers);
-  if (headers.has("x-bare-headers")) {
-    const value = headers.get("x-bare-headers");
-    if (value.length > MAX_HEADER_VALUE) {
-      output.delete("x-bare-headers");
-      let split = 0;
-      for (let i = 0; i < value.length; i += MAX_HEADER_VALUE) {
-        const part = value.slice(i, i + MAX_HEADER_VALUE);
-        const id = split++;
-        output.set(`x-bare-headers-${id}`, `;${part}`);
-      }
-    }
-  }
-  return output;
-}
-function joinHeaders(headers) {
-  const output = new Headers(headers);
-  const prefix = "x-bare-headers";
-  if (headers.has(`${prefix}-0`)) {
-    const join = [];
-    for (const [header, value] of headers) {
-      if (!header.startsWith(prefix)) {
-        continue;
-      }
-      if (!value.startsWith(";")) {
-        throw new BareError(400, {
-          code: "INVALID_BARE_HEADER",
-          id: `request.headers.${header}`,
-          message: `Value didn't begin with semi-colon.`
-        });
-      }
-      const id = parseInt(header.slice(prefix.length + 1));
-      join[id] = value.slice(1);
-      output.delete(header);
-    }
-    output.set(prefix, join.join(""));
-  }
-  return output;
-}
-function validProtocol(protocol) {
-  for (let i = 0; i < protocol.length; i++) {
-    const char = protocol[i];
-    if (!validChars.includes(char)) {
-      return false;
-    }
-  }
-  return true;
-}
-async function fetchManifest(server, signal) {
-  const outgoing = await fetch2(server, { signal });
-  if (!outgoing.ok) {
-    throw new Error(`Unable to fetch Bare meta: ${outgoing.status} ${await outgoing.text()}`);
-  }
-  return await outgoing.json();
-}
-function isUrlLike(url) {
-  return typeof url === "string" || url instanceof URL;
-}
-async function createBareClient(server, signal) {
-  const manifest = await fetchManifest(server, signal);
-  return new BareClient(server, manifest);
-}
-var fetch2, WebSocket, Request, Response, WebSocketFields, maxRedirects, statusEmpty, statusRedirect, BareError, Client, MAX_HEADER_VALUE, ClientV3, validChars, clientCtors, getRealReadyState, wsProtocols, BareClient;
-var init_dist = __esm({
-  "node_modules/@tomphttp/bare-client/dist/index.js"() {
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    fetch2 = globalThis.fetch;
-    WebSocket = globalThis.WebSocket;
-    Request = globalThis.Request;
-    Response = globalThis.Response;
-    WebSocketFields = {
-      prototype: {
-        send: WebSocket.prototype.send
-      },
-      CLOSED: WebSocket.CLOSED,
-      CLOSING: WebSocket.CLOSING,
-      CONNECTING: WebSocket.CONNECTING,
-      OPEN: WebSocket.OPEN
-    };
-    maxRedirects = 20;
-    statusEmpty = [101, 204, 205, 304];
-    statusRedirect = [301, 302, 303, 307, 308];
-    BareError = class extends Error {
-      status;
-      body;
-      constructor(status, body) {
-        super(body.message || body.code);
-        this.status = status;
-        this.body = body;
-      }
-    };
-    Client = class {
-      base;
-      /**
-       *
-       * @param version Version provided by extension
-       * @param server Bare Server URL provided by BareClient
-       */
-      constructor(version2, server) {
-        this.base = new URL(`./v${version2}/`, server);
-      }
-    };
-    MAX_HEADER_VALUE = 3072;
-    ClientV3 = class extends Client {
-      ws;
-      http;
-      constructor(server) {
-        super(3, server);
-        this.ws = new URL(this.base);
-        this.http = new URL(this.base);
-        if (this.ws.protocol === "https:") {
-          this.ws.protocol = "wss:";
-        } else {
-          this.ws.protocol = "ws:";
-        }
-      }
-      connect(remote, protocols, getRequestHeaders, onMeta, onReadyState) {
-        const ws = new WebSocket(this.ws);
-        const cleanup = () => {
-          ws.removeEventListener("close", closeListener);
-          ws.removeEventListener("message", messageListener);
-        };
-        const closeListener = () => {
-          cleanup();
-        };
-        const messageListener = (event) => {
-          cleanup();
-          if (typeof event.data !== "string")
-            throw new TypeError("the first websocket message was not a text frame");
-          const message = JSON.parse(event.data);
-          if (message.type !== "open")
-            throw new TypeError("message was not of open type");
-          event.stopImmediatePropagation();
-          onMeta({
-            protocol: message.protocol,
-            setCookies: message.setCookies
-          });
-          onReadyState(WebSocketFields.OPEN);
-          ws.dispatchEvent(new Event("open"));
-        };
-        ws.addEventListener("close", closeListener);
-        ws.addEventListener("message", messageListener);
-        ws.addEventListener(
-          "open",
-          (event) => {
-            event.stopImmediatePropagation();
-            onReadyState(WebSocketFields.CONNECTING);
-            getRequestHeaders().then((headers) => WebSocketFields.prototype.send.call(ws, JSON.stringify({
-              type: "connect",
-              remote: remote.toString(),
-              protocols,
-              headers,
-              forwardHeaders: []
-            })));
-          },
-          // only block the open event once
-          { once: true }
-        );
-        return ws;
-      }
-      async request(method, requestHeaders, body, remote, cache, duplex, signal) {
-        if (remote.protocol.startsWith("blob:")) {
-          const response2 = await fetch2(remote);
-          const result2 = new Response(response2.body, response2);
-          result2.rawHeaders = Object.fromEntries(response2.headers);
-          result2.rawResponse = response2;
-          return result2;
-        }
-        const bareHeaders = {};
-        if (requestHeaders instanceof Headers) {
-          for (const [header, value] of requestHeaders) {
-            bareHeaders[header] = value;
-          }
-        } else {
-          for (const header in requestHeaders) {
-            bareHeaders[header] = requestHeaders[header];
-          }
-        }
-        const options = {
-          credentials: "omit",
-          method,
-          signal
-        };
-        if (cache !== "only-if-cached") {
-          options.cache = cache;
-        }
-        if (body !== void 0) {
-          options.body = body;
-        }
-        if (duplex !== void 0) {
-          options.duplex = duplex;
-        }
-        options.headers = this.createBareHeaders(remote, bareHeaders);
-        const response = await fetch2(this.http + "?cache=" + md5(remote.toString()), options);
-        const readResponse = await this.readBareResponse(response);
-        const result = new Response(statusEmpty.includes(readResponse.status) ? void 0 : response.body, {
-          status: readResponse.status,
-          statusText: readResponse.statusText ?? void 0,
-          headers: new Headers(readResponse.headers)
-        });
-        result.rawHeaders = readResponse.headers;
-        result.rawResponse = response;
-        return result;
-      }
-      async readBareResponse(response) {
-        if (!response.ok) {
-          throw new BareError(response.status, await response.json());
-        }
-        const responseHeaders = joinHeaders(response.headers);
-        const result = {};
-        const xBareStatus = responseHeaders.get("x-bare-status");
-        if (xBareStatus !== null)
-          result.status = parseInt(xBareStatus);
-        const xBareStatusText = responseHeaders.get("x-bare-status-text");
-        if (xBareStatusText !== null)
-          result.statusText = xBareStatusText;
-        const xBareHeaders = responseHeaders.get("x-bare-headers");
-        if (xBareHeaders !== null)
-          result.headers = JSON.parse(xBareHeaders);
-        return result;
-      }
-      createBareHeaders(remote, bareHeaders, forwardHeaders = [], passHeaders = [], passStatus = []) {
-        const headers = new Headers();
-        headers.set("x-bare-url", remote.toString());
-        headers.set("x-bare-headers", JSON.stringify(bareHeaders));
-        for (const header of forwardHeaders) {
-          headers.append("x-bare-forward-headers", header);
-        }
-        for (const header of passHeaders) {
-          headers.append("x-bare-pass-headers", header);
-        }
-        for (const status of passStatus) {
-          headers.append("x-bare-pass-status", status.toString());
-        }
-        splitHeaders(headers);
-        return headers;
-      }
-    };
-    validChars = "!#$%&'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~";
-    clientCtors = [
-      ["v3", ClientV3]
-    ];
-    getRealReadyState = Object.getOwnPropertyDescriptor(WebSocket.prototype, "readyState").get;
-    wsProtocols = ["ws:", "wss:"];
-    BareClient = class {
-      manifest;
-      client;
-      server;
-      working;
-      onDemand;
-      onDemandSignal;
-      constructor(server, _) {
-        this.server = new URL(server);
-        if (!_ || _ instanceof AbortSignal) {
-          this.onDemand = true;
-          this.onDemandSignal = _;
-        } else {
-          this.onDemand = false;
-          this.loadManifest(_);
-        }
-      }
-      loadManifest(manifest) {
-        this.manifest = manifest;
-        this.client = this.getClient();
-        return this.client;
-      }
-      demand() {
-        if (!this.onDemand)
-          return this.client;
-        if (!this.working)
-          this.working = fetchManifest(this.server, this.onDemandSignal).then((manifest) => this.loadManifest(manifest)).catch((err) => {
-            delete this.working;
-            throw err;
-          });
-        return this.working;
-      }
-      getClient() {
-        for (const [version2, ctor] of clientCtors)
-          if (this.manifest.versions.includes(version2))
-            return new ctor(this.server);
-        throw new Error("Unable to find compatible client version. Starting from v2.0.0, @tomphttp/bare-client only supports Bare servers v3+. For more information, see https://github.com/tomphttp/bare-client/");
-      }
-      createWebSocket(remote, protocols = [], options) {
-        if (!this.client)
-          throw new TypeError("You need to wait for the client to finish fetching the manifest before creating any WebSockets. Try caching the manifest data before making this request.");
-        try {
-          remote = new URL(remote);
-        } catch (err) {
-          throw new DOMException(`Faiiled to construct 'WebSocket': The URL '${remote}' is invalid.`);
-        }
-        if (!wsProtocols.includes(remote.protocol))
-          throw new DOMException(`Failed to construct 'WebSocket': The URL's scheme must be either 'ws' or 'wss'. '${remote.protocol}' is not allowed.`);
-        if (!Array.isArray(protocols))
-          protocols = [protocols];
-        protocols = protocols.map(String);
-        for (const proto of protocols)
-          if (!validProtocol(proto))
-            throw new DOMException(`Failed to construct 'WebSocket': The subprotocol '${proto}' is invalid.`);
-        const socket = this.client.connect(remote, protocols, async () => {
-          const resolvedHeaders = typeof options.headers === "function" ? await options.headers() : options.headers || {};
-          const requestHeaders = resolvedHeaders instanceof Headers ? Object.fromEntries(resolvedHeaders) : resolvedHeaders;
-          requestHeaders["Host"] = remote.host;
-          requestHeaders["Pragma"] = "no-cache";
-          requestHeaders["Cache-Control"] = "no-cache";
-          requestHeaders["Upgrade"] = "websocket";
-          requestHeaders["Connection"] = "Upgrade";
-          return requestHeaders;
-        }, (meta) => {
-          fakeProtocol = meta.protocol;
-          if (options.setCookiesCallback)
-            options.setCookiesCallback(meta.setCookies);
-        }, (readyState) => {
-          fakeReadyState = readyState;
-        }, options.webSocketImpl || WebSocket);
-        let fakeProtocol = "";
-        let fakeReadyState = WebSocketFields.CONNECTING;
-        const getReadyState = () => {
-          const realReadyState = getRealReadyState.call(socket);
-          return realReadyState === WebSocketFields.OPEN ? fakeReadyState : realReadyState;
-        };
-        if (options.readyStateHook)
-          options.readyStateHook(socket, getReadyState);
-        else {
-          Object.defineProperty(socket, "readyState", {
-            get: getReadyState,
-            configurable: true,
-            enumerable: true
-          });
-        }
-        const getSendError = () => {
-          const readyState = getReadyState();
-          if (readyState === WebSocketFields.CONNECTING)
-            return new DOMException("Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.");
-        };
-        if (options.sendErrorHook)
-          options.sendErrorHook(socket, getSendError);
-        else {
-          socket.send = function(...args) {
-            const error = getSendError();
-            if (error)
-              throw error;
-            else
-              WebSocketFields.prototype.send.call(this, ...args);
-          };
-        }
-        if (options.urlHook)
-          options.urlHook(socket, remote);
-        else
-          Object.defineProperty(socket, "url", {
-            get: () => remote.toString(),
-            configurable: true,
-            enumerable: true
-          });
-        const getProtocol = () => fakeProtocol;
-        if (options.protocolHook)
-          options.protocolHook(socket, getProtocol);
-        else
-          Object.defineProperty(socket, "protocol", {
-            get: getProtocol,
-            configurable: true,
-            enumerable: true
-          });
-        return socket;
-      }
-      async fetch(url, init) {
-        const req = isUrlLike(url) ? new Request(url, init) : url;
-        const inputHeaders = init?.headers || req.headers;
-        const headers = inputHeaders instanceof Headers ? Object.fromEntries(inputHeaders) : inputHeaders;
-        const duplex = init?.duplex;
-        const body = init?.body || req.body;
-        let urlO = new URL(req.url);
-        const client = await this.demand();
-        for (let i = 0; ; i++) {
-          if ("host" in headers)
-            headers.host = urlO.host;
-          else
-            headers.Host = urlO.host;
-          const response = await client.request(req.method, headers, body, urlO, req.cache, duplex, req.signal);
-          response.finalURL = urlO.toString();
-          const redirect = init?.redirect || req.redirect;
-          if (statusRedirect.includes(response.status)) {
-            switch (redirect) {
-              case "follow": {
-                const location2 = response.headers.get("location");
-                if (maxRedirects > i && location2 !== null) {
-                  urlO = new URL(location2, urlO);
-                  continue;
-                } else
-                  throw new TypeError("Failed to fetch");
-              }
-              case "error":
-                throw new TypeError("Failed to fetch");
-              case "manual":
-                return response;
-            }
-          } else {
-            return response;
-          }
-        }
-      }
-    };
   }
 });
 
@@ -9837,543 +9259,6 @@ var require_filer_min = __commonJS({
   }
 });
 
-// public/xen/js/core/FileSystem.ts
-var FileSystem_exports = {};
-__export(FileSystem_exports, {
-  default: () => FileSystem_default
-});
-function makeProxy(dir = "/") {
-  var proxy = new Proxy(file, {
-    get(target, prop) {
-      if (prop === "sh") {
-        return target.sh;
-      }
-      if (prop === "cwd") {
-        return () => dir;
-      }
-      if (prop === "exists") {
-        return async (...a) => {
-          try {
-            await proxy.stat(...a);
-            return true;
-          } catch {
-            return false;
-          }
-        };
-      }
-      if (prop === "openDir") {
-        return async (path) => {
-          path = Filer.path.resolve(
-            dir,
-            Filer.path.normalize(path)
-          );
-          if (!await proxy.exists(path)) {
-            throw new Filer.Errors.EEXIST("no such file or directory", path);
-          }
-          return makeProxy(path);
-        };
-      }
-      if (prop == "readFile") {
-        return new Proxy(target[prop], {
-          apply: async (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            var result = await Reflect.apply(target2, thisArg, args);
-            if (args[1] == "buffer") {
-              return result.buffer;
-            }
-            if (args[1] == "string") {
-              return Filer.Buffer.from(result).toString();
-            }
-            if (args[1] == "utf-8") {
-              return new TextDecoder("utf-8").decode(result);
-            }
-            return result;
-          }
-        });
-      }
-      if (prop == "rmdir") {
-        return new Proxy(target[prop], {
-          apply: async (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            try {
-              return await Reflect.apply(target2, thisArg, args);
-            } catch {
-              await new Promise((resolve, reject) => {
-                file.sh.rm(args[0], { recursive: true }, resolve);
-              });
-              return void 0;
-            }
-          }
-        });
-      }
-      if (target[prop] instanceof Function) {
-        return new Proxy(target[prop], {
-          apply: (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            return Reflect.apply(target2, thisArg, args);
-          }
-        });
-      }
-      return target[prop];
-    }
-  });
-  return proxy;
-}
-var Filer, file, FileSystem_default;
-var init_FileSystem = __esm({
-  "public/xen/js/core/FileSystem.ts"() {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    Filer = require_filer_min();
-    file = new Filer.FileSystem().promises;
-    file.sh = new Filer.Shell(file);
-    file.buffer = Filer.Buffer;
-    FileSystem_default = makeProxy("/");
-  }
-});
-
-// public/xen/js/core/WindowManager.ts
-var require_WindowManager = __commonJS({
-  "public/xen/js/core/WindowManager.ts"(exports2, module) {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    var WindowManager = class {
-      windows = [];
-      init = async () => {
-        window.addEventListener("xendrag", (e) => {
-          const { id, x, y, type } = e.detail;
-          const windowElement = document.getElementById(id);
-          if (!windowElement)
-            return;
-          var dragTarget = windowElement.querySelector(".box-header-title");
-          dragTarget?.dispatchEvent(
-            new MouseEvent(type, {
-              clientX: x,
-              clientY: y,
-              bubbles: true
-            })
-          );
-        });
-      };
-      getCloseSVG() {
-        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
-      <rect width="188" height="185" rx="92.5" fill="#F46868"></rect>
-    </svg>`;
-      }
-      getMiniSVG() {
-        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
-      <rect width="188" height="185" rx="92.5" fill="#ffcd5b"></rect>
-    </svg>`;
-      }
-      getFullSVG() {
-        return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
-      <rect width="188" height="185" rx="92.5" fill="rgb(64 190 64)"></rect>
-    </svg>`;
-      }
-      createWindow = (title2, content, id, x = 0, y = 0, width = 0, height = 0, visible = true) => {
-        const windowElement = document.createElement("div");
-        windowElement.classList.add("drag", "box");
-        windowElement.id = id;
-        windowElement.style.left = `${x}px`;
-        windowElement.style.top = `${y}px`;
-        windowElement.style.width = `${width}px`;
-        windowElement.style.height = `${height}px`;
-        const titleBar = document.createElement("div");
-        titleBar.classList.add("box-header");
-        const titleLabel = document.createElement("div");
-        titleLabel.classList.add("box-header-title");
-        titleLabel.innerText = title2;
-        const minimizeButton = document.createElement("span");
-        minimizeButton.classList.add("os-mini");
-        minimizeButton.innerHTML = this.getMiniSVG();
-        minimizeButton.addEventListener("click", () => {
-          this.minimizeWindow(id);
-        });
-        const closeButton = document.createElement("span");
-        closeButton.classList.add("os-exit");
-        closeButton.innerHTML = this.getCloseSVG();
-        closeButton.addEventListener("click", () => {
-          window.xen.apps.close(id, windowElement);
-        });
-        const fullscreenButton = document.createElement("span");
-        fullscreenButton.classList.add("os-full");
-        fullscreenButton.innerHTML = this.getFullSVG();
-        fullscreenButton.addEventListener("click", () => {
-          this.fullscreen(id);
-        });
-        const innerBody = document.createElement("div");
-        innerBody.classList.add("box-body-inner");
-        innerBody.appendChild(content);
-        titleBar.appendChild(titleLabel);
-        titleLabel.appendChild(minimizeButton);
-        titleLabel.appendChild(closeButton);
-        titleLabel.appendChild(fullscreenButton);
-        windowElement.append(
-          titleBar,
-          innerBody,
-          ...[
-            "left",
-            "top",
-            "right",
-            "bottom",
-            "topLeft",
-            "topRight",
-            "bottomRight",
-            "bottomLeft"
-          ].map((direction) => {
-            const div = document.createElement("div");
-            div.classList.add(
-              direction.includes("top") ? "resize" : "dresize",
-              direction + "Resize"
-            );
-            return div;
-          })
-        );
-        windowElement.style.display = visible ? "block" : "none";
-        this.resizeListener(windowElement);
-        document.getElementById("os-desktop")?.appendChild(windowElement);
-        window.xen.wm.windows.push(windowElement);
-        const drag = windowElement.querySelector(".box-header-title");
-        drag?.addEventListener("mousedown", (e) => {
-          const box = windowElement.getBoundingClientRect();
-          const titleBox = titleBar.getBoundingClientRect();
-          const offsetX = e.clientX - box.left;
-          const offsetY = e.clientY - box.top;
-          this.focus(id);
-          if (document.querySelector(".os-mini")?.contains(e.target) || document.querySelector(".os-full")?.contains(e.target) || document.querySelector(".os-exit")?.contains(e.target))
-            return false;
-          if (windowElement.dataset.mini === "true")
-            return false;
-          document.querySelectorAll(".drag iframe").forEach((iframe) => {
-            iframe.style.pointerEvents = "none";
-          });
-          const mouseMoveHandler = (e2) => {
-            requestAnimationFrame(() => {
-              let left = e2.clientX - offsetX;
-              let top = e2.clientY - offsetY;
-              if (e2.clientX < 0) {
-                left = 0;
-              }
-              if (e2.clientY < 0) {
-                top = 0;
-              }
-              if (left > window.innerWidth) {
-                left = window.innerWidth - box.width;
-              }
-              if (top > window.innerHeight) {
-                top = window.innerHeight - box.height;
-              }
-              windowElement.style.left = `${left}px`;
-              windowElement.style.top = `${top}px`;
-            });
-          };
-          const mouseUpHandler = (e2) => {
-            document.removeEventListener("mousemove", mouseMoveHandler);
-            document.removeEventListener("mouseup", mouseUpHandler);
-            let top = e2.clientY - offsetY;
-            if (top + titleBox.height > window.innerHeight) {
-              windowElement.style.top = `${window.innerHeight - titleBox.height}px`;
-            }
-            if (top < 0) {
-              windowElement.style.top = `0px`;
-            }
-            document.querySelectorAll(".drag iframe").forEach((iframe) => {
-              iframe.style.pointerEvents = "auto";
-            });
-          };
-          document.addEventListener("mousemove", mouseMoveHandler);
-          document.addEventListener("mouseup", mouseUpHandler);
-        });
-        return windowElement;
-      };
-      focus(id) {
-        const elem = document.getElementById(id);
-        if (!elem)
-          return;
-        const zIndex = Math.max(
-          ...Array.from(document.querySelectorAll(".box")).map(
-            (e) => +(e.style.zIndex || 0)
-          )
-        ) || 0;
-        elem.style.zIndex = `${zIndex + 1}`;
-      }
-      resizeListener(master) {
-        var left = master.querySelector(".leftResize"), right = master.querySelector(".rightResize"), top = master.querySelector(".topResize"), bottom = master.querySelector(".bottomResize");
-        var topLeft = master.querySelector(".topLeftResize"), topRight = master.querySelector(".topRightResize"), bottomLeft = master.querySelector(".bottomLeftResize"), bottomRight = master.querySelector(".bottomRightResize");
-        [left, right, top, bottom].forEach((side, index) => {
-          var s = ["left", "right", "top", "bottom"][index];
-          var startX;
-          var startY;
-          var computed;
-          var startHeight;
-          var startWidth;
-          var startTop;
-          var startLeft;
-          var mousemove = function(e) {
-            requestAnimationFrame(() => {
-              if (s == "top") {
-                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
-                if (distTop < 0)
-                  return master.style.top = "0px";
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = distTop + "px";
-              } else if (s == "bottom") {
-                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = startTop;
-              } else if (s == "left") {
-                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
-              } else if (s == "right") {
-                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = startLeft;
-              }
-            });
-          };
-          document.addEventListener("mousedown", function(e) {
-            if (e.target !== side)
-              return;
-            computed = window.getComputedStyle(master);
-            startHeight = computed.height + "";
-            startWidth = computed.width + "";
-            startTop = computed.top + "";
-            startLeft = computed.left + "";
-            startX = e.clientX;
-            startY = e.clientY;
-            master.style.transition = "0s";
-            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
-              iframe.style.pointerEvents = "none";
-            });
-            document.addEventListener("mousemove", mousemove);
-          });
-          document.addEventListener("mouseup", function(e) {
-            if (!startX && !startY)
-              return;
-            master.style.transition = "";
-            document.removeEventListener("mousemove", mousemove);
-            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
-              iframe.style.pointerEvents = "all";
-            });
-          });
-        });
-        [topLeft, topRight, bottomLeft, bottomRight].forEach((side, index) => {
-          var s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
-          var startX;
-          var startY;
-          var computed;
-          var startHeight;
-          var startWidth;
-          var startTop;
-          var startLeft;
-          var mousemove = function(e) {
-            requestAnimationFrame(() => {
-              if (s == "topLeft") {
-                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
-                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
-                if (distTop < 0)
-                  return master.style.top = "0px";
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = distTop + "px";
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
-              } else if (s == "topRight") {
-                var height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
-                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
-                var distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
-                if (distTop < 0)
-                  return master.style.top = "0px";
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = distTop + "px";
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = startLeft;
-              } else if (s == "bottomLeft") {
-                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
-                var width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = startTop;
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
-              } else if (s == "bottomRight") {
-                var height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
-                var width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
-                master.style.height = (height > 70 ? height : 70) + "px";
-                master.style.top = startTop;
-                master.style.width = (width > 70 ? width : 70) + "px";
-                master.style.left = startLeft;
-              }
-            });
-          };
-          document.addEventListener("mousedown", function(e) {
-            if (e.target !== side)
-              return;
-            computed = window.getComputedStyle(master);
-            startHeight = computed.height + "";
-            startWidth = computed.width + "";
-            startTop = computed.top + "";
-            startLeft = computed.left + "";
-            startX = e.clientX;
-            startY = e.clientY;
-            master.style.transition = "0s";
-            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
-              iframe.style.pointerEvents = "none";
-            });
-            document.addEventListener("mousemove", mousemove);
-          });
-          document.addEventListener("mouseup", function(e) {
-            if (!startX && !startY)
-              return;
-            master.style.transition = "";
-            document.removeEventListener("mousemove", mousemove);
-            document.querySelectorAll(".drag iframe").forEach(function(iframe) {
-              iframe.style.pointerEvents = "all";
-            });
-          });
-        });
-      }
-      minimizeWindow = (id) => {
-        const windowElement = document.getElementById(id);
-        if (!windowElement)
-          return false;
-        windowElement.style.transform = "scale(0.15)";
-        windowElement.style.transition = "all 0.7s ease";
-        windowElement.dataset.mini = "true";
-        windowElement.querySelectorAll("*").forEach((element) => {
-          element.style.pointerEvents = "none";
-        });
-        const bounds = windowElement.getBoundingClientRect();
-        if (bounds.top > window.innerHeight - 310) {
-          windowElement.style.top = window.innerHeight - 310 + "px";
-        }
-        if (bounds.top < -193) {
-          windowElement.style.top = "-193px";
-        }
-        if (bounds.left < -275) {
-          windowElement.style.left = "-275px";
-        }
-        if (bounds.left > window.innerWidth - 425) {
-          windowElement.style.left = window.innerWidth - 425 + "px";
-        }
-        setTimeout(() => windowElement.style.transition = "", 700);
-        const down = (e) => {
-          if (e.which !== 1)
-            return;
-          let startX = e.clientX - e.target.offsetLeft;
-          let startY = e.clientY - e.target.offsetTop;
-          function move(event) {
-            if (windowElement?.dataset.fullscreen === "true")
-              return;
-            let left = event.clientX - startX;
-            let top = event.clientY - startY;
-            if (top < -193)
-              top = -193;
-            if (left < -275)
-              left = -275;
-            if (left > window.innerWidth - 425)
-              left = window.innerWidth - 425;
-            if (top > window.innerHeight - 310)
-              top = window.innerHeight - 310;
-            requestAnimationFrame(() => {
-              e.target.style.position = `absolute`;
-              e.target.style.top = `${top}px`;
-              e.target.style.left = `${left}px`;
-            });
-          }
-          const up = (event) => {
-            if (event.clientX === e.clientX && event.clientY === e.clientY) {
-              windowElement.style.transform = "scale(1)";
-              windowElement.dataset.mini = "false";
-              windowElement.style.transition = "all 0.7s ease";
-              windowElement.querySelectorAll("*").forEach((element) => {
-                element.style.pointerEvents = "auto";
-              });
-              if (parseInt(windowElement.style.top.replace("px", "")) < 0)
-                windowElement.style.top = "0";
-              setTimeout(() => windowElement.style.transition = "", 700);
-              windowElement.removeEventListener("mousedown", down);
-            }
-            document.removeEventListener("mousemove", move);
-            document.removeEventListener("mouseup", up);
-          };
-          document.addEventListener("mouseup", up);
-          document.addEventListener("mousemove", move);
-        };
-        windowElement.addEventListener("mousedown", down);
-      };
-      unminimize = async (id) => {
-        const windowElement = document.getElementById(id);
-        if (!windowElement)
-          return false;
-        windowElement.style.transform = "scale(1)";
-        windowElement.dataset.mini = "false";
-        windowElement.style.transition = "all 0.7s ease";
-        windowElement.querySelectorAll("*").forEach((element) => {
-          element.style.pointerEvents = "auto";
-        });
-        if (parseInt(windowElement.style.top.replace("px", "")) < 0)
-          windowElement.style.top = "0";
-        await new Promise((r) => setTimeout(r, 700));
-        windowElement.style.transition = "";
-        windowElement.removeEventListeners("mousedown");
-        return true;
-      };
-      fullscreen = async (id) => {
-        const windowElement = document.getElementById(id);
-        if (!windowElement)
-          return false;
-        if (windowElement.dataset.mini === "true") {
-          await this.unminimize(id);
-        }
-        windowElement.style.transition = "all 0.15s ease";
-        if (windowElement.dataset.fullscreen === "true") {
-          requestAnimationFrame(async () => {
-            windowElement.style.width = windowElement.dataset.prevWidth || "";
-            windowElement.style.height = windowElement.dataset.prevHeight || "";
-            windowElement.style.top = windowElement.dataset.prevTop || "";
-            windowElement.style.left = windowElement.dataset.prevLeft || "";
-            windowElement.dataset.fullscreen = "false";
-            await new Promise((r) => setTimeout(r, 150));
-            windowElement.style.transition = "";
-          });
-          return window.xen.taskbar.show();
-        }
-        requestAnimationFrame(async () => {
-          windowElement.dataset.prevWidth = windowElement.style.width;
-          windowElement.dataset.prevHeight = windowElement.style.height;
-          windowElement.style.width = "100vw";
-          windowElement.style.height = "100vh";
-          windowElement.dataset.prevTop = windowElement.style.top;
-          windowElement.dataset.prevLeft = windowElement.style.left;
-          windowElement.style.top = "0";
-          windowElement.style.left = "0";
-          window.xen.taskbar.hide();
-          windowElement.dataset.fullscreen = "true";
-          await new Promise((r) => setTimeout(r, 150));
-          windowElement.style.transition = "";
-        });
-        return true;
-      };
-    };
-    module.exports = WindowManager;
-  }
-});
-
 // node_modules/path-browserify/index.js
 var require_path_browserify = __commonJS({
   "node_modules/path-browserify/index.js"(exports2, module) {
@@ -10381,20 +9266,20 @@ var require_path_browserify = __commonJS({
     init_dirname();
     init_buffer2();
     init_process2();
-    function assertPath(path) {
-      if (typeof path !== "string") {
-        throw new TypeError("Path must be a string. Received " + JSON.stringify(path));
+    function assertPath(path2) {
+      if (typeof path2 !== "string") {
+        throw new TypeError("Path must be a string. Received " + JSON.stringify(path2));
       }
     }
-    function normalizeStringPosix(path, allowAboveRoot) {
+    function normalizeStringPosix(path2, allowAboveRoot) {
       var res = "";
       var lastSegmentLength = 0;
       var lastSlash = -1;
       var dots = 0;
       var code;
-      for (var i = 0; i <= path.length; ++i) {
-        if (i < path.length)
-          code = path.charCodeAt(i);
+      for (var i = 0; i <= path2.length; ++i) {
+        if (i < path2.length)
+          code = path2.charCodeAt(i);
         else if (code === 47)
           break;
         else
@@ -10434,9 +9319,9 @@ var require_path_browserify = __commonJS({
             }
           } else {
             if (res.length > 0)
-              res += "/" + path.slice(lastSlash + 1, i);
+              res += "/" + path2.slice(lastSlash + 1, i);
             else
-              res = path.slice(lastSlash + 1, i);
+              res = path2.slice(lastSlash + 1, i);
             lastSegmentLength = i - lastSlash - 1;
           }
           lastSlash = i;
@@ -10467,20 +9352,20 @@ var require_path_browserify = __commonJS({
         var resolvedAbsolute = false;
         var cwd2;
         for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-          var path;
+          var path2;
           if (i >= 0)
-            path = arguments[i];
+            path2 = arguments[i];
           else {
             if (cwd2 === void 0)
               cwd2 = process_exports.cwd();
-            path = cwd2;
+            path2 = cwd2;
           }
-          assertPath(path);
-          if (path.length === 0) {
+          assertPath(path2);
+          if (path2.length === 0) {
             continue;
           }
-          resolvedPath = path + "/" + resolvedPath;
-          resolvedAbsolute = path.charCodeAt(0) === 47;
+          resolvedPath = path2 + "/" + resolvedPath;
+          resolvedAbsolute = path2.charCodeAt(0) === 47;
         }
         resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
         if (resolvedAbsolute) {
@@ -10494,26 +9379,26 @@ var require_path_browserify = __commonJS({
           return ".";
         }
       },
-      normalize: function normalize(path) {
-        assertPath(path);
-        if (path.length === 0)
+      normalize: function normalize(path2) {
+        assertPath(path2);
+        if (path2.length === 0)
           return ".";
-        var isAbsolute = path.charCodeAt(0) === 47;
-        var trailingSeparator = path.charCodeAt(path.length - 1) === 47;
-        path = normalizeStringPosix(path, !isAbsolute);
-        if (path.length === 0 && !isAbsolute)
-          path = ".";
-        if (path.length > 0 && trailingSeparator)
-          path += "/";
+        var isAbsolute = path2.charCodeAt(0) === 47;
+        var trailingSeparator = path2.charCodeAt(path2.length - 1) === 47;
+        path2 = normalizeStringPosix(path2, !isAbsolute);
+        if (path2.length === 0 && !isAbsolute)
+          path2 = ".";
+        if (path2.length > 0 && trailingSeparator)
+          path2 += "/";
         if (isAbsolute)
-          return "/" + path;
-        return path;
+          return "/" + path2;
+        return path2;
       },
-      isAbsolute: function isAbsolute(path) {
-        assertPath(path);
-        return path.length > 0 && path.charCodeAt(0) === 47;
+      isAbsolute: function isAbsolute(path2) {
+        assertPath(path2);
+        return path2.length > 0 && path2.charCodeAt(0) === 47;
       },
-      join: function join() {
+      join: function join2() {
         if (arguments.length === 0)
           return ".";
         var joined;
@@ -10599,19 +9484,19 @@ var require_path_browserify = __commonJS({
           return to.slice(toStart);
         }
       },
-      _makeLong: function _makeLong(path) {
-        return path;
+      _makeLong: function _makeLong(path2) {
+        return path2;
       },
-      dirname: function dirname(path) {
-        assertPath(path);
-        if (path.length === 0)
+      dirname: function dirname(path2) {
+        assertPath(path2);
+        if (path2.length === 0)
           return ".";
-        var code = path.charCodeAt(0);
+        var code = path2.charCodeAt(0);
         var hasRoot = code === 47;
         var end = -1;
         var matchedSlash = true;
-        for (var i = path.length - 1; i >= 1; --i) {
-          code = path.charCodeAt(i);
+        for (var i = path2.length - 1; i >= 1; --i) {
+          code = path2.charCodeAt(i);
           if (code === 47) {
             if (!matchedSlash) {
               end = i;
@@ -10625,23 +9510,23 @@ var require_path_browserify = __commonJS({
           return hasRoot ? "/" : ".";
         if (hasRoot && end === 1)
           return "//";
-        return path.slice(0, end);
+        return path2.slice(0, end);
       },
-      basename: function basename(path, ext) {
+      basename: function basename(path2, ext) {
         if (ext !== void 0 && typeof ext !== "string")
           throw new TypeError('"ext" argument must be a string');
-        assertPath(path);
+        assertPath(path2);
         var start = 0;
         var end = -1;
         var matchedSlash = true;
         var i;
-        if (ext !== void 0 && ext.length > 0 && ext.length <= path.length) {
-          if (ext.length === path.length && ext === path)
+        if (ext !== void 0 && ext.length > 0 && ext.length <= path2.length) {
+          if (ext.length === path2.length && ext === path2)
             return "";
           var extIdx = ext.length - 1;
           var firstNonSlashEnd = -1;
-          for (i = path.length - 1; i >= 0; --i) {
-            var code = path.charCodeAt(i);
+          for (i = path2.length - 1; i >= 0; --i) {
+            var code = path2.charCodeAt(i);
             if (code === 47) {
               if (!matchedSlash) {
                 start = i + 1;
@@ -10667,11 +9552,11 @@ var require_path_browserify = __commonJS({
           if (start === end)
             end = firstNonSlashEnd;
           else if (end === -1)
-            end = path.length;
-          return path.slice(start, end);
+            end = path2.length;
+          return path2.slice(start, end);
         } else {
-          for (i = path.length - 1; i >= 0; --i) {
-            if (path.charCodeAt(i) === 47) {
+          for (i = path2.length - 1; i >= 0; --i) {
+            if (path2.charCodeAt(i) === 47) {
               if (!matchedSlash) {
                 start = i + 1;
                 break;
@@ -10683,18 +9568,18 @@ var require_path_browserify = __commonJS({
           }
           if (end === -1)
             return "";
-          return path.slice(start, end);
+          return path2.slice(start, end);
         }
       },
-      extname: function extname(path) {
-        assertPath(path);
+      extname: function extname(path2) {
+        assertPath(path2);
         var startDot = -1;
         var startPart = 0;
         var end = -1;
         var matchedSlash = true;
         var preDotState = 0;
-        for (var i = path.length - 1; i >= 0; --i) {
-          var code = path.charCodeAt(i);
+        for (var i = path2.length - 1; i >= 0; --i) {
+          var code = path2.charCodeAt(i);
           if (code === 47) {
             if (!matchedSlash) {
               startPart = i + 1;
@@ -10720,7 +9605,7 @@ var require_path_browserify = __commonJS({
         preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
           return "";
         }
-        return path.slice(startDot, end);
+        return path2.slice(startDot, end);
       },
       format: function format(pathObject) {
         if (pathObject === null || typeof pathObject !== "object") {
@@ -10728,12 +9613,12 @@ var require_path_browserify = __commonJS({
         }
         return _format("/", pathObject);
       },
-      parse: function parse(path) {
-        assertPath(path);
+      parse: function parse(path2) {
+        assertPath(path2);
         var ret = { root: "", dir: "", base: "", ext: "", name: "" };
-        if (path.length === 0)
+        if (path2.length === 0)
           return ret;
-        var code = path.charCodeAt(0);
+        var code = path2.charCodeAt(0);
         var isAbsolute = code === 47;
         var start;
         if (isAbsolute) {
@@ -10746,10 +9631,10 @@ var require_path_browserify = __commonJS({
         var startPart = 0;
         var end = -1;
         var matchedSlash = true;
-        var i = path.length - 1;
+        var i = path2.length - 1;
         var preDotState = 0;
         for (; i >= start; --i) {
-          code = path.charCodeAt(i);
+          code = path2.charCodeAt(i);
           if (code === 47) {
             if (!matchedSlash) {
               startPart = i + 1;
@@ -10775,22 +9660,22 @@ var require_path_browserify = __commonJS({
         preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
           if (end !== -1) {
             if (startPart === 0 && isAbsolute)
-              ret.base = ret.name = path.slice(1, end);
+              ret.base = ret.name = path2.slice(1, end);
             else
-              ret.base = ret.name = path.slice(startPart, end);
+              ret.base = ret.name = path2.slice(startPart, end);
           }
         } else {
           if (startPart === 0 && isAbsolute) {
-            ret.name = path.slice(1, startDot);
-            ret.base = path.slice(1, end);
+            ret.name = path2.slice(1, startDot);
+            ret.base = path2.slice(1, end);
           } else {
-            ret.name = path.slice(startPart, startDot);
-            ret.base = path.slice(startPart, end);
+            ret.name = path2.slice(startPart, startDot);
+            ret.base = path2.slice(startPart, end);
           }
-          ret.ext = path.slice(startDot, end);
+          ret.ext = path2.slice(startDot, end);
         }
         if (startPart > 0)
-          ret.dir = path.slice(0, startPart - 1);
+          ret.dir = path2.slice(0, startPart - 1);
         else if (isAbsolute)
           ret.dir = "/";
         return ret;
@@ -10805,232 +9690,1328 @@ var require_path_browserify = __commonJS({
   }
 });
 
-// public/xen/js/core/Loader.ts
-var require_Loader = __commonJS({
-  "public/xen/js/core/Loader.ts"(exports2, module) {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    var { join } = require_path_browserify();
-    var ModuleLoader = class {
-      load(module2) {
-        return import(join("/xen/web/", module2)).then((imported) => {
-          return imported.default.init();
-        });
-      }
-      async init(...modules) {
-        for (const module2 of modules) {
-          await this.load(module2);
-        }
-        return true;
-      }
-    };
-    module.exports = ModuleLoader;
-  }
-});
-
-// node_modules/js-cookie/dist/js.cookie.js
-var require_js_cookie = __commonJS({
-  "node_modules/js-cookie/dist/js.cookie.js"(exports2, module) {
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    (function(global, factory) {
-      typeof exports2 === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, function() {
-        var current = global.Cookies;
-        var exports3 = global.Cookies = factory();
-        exports3.noConflict = function() {
-          global.Cookies = current;
-          return exports3;
-        };
-      }());
-    })(exports2, function() {
-      "use strict";
-      function assign(target) {
-        for (var i = 1; i < arguments.length; i++) {
-          var source = arguments[i];
-          for (var key in source) {
-            target[key] = source[key];
-          }
-        }
-        return target;
-      }
-      var defaultConverter = {
-        read: function(value) {
-          if (value[0] === '"') {
-            value = value.slice(1, -1);
-          }
-          return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent);
-        },
-        write: function(value) {
-          return encodeURIComponent(value).replace(
-            /%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,
-            decodeURIComponent
-          );
-        }
-      };
-      function init(converter, defaultAttributes) {
-        function set(name, value, attributes) {
-          if (typeof document === "undefined") {
-            return;
-          }
-          attributes = assign({}, defaultAttributes, attributes);
-          if (typeof attributes.expires === "number") {
-            attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
-          }
-          if (attributes.expires) {
-            attributes.expires = attributes.expires.toUTCString();
-          }
-          name = encodeURIComponent(name).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape);
-          var stringifiedAttributes = "";
-          for (var attributeName in attributes) {
-            if (!attributes[attributeName]) {
-              continue;
-            }
-            stringifiedAttributes += "; " + attributeName;
-            if (attributes[attributeName] === true) {
-              continue;
-            }
-            stringifiedAttributes += "=" + attributes[attributeName].split(";")[0];
-          }
-          return document.cookie = name + "=" + converter.write(value, name) + stringifiedAttributes;
-        }
-        function get(name) {
-          if (typeof document === "undefined" || arguments.length && !name) {
-            return;
-          }
-          var cookies = document.cookie ? document.cookie.split("; ") : [];
-          var jar = {};
-          for (var i = 0; i < cookies.length; i++) {
-            var parts = cookies[i].split("=");
-            var value = parts.slice(1).join("=");
-            try {
-              var found = decodeURIComponent(parts[0]);
-              jar[found] = converter.read(value, found);
-              if (name === found) {
-                break;
-              }
-            } catch (e) {
-            }
-          }
-          return name ? jar[name] : jar;
-        }
-        return Object.create(
-          {
-            set,
-            get,
-            remove: function(name, attributes) {
-              set(
-                name,
-                "",
-                assign({}, attributes, {
-                  expires: -1
-                })
-              );
-            },
-            withAttributes: function(attributes) {
-              return init(this.converter, assign({}, this.attributes, attributes));
-            },
-            withConverter: function(converter2) {
-              return init(assign({}, this.converter, converter2), this.attributes);
-            }
-          },
-          {
-            attributes: { value: Object.freeze(defaultAttributes) },
-            converter: { value: Object.freeze(converter) }
-          }
-        );
-      }
-      var api = init(defaultConverter, { path: "/" });
-      return api;
-    });
-  }
-});
-
-// public/xen/js/config.json
-var require_config = __commonJS({
-  "public/xen/js/config.json"(exports2, module) {
-    module.exports = {
-      bare: "https://tomp.app/"
-    };
-  }
-});
+// public/xen/js/entry.ts
+init_dirname();
+init_buffer2();
+init_process2();
 
 // public/xen/js/core/Xen.ts
-var require_Xen = __commonJS({
-  "public/xen/js/core/Xen.ts"(exports2, module) {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    init_dist();
-    var { default: fs } = (init_FileSystem(), __toCommonJS(FileSystem_exports));
-    var wm = require_WindowManager();
-    var loader = require_Loader();
-    var cookie = require_js_cookie();
-    var config2 = require_config();
-    window.path = require_path_browserify();
-    var Xen2 = class {
-      fs = fs;
-      buffer = fs.buffer;
-      wm = new wm();
-      loader = new loader();
-      bare = null;
-      cookie = cookie;
-      config = config2;
-      taskbar;
-      battery;
-      apps;
-      constructor() {
+init_dirname();
+init_buffer2();
+init_process2();
+
+// node_modules/@tomphttp/bare-client/dist/index.js
+init_dirname();
+init_buffer2();
+init_process2();
+var fetch2 = globalThis.fetch;
+var WebSocket = globalThis.WebSocket;
+var Request = globalThis.Request;
+var Response = globalThis.Response;
+var WebSocketFields = {
+  prototype: {
+    send: WebSocket.prototype.send
+  },
+  CLOSED: WebSocket.CLOSED,
+  CLOSING: WebSocket.CLOSING,
+  CONNECTING: WebSocket.CONNECTING,
+  OPEN: WebSocket.OPEN
+};
+var maxRedirects = 20;
+var statusEmpty = [101, 204, 205, 304];
+var statusRedirect = [301, 302, 303, 307, 308];
+var BareError = class extends Error {
+  status;
+  body;
+  constructor(status, body) {
+    super(body.message || body.code);
+    this.status = status;
+    this.body = body;
+  }
+};
+var Client = class {
+  base;
+  /**
+   *
+   * @param version Version provided by extension
+   * @param server Bare Server URL provided by BareClient
+   */
+  constructor(version2, server) {
+    this.base = new URL(`./v${version2}/`, server);
+  }
+};
+function safeAdd(x, y) {
+  const lsw = (x & 65535) + (y & 65535);
+  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return msw << 16 | lsw & 65535;
+}
+function bitRotateLeft(num, cnt) {
+  return num << cnt | num >>> 32 - cnt;
+}
+function md5cmn(q, a, b, x, s, t) {
+  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
+}
+function md5ff(a, b, c, d, x, s, t) {
+  return md5cmn(b & c | ~b & d, a, b, x, s, t);
+}
+function md5gg(a, b, c, d, x, s, t) {
+  return md5cmn(b & d | c & ~d, a, b, x, s, t);
+}
+function md5hh(a, b, c, d, x, s, t) {
+  return md5cmn(b ^ c ^ d, a, b, x, s, t);
+}
+function md5ii(a, b, c, d, x, s, t) {
+  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
+}
+function binlMD5(x, len) {
+  x[len >> 5] |= 128 << len % 32;
+  x[(len + 64 >>> 9 << 4) + 14] = len;
+  let a = 1732584193;
+  let b = -271733879;
+  let c = -1732584194;
+  let d = 271733878;
+  for (let i = 0; i < x.length; i += 16) {
+    const olda = a;
+    const oldb = b;
+    const oldc = c;
+    const oldd = d;
+    a = md5ff(a, b, c, d, x[i], 7, -680876936);
+    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
+    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
+    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
+    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
+    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
+    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
+    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
+    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
+    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
+    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
+    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
+    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
+    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
+    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
+    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
+    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
+    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
+    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
+    b = md5gg(b, c, d, a, x[i], 20, -373897302);
+    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
+    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
+    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
+    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
+    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
+    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
+    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
+    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
+    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
+    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
+    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
+    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
+    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
+    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
+    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
+    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
+    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
+    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
+    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
+    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
+    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
+    d = md5hh(d, a, b, c, x[i], 11, -358537222);
+    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
+    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
+    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
+    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
+    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
+    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
+    a = md5ii(a, b, c, d, x[i], 6, -198630844);
+    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
+    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
+    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
+    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
+    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
+    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
+    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
+    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
+    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
+    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
+    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
+    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
+    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
+    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
+    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
+    a = safeAdd(a, olda);
+    b = safeAdd(b, oldb);
+    c = safeAdd(c, oldc);
+    d = safeAdd(d, oldd);
+  }
+  return [a, b, c, d];
+}
+function binl2rstr(input) {
+  let output = "";
+  const length32 = input.length * 32;
+  for (let i = 0; i < length32; i += 8) {
+    output += String.fromCharCode(input[i >> 5] >>> i % 32 & 255);
+  }
+  return output;
+}
+function rstr2binl(input) {
+  const output = [];
+  const outputLen = input.length >> 2;
+  for (let i = 0; i < outputLen; i += 1) {
+    output[i] = 0;
+  }
+  const length8 = input.length * 8;
+  for (let i = 0; i < length8; i += 8) {
+    output[i >> 5] |= (input.charCodeAt(i / 8) & 255) << i % 32;
+  }
+  return output;
+}
+function rstrMD5(s) {
+  return binl2rstr(binlMD5(rstr2binl(s), s.length * 8));
+}
+function rstrHMACMD5(key, data) {
+  let bkey = rstr2binl(key);
+  const ipad = [];
+  const opad = [];
+  if (bkey.length > 16) {
+    bkey = binlMD5(bkey, key.length * 8);
+  }
+  for (let i = 0; i < 16; i += 1) {
+    ipad[i] = bkey[i] ^ 909522486;
+    opad[i] = bkey[i] ^ 1549556828;
+  }
+  const hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
+  return binl2rstr(binlMD5(opad.concat(hash), 512 + 128));
+}
+function rstr2hex(input) {
+  const hexTab = "0123456789abcdef";
+  let output = "";
+  for (let i = 0; i < input.length; i += 1) {
+    const x = input.charCodeAt(i);
+    output += hexTab.charAt(x >>> 4 & 15) + hexTab.charAt(x & 15);
+  }
+  return output;
+}
+function str2rstrUTF8(input) {
+  return unescape(encodeURIComponent(input));
+}
+function rawMD5(s) {
+  return rstrMD5(str2rstrUTF8(s));
+}
+function hexMD5(s) {
+  return rstr2hex(rawMD5(s));
+}
+function rawHMACMD5(k, d) {
+  return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d));
+}
+function hexHMACMD5(k, d) {
+  return rstr2hex(rawHMACMD5(k, d));
+}
+function md5(string, key, raw) {
+  if (!key) {
+    if (!raw) {
+      return hexMD5(string);
+    }
+    return rawMD5(string);
+  }
+  if (!raw) {
+    return hexHMACMD5(key, string);
+  }
+  return rawHMACMD5(key, string);
+}
+var MAX_HEADER_VALUE = 3072;
+function splitHeaders(headers) {
+  const output = new Headers(headers);
+  if (headers.has("x-bare-headers")) {
+    const value = headers.get("x-bare-headers");
+    if (value.length > MAX_HEADER_VALUE) {
+      output.delete("x-bare-headers");
+      let split = 0;
+      for (let i = 0; i < value.length; i += MAX_HEADER_VALUE) {
+        const part = value.slice(i, i + MAX_HEADER_VALUE);
+        const id = split++;
+        output.set(`x-bare-headers-${id}`, `;${part}`);
       }
-      async Worker() {
-        if ("serviceWorker" in navigator) {
-          await navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
-            scope: "/"
-          });
-          await navigator.serviceWorker.ready;
-        }
-        if (!navigator.serviceWorker.controller) {
-          location.reload();
-        }
-        return true;
+    }
+  }
+  return output;
+}
+function joinHeaders(headers) {
+  const output = new Headers(headers);
+  const prefix = "x-bare-headers";
+  if (headers.has(`${prefix}-0`)) {
+    const join2 = [];
+    for (const [header, value] of headers) {
+      if (!header.startsWith(prefix)) {
+        continue;
       }
-      async startup() {
-        if (!navigator.serviceWorker.controller) {
-          await this.Worker();
+      if (!value.startsWith(";")) {
+        throw new BareError(400, {
+          code: "INVALID_BARE_HEADER",
+          id: `request.headers.${header}`,
+          message: `Value didn't begin with semi-colon.`
+        });
+      }
+      const id = parseInt(header.slice(prefix.length + 1));
+      join2[id] = value.slice(1);
+      output.delete(header);
+    }
+    output.set(prefix, join2.join(""));
+  }
+  return output;
+}
+var ClientV3 = class extends Client {
+  ws;
+  http;
+  constructor(server) {
+    super(3, server);
+    this.ws = new URL(this.base);
+    this.http = new URL(this.base);
+    if (this.ws.protocol === "https:") {
+      this.ws.protocol = "wss:";
+    } else {
+      this.ws.protocol = "ws:";
+    }
+  }
+  connect(remote, protocols, getRequestHeaders, onMeta, onReadyState) {
+    const ws = new WebSocket(this.ws);
+    const cleanup = () => {
+      ws.removeEventListener("close", closeListener);
+      ws.removeEventListener("message", messageListener);
+    };
+    const closeListener = () => {
+      cleanup();
+    };
+    const messageListener = (event) => {
+      cleanup();
+      if (typeof event.data !== "string")
+        throw new TypeError("the first websocket message was not a text frame");
+      const message = JSON.parse(event.data);
+      if (message.type !== "open")
+        throw new TypeError("message was not of open type");
+      event.stopImmediatePropagation();
+      onMeta({
+        protocol: message.protocol,
+        setCookies: message.setCookies
+      });
+      onReadyState(WebSocketFields.OPEN);
+      ws.dispatchEvent(new Event("open"));
+    };
+    ws.addEventListener("close", closeListener);
+    ws.addEventListener("message", messageListener);
+    ws.addEventListener(
+      "open",
+      (event) => {
+        event.stopImmediatePropagation();
+        onReadyState(WebSocketFields.CONNECTING);
+        getRequestHeaders().then((headers) => WebSocketFields.prototype.send.call(ws, JSON.stringify({
+          type: "connect",
+          remote: remote.toString(),
+          protocols,
+          headers,
+          forwardHeaders: []
+        })));
+      },
+      // only block the open event once
+      { once: true }
+    );
+    return ws;
+  }
+  async request(method, requestHeaders, body, remote, cache, duplex, signal) {
+    if (remote.protocol.startsWith("blob:")) {
+      const response2 = await fetch2(remote);
+      const result2 = new Response(response2.body, response2);
+      result2.rawHeaders = Object.fromEntries(response2.headers);
+      result2.rawResponse = response2;
+      return result2;
+    }
+    const bareHeaders = {};
+    if (requestHeaders instanceof Headers) {
+      for (const [header, value] of requestHeaders) {
+        bareHeaders[header] = value;
+      }
+    } else {
+      for (const header in requestHeaders) {
+        bareHeaders[header] = requestHeaders[header];
+      }
+    }
+    const options = {
+      credentials: "omit",
+      method,
+      signal
+    };
+    if (cache !== "only-if-cached") {
+      options.cache = cache;
+    }
+    if (body !== void 0) {
+      options.body = body;
+    }
+    if (duplex !== void 0) {
+      options.duplex = duplex;
+    }
+    options.headers = this.createBareHeaders(remote, bareHeaders);
+    const response = await fetch2(this.http + "?cache=" + md5(remote.toString()), options);
+    const readResponse = await this.readBareResponse(response);
+    const result = new Response(statusEmpty.includes(readResponse.status) ? void 0 : response.body, {
+      status: readResponse.status,
+      statusText: readResponse.statusText ?? void 0,
+      headers: new Headers(readResponse.headers)
+    });
+    result.rawHeaders = readResponse.headers;
+    result.rawResponse = response;
+    return result;
+  }
+  async readBareResponse(response) {
+    if (!response.ok) {
+      throw new BareError(response.status, await response.json());
+    }
+    const responseHeaders = joinHeaders(response.headers);
+    const result = {};
+    const xBareStatus = responseHeaders.get("x-bare-status");
+    if (xBareStatus !== null)
+      result.status = parseInt(xBareStatus);
+    const xBareStatusText = responseHeaders.get("x-bare-status-text");
+    if (xBareStatusText !== null)
+      result.statusText = xBareStatusText;
+    const xBareHeaders = responseHeaders.get("x-bare-headers");
+    if (xBareHeaders !== null)
+      result.headers = JSON.parse(xBareHeaders);
+    return result;
+  }
+  createBareHeaders(remote, bareHeaders, forwardHeaders = [], passHeaders = [], passStatus = []) {
+    const headers = new Headers();
+    headers.set("x-bare-url", remote.toString());
+    headers.set("x-bare-headers", JSON.stringify(bareHeaders));
+    for (const header of forwardHeaders) {
+      headers.append("x-bare-forward-headers", header);
+    }
+    for (const header of passHeaders) {
+      headers.append("x-bare-pass-headers", header);
+    }
+    for (const status of passStatus) {
+      headers.append("x-bare-pass-status", status.toString());
+    }
+    splitHeaders(headers);
+    return headers;
+  }
+};
+var validChars = "!#$%&'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~";
+function validProtocol(protocol) {
+  for (let i = 0; i < protocol.length; i++) {
+    const char = protocol[i];
+    if (!validChars.includes(char)) {
+      return false;
+    }
+  }
+  return true;
+}
+var clientCtors = [
+  ["v3", ClientV3]
+];
+async function fetchManifest(server, signal) {
+  const outgoing = await fetch2(server, { signal });
+  if (!outgoing.ok) {
+    throw new Error(`Unable to fetch Bare meta: ${outgoing.status} ${await outgoing.text()}`);
+  }
+  return await outgoing.json();
+}
+var getRealReadyState = Object.getOwnPropertyDescriptor(WebSocket.prototype, "readyState").get;
+var wsProtocols = ["ws:", "wss:"];
+var BareClient = class {
+  manifest;
+  client;
+  server;
+  working;
+  onDemand;
+  onDemandSignal;
+  constructor(server, _) {
+    this.server = new URL(server);
+    if (!_ || _ instanceof AbortSignal) {
+      this.onDemand = true;
+      this.onDemandSignal = _;
+    } else {
+      this.onDemand = false;
+      this.loadManifest(_);
+    }
+  }
+  loadManifest(manifest) {
+    this.manifest = manifest;
+    this.client = this.getClient();
+    return this.client;
+  }
+  demand() {
+    if (!this.onDemand)
+      return this.client;
+    if (!this.working)
+      this.working = fetchManifest(this.server, this.onDemandSignal).then((manifest) => this.loadManifest(manifest)).catch((err) => {
+        delete this.working;
+        throw err;
+      });
+    return this.working;
+  }
+  getClient() {
+    for (const [version2, ctor] of clientCtors)
+      if (this.manifest.versions.includes(version2))
+        return new ctor(this.server);
+    throw new Error("Unable to find compatible client version. Starting from v2.0.0, @tomphttp/bare-client only supports Bare servers v3+. For more information, see https://github.com/tomphttp/bare-client/");
+  }
+  createWebSocket(remote, protocols = [], options) {
+    if (!this.client)
+      throw new TypeError("You need to wait for the client to finish fetching the manifest before creating any WebSockets. Try caching the manifest data before making this request.");
+    try {
+      remote = new URL(remote);
+    } catch (err) {
+      throw new DOMException(`Faiiled to construct 'WebSocket': The URL '${remote}' is invalid.`);
+    }
+    if (!wsProtocols.includes(remote.protocol))
+      throw new DOMException(`Failed to construct 'WebSocket': The URL's scheme must be either 'ws' or 'wss'. '${remote.protocol}' is not allowed.`);
+    if (!Array.isArray(protocols))
+      protocols = [protocols];
+    protocols = protocols.map(String);
+    for (const proto of protocols)
+      if (!validProtocol(proto))
+        throw new DOMException(`Failed to construct 'WebSocket': The subprotocol '${proto}' is invalid.`);
+    const socket = this.client.connect(remote, protocols, async () => {
+      const resolvedHeaders = typeof options.headers === "function" ? await options.headers() : options.headers || {};
+      const requestHeaders = resolvedHeaders instanceof Headers ? Object.fromEntries(resolvedHeaders) : resolvedHeaders;
+      requestHeaders["Host"] = remote.host;
+      requestHeaders["Pragma"] = "no-cache";
+      requestHeaders["Cache-Control"] = "no-cache";
+      requestHeaders["Upgrade"] = "websocket";
+      requestHeaders["Connection"] = "Upgrade";
+      return requestHeaders;
+    }, (meta) => {
+      fakeProtocol = meta.protocol;
+      if (options.setCookiesCallback)
+        options.setCookiesCallback(meta.setCookies);
+    }, (readyState) => {
+      fakeReadyState = readyState;
+    }, options.webSocketImpl || WebSocket);
+    let fakeProtocol = "";
+    let fakeReadyState = WebSocketFields.CONNECTING;
+    const getReadyState = () => {
+      const realReadyState = getRealReadyState.call(socket);
+      return realReadyState === WebSocketFields.OPEN ? fakeReadyState : realReadyState;
+    };
+    if (options.readyStateHook)
+      options.readyStateHook(socket, getReadyState);
+    else {
+      Object.defineProperty(socket, "readyState", {
+        get: getReadyState,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    const getSendError = () => {
+      const readyState = getReadyState();
+      if (readyState === WebSocketFields.CONNECTING)
+        return new DOMException("Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.");
+    };
+    if (options.sendErrorHook)
+      options.sendErrorHook(socket, getSendError);
+    else {
+      socket.send = function(...args) {
+        const error = getSendError();
+        if (error)
+          throw error;
+        else
+          WebSocketFields.prototype.send.call(this, ...args);
+      };
+    }
+    if (options.urlHook)
+      options.urlHook(socket, remote);
+    else
+      Object.defineProperty(socket, "url", {
+        get: () => remote.toString(),
+        configurable: true,
+        enumerable: true
+      });
+    const getProtocol = () => fakeProtocol;
+    if (options.protocolHook)
+      options.protocolHook(socket, getProtocol);
+    else
+      Object.defineProperty(socket, "protocol", {
+        get: getProtocol,
+        configurable: true,
+        enumerable: true
+      });
+    return socket;
+  }
+  async fetch(url, init2) {
+    const req = isUrlLike(url) ? new Request(url, init2) : url;
+    const inputHeaders = init2?.headers || req.headers;
+    const headers = inputHeaders instanceof Headers ? Object.fromEntries(inputHeaders) : inputHeaders;
+    const duplex = init2?.duplex;
+    const body = init2?.body || req.body;
+    let urlO = new URL(req.url);
+    const client = await this.demand();
+    for (let i = 0; ; i++) {
+      if ("host" in headers)
+        headers.host = urlO.host;
+      else
+        headers.Host = urlO.host;
+      const response = await client.request(req.method, headers, body, urlO, req.cache, duplex, req.signal);
+      response.finalURL = urlO.toString();
+      const redirect = init2?.redirect || req.redirect;
+      if (statusRedirect.includes(response.status)) {
+        switch (redirect) {
+          case "follow": {
+            const location2 = response.headers.get("location");
+            if (maxRedirects > i && location2 !== null) {
+              urlO = new URL(location2, urlO);
+              continue;
+            } else
+              throw new TypeError("Failed to fetch");
+          }
+          case "error":
+            throw new TypeError("Failed to fetch");
+          case "manual":
+            return response;
         }
-        if (cookie.get("fs-initiated") !== "true") {
-          await this.setupFileSystem();
-          cookie.set("fs-initiated", "true", {
-            expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
-            secure: true,
-            sameSite: "strict"
-          });
-        }
-        this.bare = await createBareClient(location.origin + "/bare/");
-        await this.wm.init();
-        await new Promise((resolve) => setTimeout(resolve, 150));
-        window.EventTarget.prototype.addEventListener = new Proxy(
-          window.EventTarget.prototype.addEventListener,
-          {
-            apply: (target, thisArg, args) => {
-              if (!thisArg.eventListeners)
-                thisArg.eventListeners = [];
-              thisArg.eventListeners.push({
-                type: args[0],
-                listener: args[1],
-                options: args[2] || {}
+      } else {
+        return response;
+      }
+    }
+  }
+};
+function isUrlLike(url) {
+  return typeof url === "string" || url instanceof URL;
+}
+async function createBareClient(server, signal) {
+  const manifest = await fetchManifest(server, signal);
+  return new BareClient(server, manifest);
+}
+
+// public/xen/js/core/FileSystem.ts
+init_dirname();
+init_buffer2();
+init_process2();
+
+// public/modules.d.ts
+init_dirname();
+init_buffer2();
+init_process2();
+
+// public/xen/js/core/FileSystem.ts
+var import_filer = __toESM(require_filer_min());
+var file = new import_filer.default.FileSystem().promises;
+file.sh = new import_filer.default.Shell(file);
+file.buffer = import_filer.default.Buffer;
+function makeProxy(dir = "/") {
+  const proxy = new Proxy(file, {
+    get(target, prop) {
+      if (prop === "sh") {
+        return target.sh;
+      }
+      if (prop === "cwd") {
+        return () => dir;
+      }
+      if (prop === "exists") {
+        return async (...a) => {
+          try {
+            await proxy.stat(...a);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+      }
+      if (prop === "openDir") {
+        return async (path2) => {
+          path2 = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(path2));
+          if (!await proxy.exists(path2)) {
+            throw new import_filer.default.Errors.EEXIST("no such file or directory", path2);
+          }
+          return makeProxy(path2);
+        };
+      }
+      if (prop == "readFile") {
+        return new Proxy(target[prop], {
+          apply: async (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            const result = await Reflect.apply(
+              target2,
+              thisArg,
+              args
+            );
+            if (args[1] == "buffer") {
+              return result.buffer;
+            }
+            if (args[1] == "string") {
+              return import_filer.default.Buffer.from(result).toString();
+            }
+            if (args[1] == "utf-8") {
+              return new TextDecoder("utf-8").decode(result);
+            }
+            return result;
+          }
+        });
+      }
+      if (prop == "rmdir") {
+        return new Proxy(target[prop], {
+          apply: async (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            try {
+              return await Reflect.apply(target2, thisArg, args);
+            } catch {
+              await new Promise((resolve, reject) => {
+                file.sh.rm(args[0], { recursive: true }, resolve, reject);
               });
-              return Reflect.apply(target, thisArg, args);
+              return void 0;
             }
           }
+        });
+      }
+      if (target[prop] instanceof Function) {
+        return new Proxy(target[prop], {
+          apply: (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            return Reflect.apply(target2, thisArg, args);
+          }
+        });
+      }
+      return target[prop];
+    }
+  });
+  return proxy;
+}
+var FileSystem_default = makeProxy("/");
+
+// public/xen/js/core/WindowManager.ts
+init_dirname();
+init_buffer2();
+init_process2();
+var WindowManager = class {
+  windows = [];
+  init = async () => {
+    window.addEventListener("xendrag", (e) => {
+      const { id, x, y, type } = e.detail;
+      const windowElement = document.getElementById(id);
+      if (windowElement == null)
+        return;
+      const dragTarget = windowElement.querySelector(".box-header-title");
+      dragTarget?.dispatchEvent(
+        new MouseEvent(type, {
+          clientX: x,
+          clientY: y,
+          bubbles: true
+        })
+      );
+    });
+  };
+  getCloseSVG() {
+    return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="#F46868"></rect>
+    </svg>`;
+  }
+  getMiniSVG() {
+    return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="#ffcd5b"></rect>
+    </svg>`;
+  }
+  getFullSVG() {
+    return `<svg style="width: 13px;height: 13px;" xmlns="http://www.w3.org/2000/svg" width="188" height="185" viewBox="0 0 188 185" fill="none">
+      <rect width="188" height="185" rx="92.5" fill="rgb(64 190 64)"></rect>
+    </svg>`;
+  }
+  createWindow = (title2, content, id, x = 0, y = 0, width = 0, height = 0, visible = true) => {
+    const windowElement = document.createElement("div");
+    windowElement.classList.add("drag", "box");
+    windowElement.id = id;
+    windowElement.style.left = `${x}px`;
+    windowElement.style.top = `${y}px`;
+    windowElement.style.width = `${width}px`;
+    windowElement.style.height = `${height}px`;
+    const titleBar = document.createElement("div");
+    titleBar.classList.add("box-header");
+    const titleLabel = document.createElement("div");
+    titleLabel.classList.add("box-header-title");
+    titleLabel.innerText = title2;
+    const minimizeButton = document.createElement("span");
+    minimizeButton.classList.add("os-mini");
+    minimizeButton.innerHTML = this.getMiniSVG();
+    minimizeButton.addEventListener("click", () => {
+      this.minimizeWindow(id);
+    });
+    const closeButton = document.createElement("span");
+    closeButton.classList.add("os-exit");
+    closeButton.innerHTML = this.getCloseSVG();
+    closeButton.addEventListener("click", () => {
+      window.xen.apps.close(id, windowElement);
+    });
+    const fullscreenButton = document.createElement("span");
+    fullscreenButton.classList.add("os-full");
+    fullscreenButton.innerHTML = this.getFullSVG();
+    fullscreenButton.addEventListener("click", () => {
+      this.fullscreen(id);
+    });
+    const innerBody = document.createElement("div");
+    innerBody.classList.add("box-body-inner");
+    innerBody.appendChild(content);
+    titleBar.appendChild(titleLabel);
+    titleLabel.appendChild(minimizeButton);
+    titleLabel.appendChild(closeButton);
+    titleLabel.appendChild(fullscreenButton);
+    windowElement.append(
+      titleBar,
+      innerBody,
+      ...[
+        "left",
+        "top",
+        "right",
+        "bottom",
+        "topLeft",
+        "topRight",
+        "bottomRight",
+        "bottomLeft"
+      ].map((direction) => {
+        const div = document.createElement("div");
+        div.classList.add(
+          direction.includes("top") ? "resize" : "dresize",
+          direction + "Resize"
         );
-        window.EventTarget.prototype.removeEventListeners = function(event) {
-          if (!this.eventListeners)
+        return div;
+      })
+    );
+    windowElement.style.display = visible ? "block" : "none";
+    this.resizeListener(windowElement);
+    document.getElementById("os-desktop")?.appendChild(windowElement);
+    window.xen.wm.windows.push(windowElement);
+    const drag = windowElement.querySelector(".box-header-title");
+    drag?.addEventListener("mousedown", (e) => {
+      const box = windowElement.getBoundingClientRect();
+      const titleBox = titleBar.getBoundingClientRect();
+      const offsetX = e.clientX - box.left;
+      const offsetY = e.clientY - box.top;
+      this.focus(id);
+      if (document.querySelector(".os-mini")?.contains(e.target) || document.querySelector(".os-full")?.contains(e.target) || document.querySelector(".os-exit")?.contains(e.target)) {
+        return false;
+      }
+      if (windowElement.dataset.mini === "true")
+        return false;
+      document.querySelectorAll(".drag iframe").forEach((iframe) => {
+        iframe.style.pointerEvents = "none";
+      });
+      const mouseMoveHandler = (e2) => {
+        requestAnimationFrame(() => {
+          let left = e2.clientX - offsetX;
+          let top = e2.clientY - offsetY;
+          if (e2.clientX < 0) {
+            left = 0;
+          }
+          if (e2.clientY < 0) {
+            top = 0;
+          }
+          if (left > window.innerWidth) {
+            left = window.innerWidth - box.width;
+          }
+          if (top > window.innerHeight) {
+            top = window.innerHeight - box.height;
+          }
+          windowElement.style.left = `${left}px`;
+          windowElement.style.top = `${top}px`;
+        });
+      };
+      const mouseUpHandler = (e2) => {
+        document.removeEventListener("mousemove", mouseMoveHandler);
+        document.removeEventListener("mouseup", mouseUpHandler);
+        const top = e2.clientY - offsetY;
+        if (top + titleBox.height > window.innerHeight) {
+          windowElement.style.top = `${window.innerHeight - titleBox.height}px`;
+        }
+        if (top < 0) {
+          windowElement.style.top = "0px";
+        }
+        document.querySelectorAll(".drag iframe").forEach((iframe) => {
+          iframe.style.pointerEvents = "auto";
+        });
+      };
+      document.addEventListener("mousemove", mouseMoveHandler);
+      document.addEventListener("mouseup", mouseUpHandler);
+    });
+    return windowElement;
+  };
+  focus(id) {
+    const elem = document.getElementById(id);
+    if (elem == null)
+      return;
+    const zIndex = Math.max(
+      ...Array.from(document.querySelectorAll(".box")).map(
+        (e) => +(e.style.zIndex || 0)
+      )
+    ) || 0;
+    elem.style.zIndex = `${zIndex + 1}`;
+  }
+  resizeListener(master) {
+    const left = master.querySelector(".leftResize");
+    const right = master.querySelector(".rightResize");
+    const top = master.querySelector(".topResize");
+    const bottom = master.querySelector(".bottomResize");
+    const topLeft = master.querySelector(".topLeftResize");
+    const topRight = master.querySelector(".topRightResize");
+    const bottomLeft = master.querySelector(".bottomLeftResize");
+    const bottomRight = master.querySelector(".bottomRightResize");
+    [left, right, top, bottom].forEach((side, index) => {
+      const s = ["left", "right", "top", "bottom"][index];
+      let startX;
+      let startY;
+      let computed;
+      let startHeight;
+      let startWidth;
+      let startTop;
+      let startLeft;
+      const mousemove = function(e) {
+        requestAnimationFrame(() => {
+          if (s == "top") {
+            const height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            const distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+            if (distTop < 0)
+              return master.style.top = "0px";
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+          } else if (s == "bottom") {
+            const height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = startTop;
+          } else if (s == "left") {
+            const width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+          } else if (s == "right") {
+            const width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = startLeft;
+          }
+        });
+      };
+      document.addEventListener("mousedown", function(e) {
+        if (e.target !== side)
+          return;
+        computed = window.getComputedStyle(master);
+        startHeight = computed.height + "";
+        startWidth = computed.width + "";
+        startTop = computed.top + "";
+        startLeft = computed.left + "";
+        startX = e.clientX;
+        startY = e.clientY;
+        master.style.transition = "0s";
+        document.querySelectorAll(".drag iframe").forEach(function(iframe) {
+          iframe.style.pointerEvents = "none";
+        });
+        document.addEventListener("mousemove", mousemove);
+      });
+      document.addEventListener("mouseup", function() {
+        if (!startX && !startY)
+          return;
+        master.style.transition = "";
+        document.removeEventListener("mousemove", mousemove);
+        document.querySelectorAll(".drag iframe").forEach(function(iframe) {
+          iframe.style.pointerEvents = "all";
+        });
+      });
+    });
+    [topLeft, topRight, bottomLeft, bottomRight].forEach((side, index) => {
+      const s = ["topLeft", "topRight", "bottomLeft", "bottomRight"][index];
+      let startX;
+      let startY;
+      let computed;
+      let startHeight;
+      let startWidth;
+      let startTop;
+      let startLeft;
+      const mousemove = function(e) {
+        requestAnimationFrame(() => {
+          if (s == "topLeft") {
+            const height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            const width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            const distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+            if (distTop < 0)
+              return master.style.top = "0px";
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+          } else if (s == "topRight") {
+            const height = parseInt(startHeight.replace("px", "")) - (e.clientY - startY);
+            const width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            const distTop = height > 70 ? parseInt(startTop.replace("px", "")) + (e.clientY - startY) : "";
+            if (distTop < 0)
+              return master.style.top = "0px";
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = distTop + "px";
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = startLeft;
+          } else if (s == "bottomLeft") {
+            const height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            const width = parseInt(startWidth.replace("px", "")) - (e.clientX - startX);
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = startTop;
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = (width > 70 ? parseInt(startLeft.replace("px", "")) + (e.clientX - startX) : "") + "px";
+          } else if (s == "bottomRight") {
+            const height = parseInt(startHeight.replace("px", "")) + (e.clientY - startY);
+            const width = parseInt(startWidth.replace("px", "")) + (e.clientX - startX);
+            master.style.height = (height > 70 ? height : 70) + "px";
+            master.style.top = startTop;
+            master.style.width = (width > 70 ? width : 70) + "px";
+            master.style.left = startLeft;
+          }
+        });
+      };
+      document.addEventListener("mousedown", function(e) {
+        if (e.target !== side)
+          return;
+        computed = window.getComputedStyle(master);
+        startHeight = computed.height + "";
+        startWidth = computed.width + "";
+        startTop = computed.top + "";
+        startLeft = computed.left + "";
+        startX = e.clientX;
+        startY = e.clientY;
+        master.style.transition = "0s";
+        document.querySelectorAll(".drag iframe").forEach(function(iframe) {
+          iframe.style.pointerEvents = "none";
+        });
+        document.addEventListener("mousemove", mousemove);
+      });
+      document.addEventListener("mouseup", function() {
+        if (!startX && !startY)
+          return;
+        master.style.transition = "";
+        document.removeEventListener("mousemove", mousemove);
+        document.querySelectorAll(".drag iframe").forEach(function(iframe) {
+          iframe.style.pointerEvents = "all";
+        });
+      });
+    });
+  }
+  minimizeWindow = (id) => {
+    const windowElement = document.getElementById(id);
+    if (windowElement == null)
+      return false;
+    windowElement.style.transform = "scale(0.15)";
+    windowElement.style.transition = "all 0.7s ease";
+    windowElement.dataset.mini = "true";
+    windowElement.querySelectorAll("*").forEach((element) => {
+      element.style.pointerEvents = "none";
+    });
+    const bounds = windowElement.getBoundingClientRect();
+    if (bounds.top > window.innerHeight - 310) {
+      windowElement.style.top = window.innerHeight - 310 + "px";
+    }
+    if (bounds.top < -193) {
+      windowElement.style.top = "-193px";
+    }
+    if (bounds.left < -275) {
+      windowElement.style.left = "-275px";
+    }
+    if (bounds.left > window.innerWidth - 425) {
+      windowElement.style.left = window.innerWidth - 425 + "px";
+    }
+    setTimeout(() => windowElement.style.transition = "", 700);
+    const down = (e) => {
+      if (e.which !== 1)
+        return;
+      const startX = e.clientX - e.target.offsetLeft;
+      const startY = e.clientY - e.target.offsetTop;
+      function move(event) {
+        if (windowElement?.dataset.fullscreen === "true")
+          return;
+        let left = event.clientX - startX;
+        let top = event.clientY - startY;
+        if (top < -193)
+          top = -193;
+        if (left < -275)
+          left = -275;
+        if (left > window.innerWidth - 425)
+          left = window.innerWidth - 425;
+        if (top > window.innerHeight - 310)
+          top = window.innerHeight - 310;
+        requestAnimationFrame(() => {
+          e.target.style.position = "absolute";
+          e.target.style.top = `${top}px`;
+          e.target.style.left = `${left}px`;
+        });
+      }
+      const up = (event) => {
+        if (event.clientX === e.clientX && event.clientY === e.clientY) {
+          windowElement.style.transform = "scale(1)";
+          windowElement.dataset.mini = "false";
+          windowElement.style.transition = "all 0.7s ease";
+          windowElement.querySelectorAll("*").forEach((element) => {
+            element.style.pointerEvents = "auto";
+          });
+          if (parseInt(windowElement.style.top.replace("px", "")) < 0) {
+            windowElement.style.top = "0";
+          }
+          setTimeout(() => windowElement.style.transition = "", 700);
+          windowElement.removeEventListener("mousedown", down);
+        }
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+      };
+      document.addEventListener("mouseup", up);
+      document.addEventListener("mousemove", move);
+    };
+    windowElement.addEventListener("mousedown", down);
+  };
+  unminimize = async (id) => {
+    const windowElement = document.getElementById(id);
+    if (windowElement == null)
+      return false;
+    windowElement.style.transform = "scale(1)";
+    windowElement.dataset.mini = "false";
+    windowElement.style.transition = "all 0.7s ease";
+    windowElement.querySelectorAll("*").forEach((element) => {
+      element.style.pointerEvents = "auto";
+    });
+    if (parseInt(windowElement.style.top.replace("px", "")) < 0) {
+      windowElement.style.top = "0";
+    }
+    await new Promise((r) => setTimeout(r, 700));
+    windowElement.style.transition = "";
+    windowElement.removeEventListeners("mousedown");
+    return true;
+  };
+  fullscreen = async (id) => {
+    const windowElement = document.getElementById(id);
+    if (windowElement == null)
+      return false;
+    if (windowElement.dataset.mini === "true") {
+      await this.unminimize(id);
+    }
+    windowElement.style.transition = "all 0.15s ease";
+    if (windowElement.dataset.fullscreen === "true") {
+      requestAnimationFrame(async () => {
+        windowElement.style.width = windowElement.dataset.prevWidth || "";
+        windowElement.style.height = windowElement.dataset.prevHeight || "";
+        windowElement.style.top = windowElement.dataset.prevTop || "";
+        windowElement.style.left = windowElement.dataset.prevLeft || "";
+        windowElement.dataset.fullscreen = "false";
+        await new Promise((r) => setTimeout(r, 150));
+        windowElement.style.transition = "";
+      });
+      return window.xen.taskbar.show();
+    }
+    requestAnimationFrame(async () => {
+      windowElement.dataset.prevWidth = windowElement.style.width;
+      windowElement.dataset.prevHeight = windowElement.style.height;
+      windowElement.style.width = "100vw";
+      windowElement.style.height = "100vh";
+      windowElement.dataset.prevTop = windowElement.style.top;
+      windowElement.dataset.prevLeft = windowElement.style.left;
+      windowElement.style.top = "0";
+      windowElement.style.left = "0";
+      window.xen.taskbar.hide();
+      windowElement.dataset.fullscreen = "true";
+      await new Promise((r) => setTimeout(r, 150));
+      windowElement.style.transition = "";
+    });
+    return true;
+  };
+};
+var WindowManager_default = WindowManager;
+
+// public/xen/js/core/Loader.ts
+init_dirname();
+init_buffer2();
+init_process2();
+var import_path_browserify = __toESM(require_path_browserify());
+var ModuleLoader = class {
+  async load(module) {
+    return await import((0, import_path_browserify.join)("/xen/web/", module)).then((imported) => {
+      return imported.default.init();
+    }).catch((err) => {
+      console.error(err);
+      console.log(module);
+    });
+  }
+  async init(...modules) {
+    for (const module of modules) {
+      await this.load(module);
+    }
+    return true;
+  }
+};
+var Loader_default = ModuleLoader;
+
+// node_modules/js-cookie/dist/js.cookie.mjs
+init_dirname();
+init_buffer2();
+init_process2();
+function assign(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+    for (var key in source) {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+var defaultConverter = {
+  read: function(value) {
+    if (value[0] === '"') {
+      value = value.slice(1, -1);
+    }
+    return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent);
+  },
+  write: function(value) {
+    return encodeURIComponent(value).replace(
+      /%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,
+      decodeURIComponent
+    );
+  }
+};
+function init(converter, defaultAttributes) {
+  function set(name, value, attributes) {
+    if (typeof document === "undefined") {
+      return;
+    }
+    attributes = assign({}, defaultAttributes, attributes);
+    if (typeof attributes.expires === "number") {
+      attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
+    }
+    if (attributes.expires) {
+      attributes.expires = attributes.expires.toUTCString();
+    }
+    name = encodeURIComponent(name).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape);
+    var stringifiedAttributes = "";
+    for (var attributeName in attributes) {
+      if (!attributes[attributeName]) {
+        continue;
+      }
+      stringifiedAttributes += "; " + attributeName;
+      if (attributes[attributeName] === true) {
+        continue;
+      }
+      stringifiedAttributes += "=" + attributes[attributeName].split(";")[0];
+    }
+    return document.cookie = name + "=" + converter.write(value, name) + stringifiedAttributes;
+  }
+  function get(name) {
+    if (typeof document === "undefined" || arguments.length && !name) {
+      return;
+    }
+    var cookies = document.cookie ? document.cookie.split("; ") : [];
+    var jar = {};
+    for (var i = 0; i < cookies.length; i++) {
+      var parts = cookies[i].split("=");
+      var value = parts.slice(1).join("=");
+      try {
+        var found = decodeURIComponent(parts[0]);
+        jar[found] = converter.read(value, found);
+        if (name === found) {
+          break;
+        }
+      } catch (e) {
+      }
+    }
+    return name ? jar[name] : jar;
+  }
+  return Object.create(
+    {
+      set,
+      get,
+      remove: function(name, attributes) {
+        set(
+          name,
+          "",
+          assign({}, attributes, {
+            expires: -1
+          })
+        );
+      },
+      withAttributes: function(attributes) {
+        return init(this.converter, assign({}, this.attributes, attributes));
+      },
+      withConverter: function(converter2) {
+        return init(assign({}, this.converter, converter2), this.attributes);
+      }
+    },
+    {
+      attributes: { value: Object.freeze(defaultAttributes) },
+      converter: { value: Object.freeze(converter) }
+    }
+  );
+}
+var api = init(defaultConverter, { path: "/" });
+
+// public/xen/js/core/Xen.ts
+var import_path_browserify2 = __toESM(require_path_browserify());
+
+// public/xen/js/config.js
+init_dirname();
+init_buffer2();
+init_process2();
+var config_default = {
+  bare: "https://tomp.app/"
+};
+
+// public/xen/js/core/Xen.ts
+window.path = import_path_browserify2.default;
+var Xen = class {
+  fs = FileSystem_default;
+  buffer = FileSystem_default.buffer;
+  wm = new WindowManager_default();
+  loader = new Loader_default();
+  bare = null;
+  cookie = api;
+  config = config_default;
+  taskbar;
+  battery;
+  apps;
+  error;
+  async Worker() {
+    if ("serviceWorker" in navigator) {
+      await navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
+        scope: "/"
+      });
+      await navigator.serviceWorker.ready;
+    }
+    if (navigator.serviceWorker.controller == null) {
+      location.reload();
+    }
+    return true;
+  }
+  async startup() {
+    if (navigator.serviceWorker.controller == null) {
+      await this.Worker();
+    }
+    if (api.get("fs-initiated") !== "true") {
+      await this.setupFileSystem();
+      api.set("fs-initiated", "true", {
+        expires: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 365 * 10),
+        secure: true,
+        sameSite: "strict"
+      });
+    }
+    this.bare = await createBareClient(location.origin + "/bare/");
+    await this.wm.init();
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    window.EventTarget.prototype.addEventListener = new Proxy(
+      window.EventTarget.prototype.addEventListener,
+      {
+        apply: (target, thisArg, args) => {
+          if (!thisArg.eventListeners)
+            thisArg.eventListeners = [];
+          thisArg.eventListeners.push({
+            type: args[0],
+            listener: args[1],
+            options: args[2] || {}
+          });
+          return Reflect.apply(target, thisArg, args);
+        }
+      }
+    );
+    Object.defineProperty(
+      window.EventTarget.prototype,
+      "removeEventListeners",
+      {
+        value: function(event) {
+          if (this.eventListeners == null)
             return;
           for (const listener of this.eventListeners.filter(
-            ([type, listener2, options]) => type === event
+            ([type]) => type === event
           )) {
             this.removeEventListener(
               listener.type,
@@ -11038,103 +11019,110 @@ var require_Xen = __commonJS({
               listener.options
             );
           }
-        };
-        await this.loader.init(
-          "components/apps.js",
-          "components/context.js",
-          "components/taskbar.js",
-          "components/battery.js",
-          "components/cursor.js",
-          "components/pwa.js",
-          "components/favorites.js"
-        );
-        return;
+        },
+        writable: true,
+        enumerable: false,
+        configurable: true
       }
-      async setupFileSystem() {
-        const vfs = this.fs;
-        try {
-          await vfs.mkdir("/xen");
-          await vfs.mkdir("/xen/system");
-          await vfs.mkdir("/xen/users");
-          await vfs.mkdir("/xen/users/guest");
-          await vfs.mkdir("/xen/users/guest/desktop");
-          await vfs.mkdir("/xen/users/guest/documents");
-          await vfs.mkdir("/xen/users/guest/downloads");
-          await vfs.mkdir("/xen/users/guest/music");
-          await vfs.mkdir("/xen/users/guest/pictures");
-          await vfs.mkdir("/xen/users/guest/videos");
-          await vfs.mkdir("/xen/system/taskbar");
-          await vfs.writeFile("/xen/system/taskbar/pinned.json", JSON.stringify([
-            {
-              name: "Welcome",
-              id: "Xen/welcome"
-            },
-            {
-              name: "Settings",
-              id: "Xen/settings"
-            },
-            {
-              name: "Velocity",
-              id: "Xen/velocity"
-            },
-            {
-              name: "App Store",
-              id: "Xen/store"
-            },
-            {
-              name: "Terminal",
-              id: "Xen/terminal"
-            }
-          ]));
-          await vfs.mkdir("/xen/system/apps");
-          await vfs.mkdir("/xen/system/apps/Xen");
-          await vfs.writeFile("/xen/system/apps/installed.json", JSON.stringify([]));
-          await vfs.mkdir("/xen/system/assets");
-          await vfs.writeFile(
-            "/xen/system/assets/inject.bundle.js",
-            await (await fetch("/xen/web/inject.bundle.js")).text()
-          );
-        } catch (e) {
-          console.error(e);
-        }
-        return true;
-      }
-      hideLoader() {
-        const loader2 = document.getElementById("os-pre");
-        if (!loader2)
-          return;
-        loader2.animate(
-          [
-            {
-              opacity: 1
-            },
-            {
-              opacity: 0
-            }
-          ],
-          {
-            duration: 500,
-            easing: "ease-in-out"
-          }
-        );
-        setTimeout(() => {
-          loader2.style.display = "none";
-        }, 500);
-      }
-    };
-    module.exports = Xen2;
+    );
+    await this.loader.init(
+      "components/apps.js",
+      "components/context.js",
+      "components/taskbar.js",
+      "components/battery.js",
+      "components/cursor.js",
+      "components/pwa.js",
+      "components/favorites.js"
+    );
   }
-});
+  async setupFileSystem() {
+    const vfs = this.fs;
+    try {
+      await vfs.mkdir("/xen");
+      await vfs.mkdir("/xen/system");
+      await vfs.mkdir("/xen/users");
+      await vfs.mkdir("/xen/users/guest");
+      await vfs.mkdir("/xen/users/guest/desktop");
+      await vfs.mkdir("/xen/users/guest/documents");
+      await vfs.mkdir("/xen/users/guest/downloads");
+      await vfs.mkdir("/xen/users/guest/music");
+      await vfs.mkdir("/xen/users/guest/pictures");
+      await vfs.mkdir("/xen/users/guest/videos");
+      await vfs.mkdir("/xen/system/taskbar");
+      await vfs.writeFile(
+        "/xen/system/taskbar/pinned.json",
+        JSON.stringify([
+          {
+            name: "Welcome",
+            id: "Xen/welcome"
+          },
+          {
+            name: "Settings",
+            id: "Xen/settings"
+          },
+          {
+            name: "Velocity",
+            id: "Xen/velocity"
+          },
+          {
+            name: "App Store",
+            id: "Xen/store"
+          },
+          {
+            name: "Terminal",
+            id: "Xen/terminal"
+          }
+        ])
+      );
+      await vfs.mkdir("/xen/system/apps");
+      await vfs.mkdir("/xen/system/apps/Xen");
+      await vfs.writeFile(
+        "/xen/system/apps/installed.json",
+        JSON.stringify([])
+      );
+      await vfs.mkdir("/xen/system/assets");
+      await vfs.writeFile(
+        "/xen/system/assets/inject.bundle.js",
+        await (await fetch("/xen/web/inject.bundle.js")).text()
+      );
+    } catch (e) {
+      console.error(e);
+    }
+    return true;
+  }
+  hideLoader() {
+    const loader = document.getElementById("os-pre");
+    if (loader == null)
+      return;
+    loader.animate(
+      [
+        {
+          opacity: 1
+        },
+        {
+          opacity: 0
+        }
+      ],
+      {
+        duration: 500,
+        easing: "ease-in-out"
+      }
+    );
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 500);
+  }
+};
+var Xen_default = Xen;
 
-// public/xen/js/entry.js
-init_dirname();
-init_buffer2();
-init_process2();
-var Xen = require_Xen();
-window.xen = new Xen();
-xen.loader.init(
-  "components/error.js"
-).then(() => {
+// public/xen/js/entry.ts
+Object.defineProperty(window, "xen", {
+  value: new Xen_default(),
+  writable: true,
+  enumerable: true,
+  configurable: true
+});
+window.xen.loader.init("components/error.js").then(() => {
   window.xen.startup().then(() => {
     console.log(
       "%cWelcome to XenOS",
@@ -11148,6 +11136,6 @@ xen.loader.init(
 @jspm/core/nodelibs/browser/buffer.js:
   (*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> *)
 
-js-cookie/dist/js.cookie.js:
+js-cookie/dist/js.cookie.mjs:
   (*! js-cookie v3.0.5 | MIT *)
 */

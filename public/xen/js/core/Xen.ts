@@ -1,37 +1,45 @@
-const { default: fs } = require("./FileSystem");
-const wm = require("./WindowManager");
-const loader = require("./Loader");
-const cookie = require("js-cookie");
-const config = require("../config.json");
-
 import * as bare from "@tomphttp/bare-client";
 
-window.path = require("path-browserify");
+import fs from "./FileSystem";
+import Wm from "./WindowManager";
+import Loader from "./Loader";
+import cookie from "js-cookie";
+import path from "path-browserify";
+import config from "../config.js";
+window.path = path;
 
-declare global {
-  interface Window {
-    xen: Xen;
-    path: any;
-  }
+interface FileSystem {
+  buffer: {
+    from: (data: unknown) => Uint8Array;
+  };
+  mkdir: (path: string) => Promise<void>;
+  writeFile: (path: string, content: Blob | Buffer | string) => Promise<void>;
+  openDir: (path: string) => Promise<FileSystem>;
+  exists: (path: string) => Promise<boolean>;
+  readFile: (path: string, type: string) => Promise<Uint8Array>;
+  stat: (path: string) => Promise<unknown>;
+  unlink: (path: string) => Promise<void>;
+  rmdir: (path: string) => Promise<void>;
+  cwd: () => string;
+  sh: unknown;
 }
 
 class Xen {
-  fs: any = fs;
+  fs: FileSystem = fs;
   buffer = fs.buffer;
-  wm = new wm();
-  loader = new loader();
+  wm = new Wm();
+  loader = new Loader();
   bare: bare.BareClient | null = null;
 
-  cookie: Object = cookie;
-  config: Object = config;
+  cookie: NonNullable<unknown> = cookie;
+  config: NonNullable<unknown> = config;
 
   taskbar: any;
   battery: any;
   apps: any;
-  
-  constructor() {}
+  error: any;
 
-  async Worker() {
+  async Worker(): Promise<boolean> {
     if ("serviceWorker" in navigator) {
       await navigator.serviceWorker.register("/xen/web/sw.bundle.js", {
         scope: "/",
@@ -40,17 +48,17 @@ class Xen {
       await navigator.serviceWorker.ready;
     }
 
-    if (!navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker.controller == null) {
       location.reload();
     }
 
     return true;
   }
 
-  async startup() {
-    //await this.fs.loading;
+  async startup(): Promise<void> {
+    // await this.fs.loading;
 
-    if (!navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker.controller == null) {
       await this.Worker();
     }
 
@@ -73,7 +81,11 @@ class Xen {
     window.EventTarget.prototype.addEventListener = new Proxy(
       window.EventTarget.prototype.addEventListener,
       {
-        apply: (target, thisArg, args) => {
+        apply: (
+          target,
+          thisArg,
+          args: EventListenerOrEventListenerObject[],
+        ) => {
           if (!thisArg.eventListeners) thisArg.eventListeners = [];
 
           thisArg.eventListeners.push({
@@ -87,21 +99,35 @@ class Xen {
       },
     );
 
-    (window.EventTarget.prototype as any).removeEventListeners = function (
-      event: any,
-    ) {
-      if (!this.eventListeners) return;
+    Object.defineProperty(
+      window.EventTarget.prototype,
+      "removeEventListeners",
+      {
+        value: function (
+          this: EventTarget & { eventListeners?: [] },
+          event: string,
+        ) {
+          if (this.eventListeners == null) return;
 
-      for (const listener of this.eventListeners.filter(
-        ([type, listener, options]: any) => type === event,
-      )) {
-        this.removeEventListener(
-          listener.type,
-          listener.listener,
-          listener.options,
-        );
-      }
-    };
+          for (const listener of this.eventListeners.filter(
+            ([type]: string[]) => type === event,
+          ) as {
+            type: string;
+            listener: EventListenerOrEventListenerObject;
+            options: EventListenerOptions;
+          }[]) {
+            this.removeEventListener(
+              listener.type,
+              listener.listener,
+              listener.options,
+            );
+          }
+        },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+      },
+    );
 
     await this.loader.init(
       "components/apps.js",
@@ -110,21 +136,19 @@ class Xen {
       "components/battery.js",
       "components/cursor.js",
       "components/pwa.js",
-      "components/favorites.js"
+      "components/favorites.js",
     );
 
-    //await window.xen.apps.open("Xen/welcome");
-
-    return;
+    // await window.xen.apps.open("Xen/welcome");
   }
 
-  async setupFileSystem() {
+  async setupFileSystem(): Promise<boolean> {
     const vfs = this.fs;
 
     // General Files
     try {
       await vfs.mkdir("/xen");
-      
+
       await vfs.mkdir("/xen/system");
       await vfs.mkdir("/xen/users");
 
@@ -139,34 +163,40 @@ class Xen {
 
       // Taskbar files
       await vfs.mkdir("/xen/system/taskbar");
-      await vfs.writeFile("/xen/system/taskbar/pinned.json", JSON.stringify([
-        {
-          name: "Welcome",
-          id: "Xen/welcome",
-        },
-        {
-          name: "Settings",
-          id: "Xen/settings",
-        },
-        {
-          name: "Velocity",
-          id: "Xen/velocity",
-        },
-        {
-          name: "App Store",
-          id: "Xen/store",
-        },
-        {
-          name: "Terminal",
-          id: "Xen/terminal",
-        }
-      ]));
+      await vfs.writeFile(
+        "/xen/system/taskbar/pinned.json",
+        JSON.stringify([
+          {
+            name: "Welcome",
+            id: "Xen/welcome",
+          },
+          {
+            name: "Settings",
+            id: "Xen/settings",
+          },
+          {
+            name: "Velocity",
+            id: "Xen/velocity",
+          },
+          {
+            name: "App Store",
+            id: "Xen/store",
+          },
+          {
+            name: "Terminal",
+            id: "Xen/terminal",
+          },
+        ]),
+      );
 
       // App files
 
       await vfs.mkdir("/xen/system/apps");
       await vfs.mkdir("/xen/system/apps/Xen");
-      await vfs.writeFile("/xen/system/apps/installed.json", JSON.stringify([]));
+      await vfs.writeFile(
+        "/xen/system/apps/installed.json",
+        JSON.stringify([]),
+      );
 
       // Inject Bundle
 
@@ -175,15 +205,17 @@ class Xen {
         "/xen/system/assets/inject.bundle.js",
         await (await fetch("/xen/web/inject.bundle.js")).text(),
       );
-    } catch (e) {console.error(e)}
+    } catch (e) {
+      console.error(e);
+    }
 
     return true;
   }
 
-  hideLoader() {
+  hideLoader(): void {
     const loader = document.getElementById("os-pre");
 
-    if (!loader) return;
+    if (loader == null) return;
 
     loader.animate(
       [
@@ -206,4 +238,4 @@ class Xen {
   }
 }
 
-module.exports = Xen;
+export default Xen;

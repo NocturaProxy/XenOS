@@ -1,10 +1,15 @@
-const { join } = require("path-browserify");
+import { join } from "path-browserify";
 
 class ModuleLoader {
-  load(module: string) {
-    return import(join("/xen/web/", module)).then((imported) => {
-      return imported.default.init();
-    });
+  async load(module: string) {
+    return await import(join("/xen/web/", module))
+      .then((imported) => {
+        return imported.default.init();
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log(module);
+      });
   }
 
   async init(...modules: string[]) {
@@ -16,4 +21,4 @@ class ModuleLoader {
   }
 }
 
-module.exports = ModuleLoader;
+export default ModuleLoader;

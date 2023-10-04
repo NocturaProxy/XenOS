@@ -1,16 +1,16 @@
 export const help = async (args, process) => {
-    const { fs } = process;
+  const { fs } = process;
 
-    return `
+  return `
         mkdir - create a directory
     `;
-}
+};
 
 export const run = async (args, process) => {
-    const { fs } = process;
-    const [ dir = "./" ] = args;
+  const { fs } = process;
+  const [dir = "./"] = args;
 
-    await fs.mkdir(dir);
+  await fs.mkdir(dir);
 
-    return true;
-}
+  return true;
+};

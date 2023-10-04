@@ -1,9 +1,9 @@
 const battery = {
   batteryEnabled: navigator.getBattery && !0,
-  battery: (navigator.getBattery && !0) && await navigator.getBattery() || null,
+  battery: (await navigator.getBattery()) || null,
   batteryElement: document.querySelector("#os-battery-bar"),
 
-  calculateBatteryPercentage: function () {
+  calculateBatteryPercentage() {
     return Math.floor(this.battery.level * 215) + "px";
   },
 
@@ -44,8 +44,10 @@ const battery = {
   },
 
   init: async function () {
-    if (!this.batteryEnabled)
-      return this.batteryElement.style.display = "none";
+    if (!this.batteryEnabled) {
+      this.batteryElement.style.display = "none";
+      return false;
+    }
 
     this.setupListeners();
 

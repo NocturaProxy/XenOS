@@ -1872,16 +1872,16 @@ const nr = D(
 function ir() {
   return (
     ee(async () => {
-        await de(
-          () => import("./registerKeybinds-f3c15b5f.js"),
-          [
-            "assets/registerKeybinds-f3c15b5f.js",
-            "assets/index-1fe75362.js",
-            "assets/index-245ee21e.css",
-            "assets/index-37963400.js",
-            "assets/url-4d36b2c8.js",
-          ],
-        ),
+      await de(
+        () => import("./registerKeybinds-f3c15b5f.js"),
+        [
+          "assets/registerKeybinds-f3c15b5f.js",
+          "assets/index-1fe75362.js",
+          "assets/index-245ee21e.css",
+          "assets/index-37963400.js",
+          "assets/url-4d36b2c8.js",
+        ],
+      ),
         await de(
           () => import("./addonStoreModifier-53a0594b.js"),
           [

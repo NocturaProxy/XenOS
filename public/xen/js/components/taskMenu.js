@@ -31,25 +31,26 @@ const menu = {
 
     this.searchMenu.querySelector("input").value = `${event.key}`;
     this.searchMenu.querySelector("input").focus();
-
     this.renderSearch(event.key);
-
     this.startMenu.style.opacity = "0";
-    await new Promise((r) => setTimeout(r, 100));
-    this.startMenu.style.visibility = "hidden";
 
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    this.startMenu.style.visibility = "hidden";
     this.searchMenu.style.opacity = "0";
     this.searchMenu.style.visibility = "visible";
     this.searchMenu.style.opacity = "1";
 
-    return (this.searchOpen = true);
+    this.searchOpen = true;
+
+    return true;
   },
 
   hideSearch: async function () {
     this.searchMenu.querySelector("input").blur();
 
     this.searchMenu.style.opacity = "0";
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     this.searchMenu.style.visibility = "hidden";
 
     this.startMenu.style.opacity = "0";
@@ -74,19 +75,19 @@ const menu = {
     if (searchContainer) searchContainer.innerHTML = searchData.search;
 
     appContainer.querySelectorAll(".start-app").forEach((app) => {
-      app.addEventListener("click", async (e) => {
+      app.addEventListener("click", async () => {
         const id = app.dataset.app;
 
         await menu.hide();
 
-        if (xen.apps.apps.find((app) => app.appId == id)) {
+        if (window.xen.apps.apps.find((app) => app.appId === id)) {
           // TODO: App Event Emitter
 
           return true;
         } else {
-          await xen.apps.open(
+          await window.xen.apps.open(
             id,
-            document.querySelector(".os-dock-item[data-id='" + id + "']"),
+            document.querySelector('.os-dock-item[data-id="' + id + '"]'),
           );
         }
 
@@ -97,70 +98,68 @@ const menu = {
     searchContainer
       .querySelectorAll(".start-app.wiki-search")
       .forEach((app) => {
-        app.addEventListener("click", async (e) => {
+        app.addEventListener("click", async () => {
           const url = app.querySelector(".wiki-title").innerText;
 
           await menu.hide();
 
-          if (!xen.apps.apps.find(
-            (app) => app.appId == "Xen/velocity",
-          ))
-            await xen.apps.open(
+          if (
+            !window.xen.apps.apps.find((app) => app.appId === "Xen/velocity")
+          ) {
+            await window.xen.apps.open(
               "Xen/velocity",
-              document.querySelector(".os-dock-item[data-id='Xen/velocity']"),
+              document.querySelector('.os-dock-item[data-id="Xen/velocity"]'),
             );
+          }
 
-          const { master: el } = xen.apps.apps.find(
-            (app) => app.appId == "Xen/velocity",
+          const { master: el } = window.xen.apps.apps.find(
+            (app) => app.appId === "Xen/velocity",
           );
 
           if (!el) return;
 
-          xen.wm.focus(el.id);
+          window.xen.wm.focus(el.id);
 
-          if (el.querySelector("iframe").contentWindow.Velocity)
-            new (el.querySelector("iframe").contentWindow.Velocity.Tab)(
-              url,
-              true,
-            );
+          if (el.querySelector("iframe").contentWindow.Velocity) {
+            el.querySelector("iframe").contentWindow.Velocity.Tab(url, true);
+          }
         });
       });
 
     searchContainer
       .querySelectorAll(".start-app.velocity-browser-search")
       .forEach((app) => {
-        app.addEventListener("click", async (e) => {
+        app.addEventListener("click", async () => {
           const url = app.innerText;
 
           await menu.hide();
 
-          if (!xen.apps.apps.find(
-            (app) => app.appId == "Xen/velocity",
-          ))
-            await xen.apps.open(
+          if (
+            !window.xen.apps.apps.find((app) => app.appId === "Xen/velocity")
+          ) {
+            await window.xen.apps.open(
               "Xen/velocity",
-              document.querySelector(".os-dock-item[data-id='Xen/velocity']"),
+              document.querySelector('.os-dock-item[data-id="Xen/velocity"]'),
             );
+          }
 
-          const { master: el } = xen.apps.apps.find(
-            (app) => app.appId == "Xen/velocity",
+          const { master: el } = window.xen.apps.apps.find(
+            (app) => app.appId === "Xen/velocity",
           );
 
           if (!el) return;
 
-          xen.wm.focus(el.id);
+          window.xen.wm.focus(el.id);
 
-          if (el.querySelector("iframe").contentWindow.Velocity)
-            new (el.querySelector("iframe").contentWindow.Velocity.Tab)(
-              url,
-              true,
-            );
+          if (el.querySelector("iframe").contentWindow.Velocity) {
+            el.querySelector("iframe").contentWindow.Velocity.Tab(url, true);
+          }
         });
       });
 
     searchContainer.querySelectorAll(".start-app.ddg-search").forEach((app) => {
-      app.addEventListener("click", async (e) => {
-        let parser = new DOMParser().parseFromString(
+      app.addEventListener("click", async () => {
+        const parser = new window.DOMParser().parseFromString(
           decodeURIComponent(atob(app.dataset.result)),
           "text/html",
         );
@@ -181,13 +180,13 @@ const menu = {
 
     input.focus();
 
-    if (e.key == "Backspace" && input.value.length == 0) {
+    if (e.key === "Backspace" && input.value.length === 0) {
       return await this.hideSearch();
     }
 
     if (this.searchOpen) {
       // wait a second for event to bubble
-      await new Promise((r) => setTimeout(r, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       await this.renderSearch(input.value || " ");
 
@@ -198,23 +197,21 @@ const menu = {
   },
 
   generateSearch: async function (term) {
-    var data = {
+    const data = {
       apps: [],
       search: [],
       news: [],
     };
-
-    var bare = window.xen.bare;
+    const bare = window.xen.bare;
+    const apps = await window.xen.apps.getAppsData();
+    const names = apps.map((app) => app.name);
 
     term = term.trim();
-
-    const apps = await window.xen.apps.getAppsData();
-    var names = apps.map((app) => app.name);
 
     if (names.find((name) => name.toLowerCase().includes(term.toLowerCase()))) {
       data.apps = names
         .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
-        .map((name) => apps.find((app) => app.name == name));
+        .map((name) => apps.find((app) => app.name === name));
     }
 
     data.apps = data.apps
@@ -228,10 +225,15 @@ const menu = {
       .join("\n");
 
     if (term.length > 0) {
-      const searchResults = await bare.fetch(`http://duckduckgo.com/?q=${encodeURIComponent(term)}&format=json`, {
-        method: "GET",
-        redirect: "manual"
-      }).then((response) => response.json());
+      const searchResults = await bare
+        .fetch(
+          `http://duckduckgo.com/?q=${encodeURIComponent(term)}&format=json`,
+          {
+            method: "GET",
+            redirect: "manual",
+          },
+        )
+        .then((response) => response.json());
 
       try {
         if (searchResults.AbstractURL && searchResults.AbstractText) {
@@ -276,10 +278,15 @@ const menu = {
         );
       }
 
-      const omniResults = await bare.fetch(`http://duckduckgo.com/ac/?q=${encodeURIComponent(term)}&format=json`, {
-        method: "GET",
-        redirect: "manual"
-      }).then((response) => response.json());
+      const omniResults = await bare
+        .fetch(
+          `http://duckduckgo.com/ac/?q=${encodeURIComponent(term)}&format=json`,
+          {
+            method: "GET",
+            redirect: "manual",
+          },
+        )
+        .then((response) => response.json());
 
       data.search.push(
         `
@@ -319,21 +326,21 @@ const menu = {
 
 menu.searchMenu
   .querySelector("button.start-back")
-  .addEventListener("click", async function (e) {
+  .addEventListener("click", async function () {
     return await menu.hideSearch();
   });
 
 menu.startMenu
   .querySelector(".start-go")
-  .addEventListener("click", async function (e) {
+  .addEventListener("click", async function () {
     return await menu.showSearch(
-      new KeyboardEvent("keydown", {
+      new window.KeyboardEvent("keydown", {
         key: "",
       }),
     );
   });
 
-document.getElementById("startButton").addEventListener("click", function (e) {
+document.getElementById("startButton").addEventListener("click", function () {
   if (menu.open) {
     menu.hide();
   } else {
@@ -342,20 +349,18 @@ document.getElementById("startButton").addEventListener("click", function (e) {
 });
 
 document.addEventListener("keydown", async function (e) {
-  if (xen.taskbar.hidden) {
-    if (e.key == "Option" || e.key == "Alt") {
-      if (menu.open) {
-        return;
-      } else {
-        xen.taskbar.show();
+  if (window.xen.taskbar.hidden) {
+    if (e.key === "Option" || e.key === "Alt") {
+      if (!menu.open) {
+        window.xen.taskbar.show();
 
-        await new Promise((r) => setTimeout(r, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
 
         menu.show();
       }
     }
   } else {
-    if (e.key == "Option" || e.key == "Alt") {
+    if (e.key === "Option" || e.key === "Alt") {
       if (menu.open) {
         menu.hide();
       } else {
@@ -368,8 +373,8 @@ document.addEventListener("keydown", async function (e) {
 document.addEventListener("mousedown", function (e) {
   let target;
 
-  for (var n = e.target; n.parentNode; n = n.parentNode) {
-    if (n.id == "os-taskbar-resizable") {
+  for (let n = e.target; n.parentNode; n = n.parentNode) {
+    if (n.id === "os-taskbar-resizable") {
       target = n;
       break;
     }
@@ -383,14 +388,9 @@ document.addEventListener("mousedown", function (e) {
 window.addEventListener("keydown", function (e) {
   return queueMicrotask(async () => {
     if (!menu.open) return;
-    
-    if (
-      e.ctrlKey ||
-      e.metaKey ||
-      e.altKey ||
-      e.altGraphKey ||
-      e.shiftKey
-    ) return;
+
+    if (e.ctrlKey || e.metaKey || e.altKey || e.altGraphKey || e.shiftKey)
+      return;
 
     switch (e.key) {
       case "a":
@@ -421,8 +421,6 @@ window.addEventListener("keydown", function (e) {
       case "z":
       case " ":
       case "Backspace":
-        //if (menu.searchOpen) return false;
-
         return menu.initSearch(e);
       case "Escape":
         return menu.hide();

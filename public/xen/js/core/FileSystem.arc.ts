@@ -8,7 +8,7 @@ interface EntryDetail {
 
 class EntryStat {
   content: Blob | null = null;
-  length: number = 0;
+  length = 0;
 
   constructor(
     public detail: EntryDetail,
@@ -32,10 +32,10 @@ class EntryStat {
 }
 
 class vfs {
-  normalize: Function = normalize;
+  normalize: (path: string) => string = normalize;
   base: URL;
 
-  constructor(path: string = "") {
+  constructor(path = "") {
     this.base = new URL(
       normalize(location.origin + (path || "").replace(/\/?$/, "/")),
     );
@@ -43,7 +43,7 @@ class vfs {
 
   error = class VFSError extends Error {
     constructor(type: number) {
-      var types = [
+      const types = [
         /* 0: Path Error */ "Invalid Path: /",
         /* 1: Missing Path */ "Missing Required Argument: path",
         /* 2: Missing Content */ "Missing Required Argument: content",
@@ -61,29 +61,37 @@ class vfs {
   };
 
   directory = class directory extends vfs {
-    constructor(path: string = "", public parent: vfs = new vfs()) {
+    constructor(
+      path = "",
+      public parent: vfs = new vfs(),
+    ) {
       super(path);
     }
   };
 
   #getPath(path: string | undefined = "") {
     return new URL(
-        new URL(
-          this.base.origin + Path.normalize(Path.resolve(this.base.pathname, path))
-        ).href.replace(/(.+)\/?$/, "$1")
+      new URL(
+        this.base.origin +
+          Path.normalize(Path.resolve(this.base.pathname, path)),
+      ).href.replace(/(.+)\/?$/, "$1"),
     );
   }
 
   get loading() {
-    return caches.open("vfs").then(async cache => {
-      if (!await cache.match(new URL(location.origin + "/")))
-        await cache.put(new URL(location.origin + "/"), new Response(null, {
-          headers: {
-            "x-detail": JSON.stringify({
-              type: "directory",
-            }),
-          },
-        }));
+    return caches.open("vfs").then(async (cache) => {
+      if ((await cache.match(new URL(location.origin + "/"))) == null) {
+        await cache.put(
+          new URL(location.origin + "/"),
+          new Response(null, {
+            headers: {
+              "x-detail": JSON.stringify({
+                type: "directory",
+              }),
+            },
+          }),
+        );
+      }
 
       return cache;
     });
@@ -96,10 +104,10 @@ class vfs {
 
     const fs = await this.loading;
 
-    var relURL = this.#getPath(path).pathname;
-    var build = "/";
+    const relURL = this.#getPath(path).pathname;
+    let build = "/";
 
-    for await (var segment of relURL.split("/")) {
+    for await (const segment of relURL.split("/")) {
       if (!segment) continue;
       build += segment;
 
@@ -131,7 +139,7 @@ class vfs {
     const fs = await this.loading;
 
     const dir = await fs.match(this.#getPath(path));
-    if (!dir) throw new this.error(6);
+    if (dir == null) throw new this.error(6);
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
     if (detail.type != "directory") throw new this.error(7);
@@ -143,14 +151,15 @@ class vfs {
 
   async writeFile(
     path: string | undefined,
-    content: Blob | string | any[],
+    content: Blob | string,
     details: EntryDetail = {},
   ) {
     if (!path) throw new this.error(1);
-    if (typeof content == "undefined") throw new this.error(2);
+    if (typeof content === "undefined") throw new this.error(2);
     if (path == "/") throw new this.error(0);
 
-    if (!await this.exists(Path.dirname(path))) await this.mkdir(Path.dirname(path));
+    if (!(await this.exists(Path.dirname(path))))
+      await this.mkdir(Path.dirname(path));
 
     const fs = await this.loading;
 
@@ -162,10 +171,10 @@ class vfs {
     } else if (content.constructor == Object) {
       contentType = "application/json";
       content = new Blob([JSON.stringify(content)]);
-    } else if (typeof content == "string") {
+    } else if (typeof content === "string") {
       contentType = "text/plain";
       content = new Blob([content]);
-    } else if (typeof content == "number") {
+    } else if (typeof content === "number") {
       contentType = "text/plain";
       content = new Blob([`${content}`]);
     }
@@ -191,7 +200,7 @@ class vfs {
 
     const fs = await this.loading;
 
-    if (await fs.match(this.#getPath(path))) {
+    if ((await fs.match(this.#getPath(path))) != null) {
       return await fs
         .match(this.#getPath(path))
         .then((response: any) =>
@@ -209,7 +218,7 @@ class vfs {
 
     const file = await fs.match(this.#getPath(path));
 
-    if (!file) throw new this.error(5);
+    if (file == null) throw new this.error(5);
 
     const detail = JSON.parse(file.headers.get("x-detail") || "{}");
 
@@ -236,7 +245,7 @@ class vfs {
     const fs = await this.loading;
 
     const dir = await fs.match(this.#getPath(path));
-    if (!dir) throw new this.error(6);
+    if (dir == null) throw new this.error(6);
 
     const detail = JSON.parse(dir.headers.get("x-detail") || "{}");
     if (detail.type != "directory") throw new this.error(7);
@@ -280,7 +289,7 @@ class vfs {
     const fs = await this.loading;
 
     const file = await fs.match(this.#getPath(path));
-    if (!file) throw new this.error(5);
+    if (file == null) throw new this.error(5);
 
     const detail = JSON.parse(file.headers.get("x-detail") || "{}");
 

@@ -1,7 +1,6 @@
 const express = require("express");
-const compress = require('express-compression');
+const compress = require("express-compression");
 const esbuild = require("esbuild");
-const path = require("path");
 const fs = require("fs");
 const request = require("request");
 const http = require("node:http");
@@ -19,7 +18,7 @@ try {
     .context({
       entryPoints: [
         {
-          in: "public/xen/js/entry.js",
+          in: "public/xen/js/entry.ts",
           out: "web.bundle",
         },
         {
@@ -37,9 +36,7 @@ try {
       logLevel: "error",
       platform: "browser",
       minify: false,
-      plugins: [
-        polyfill({}),
-      ],
+      plugins: [polyfill({})],
     })
     .then((ctx) => ctx.watch());
 
@@ -57,9 +54,7 @@ try {
       logLevel: "error",
       platform: "browser",
       minify: false,
-      plugins: [
-        polyfill({}),
-      ],
+      plugins: [polyfill({})],
     })
     .then((ctx) => ctx.watch());
 } catch (e) {
@@ -75,18 +70,21 @@ app.use(compress({ level: 9 }));
 app.use((req, res, next) => {
   res.append("Service-Worker-Allowed", "/");
 
-  if (req.pathname == "/")
+  if (req.pathname === "/") {
     res.append(
       "Content-Security-Policy",
       "default-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src * blob:; script-src 'self' 'sha256-9NsIanf8jSVFuiPetrZ1jfLPoMPzZuPz2w3GWvQFgIU=' 'sha256-inline' 'unsafe-eval' 'unsafe-hashes'; font-src 'self' fonts.gstatic.com fonts.googleapis.com data: *.slant.co; style-src-elem fonts.googleapis.com fonts.gstatic.com 'self' 'sha256-tdxd90rTdR0f9tIdFGpIqKd/7yyeTMO/vWN8Fu6/q40=' 'sha256-pg+aUJQeX3r3dfj4esilAvVsVMvh+iTCagyckScaD7M=' 'sha256-pNuvqlsmWwHO/+G71KM8gYFRp51DP92YGba0uGQLwNE='; style-src 'unsafe-inline' fonts.gstatic.com fonts.googleapis.com; connect-src 'self' xenos-app-repository.enderkingj.repl.co xen-analytics.enderkingj.repl.co fonts.googleapis.com fonts.gstatic.com google.com; frame-src *",
     );
+  }
 
   next();
 });
 
-app.use(express.static("public", {
-  maxAge: '0'
-}));
+app.use(
+  express.static("public", {
+    maxAge: "0",
+  }),
+);
 
 app.get("/ipapi", async (req, res) => {
   try {
@@ -94,7 +92,8 @@ app.get("/ipapi", async (req, res) => {
       await fetch(
         `http://ip-api.com/json/${(
           req.headers["x-forwarded-for"]?.split(",").shift() ||
-          req.socket?.remoteAddress
+          req.socket?.remoteAddress ||
+          ""
         ).replace("::1", "")}`,
       ).then((res) => res.json()),
     );

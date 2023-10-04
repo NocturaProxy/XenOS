@@ -3,11 +3,11 @@ const contextMenu = {
     window.HTMLElement.prototype.registerContextMenu = this.register;
   },
 
-  async register(opts, onopen = () => {}, onclose = () => {}) {
+  async register(opts, onopen = () => null, onclose = () => null) {
     this.menus = this.menus || [];
-    var open = false;
+    let open = false;
 
-    var master = document.createElement("div");
+    const master = document.createElement("div");
     master.classList.add("context-menu");
     master.style.display = "none";
     document.body.appendChild(master);
@@ -16,11 +16,11 @@ const contextMenu = {
       apply(t, g, a) {
         master.innerHTML = "";
 
-        for (var i = 0; i < opts.components.length; i++) {
-          var component = opts.components[i];
-          var item = document.createElement("div");
-    
-          switch(component.type) {
+        for (let i = 0; i < opts.components.length; i++) {
+          const component = opts.components[i];
+          const item = document.createElement("div");
+
+          switch (component.type) {
             case "button":
               item.classList.add("context-btn");
               item.innerHTML = component.text;
@@ -36,21 +36,21 @@ const contextMenu = {
               item.innerHTML = component.text;
               break;
           }
-    
+
           master.appendChild(item);
         }
 
         return Reflect.apply(t, g, a);
-      }
-    })
+      },
+    });
 
     opts.master = master;
     opts.type = opts.type || "default";
-    
-    document.addEventListener("click", (e) => {
-      var el;
 
-      for (var n = e.target; n.parentNode; n = n.parentNode) {
+    document.addEventListener("click", (e) => {
+      let el;
+
+      for (let n = e.target; n.parentNode; n = n.parentNode) {
         if (n.classList.contains("context-menu")) {
           el = n;
           break;
@@ -63,8 +63,12 @@ const contextMenu = {
 
       if (!el) {
         master.style.opacity = 0;
-        if (open) onclose(open = false);
-        setTimeout(() => master.style.display = "none", 70);
+        if (open) {
+          onclose((open = false));
+        }
+        setTimeout(() => {
+          master.style.display = "none";
+        }, 70);
       }
     });
 
@@ -72,29 +76,46 @@ const contextMenu = {
       e.preventDefault();
 
       if (document.querySelectorAll(".context-menu").length) {
-        for (var i = 0; i < document.querySelectorAll(".context-menu").length; i++) {
-          if (document.querySelectorAll(".context-menu")[i].style.display == "block") {
-            if (document.querySelectorAll(".context-menu")[i] == master && open)
-              onclose(open = false);
+        for (
+          let i = 0;
+          i < document.querySelectorAll(".context-menu").length;
+          i++
+        ) {
+          if (
+            document.querySelectorAll(".context-menu")[i].style.display ===
+            "block"
+          ) {
+            if (
+              document.querySelectorAll(".context-menu")[i] === master &&
+              open
+            ) {
+              onclose((open = false));
+            }
             document.querySelectorAll(".context-menu")[i].style.opacity = 0;
-            setTimeout(() => document.querySelectorAll(".context-menu")[i].style.display = "none", 70);
+            setTimeout(() => {
+              document.querySelectorAll(".context-menu")[i].style.display =
+                "none";
+            }, 70);
             return;
           }
         }
       }
 
-      if (!open) onopen(open = true);
+      if (!open) {
+        onopen((open = true));
+      }
 
       master.style.display = "block";
       master.style.opacity = 1;
-      var bounds = master.getBoundingClientRect();
-      var tBounds = this.getBoundingClientRect();
 
-      switch(opts.type) {
+      const bounds = master.getBoundingClientRect();
+      const tBounds = this.getBoundingClientRect();
+
+      switch (opts.type) {
         case "center":
-          console.log(master.style.top = tBounds.top - 10 - bounds.height + "px");
           master.style.top = tBounds.top - 10 - bounds.height + "px";
-          master.style.left = tBounds.left + tBounds.width / 2 - bounds.width / 2 + "px";
+          master.style.left =
+            tBounds.left + tBounds.width / 2 - bounds.width / 2 + "px";
           break;
         case "default":
         default:
@@ -110,7 +131,7 @@ const contextMenu = {
     });
 
     this.menus.push(opts);
-  }
+  },
 };
 
 window.xen.context = contextMenu;

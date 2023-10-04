@@ -1,6 +1,5 @@
 // Loads scripted apps
 
-
 function __workerCode() {
   // ALL CODE IN THIS FUNCTION IS RUN IN A SCOPED DEDICATED WORKER
 
@@ -8,19 +7,19 @@ function __workerCode() {
     return args
       .map((part, i) => {
         if (i === 0) {
-          return part.trim().replace(/[\/]*$/g, "");
+          return part.trim().replace(/[/]*$/g, "");
         } else {
-          return part.trim().replace(/(^[\/]*|[\/]*$)/g, "");
+          return part.trim().replace(/(^[/]*|[/]*$)/g, "");
         }
       })
       .filter((x) => x.length)
       .join("/");
   };
 
-  self._readyPromise = new Promise(function (res) {
+  self._readyPromise = new Promise(function (resolve) {
     self.addEventListener("message", function (event) {
       if (event.data.type === "ready") {
-        res();
+        resolve();
       }
     });
   });
@@ -38,33 +37,35 @@ function __workerCode() {
           url.startsWith("http://") ||
           url.startsWith("https://")
         )
-      )
+      ) {
         url =
-          location.origin + __joinPath("/xen/~/apps/", self.__moduleID, url);
+          window.location.origin +
+          self.__joinPath("/xen/~/apps/", self.__moduleID, url);
+      }
 
-      return new Promise(async (resolve) => {
-        await exec(`
-                    return new Promise(resolve => {
-                        document.getElementById("${
-                          this.appData.id
-                        }").querySelector("iframe").addEventListener("${
-                          opts.event || "load"
-                        }", function(e) {
-                            resolve();
-                        }, {once: true});
+      return new Promise((resolve) => {
+        exec(`
+          return new Promise(resolve => {
+              document.getElementById("${
+                this.appData.id
+              }").querySelector("iframe").addEventListener("${
+                opts.event || "load"
+              }", function(e) {
+                  resolve();
+              }, {once: true});
 
-                        document.getElementById("${
-                          this.appData.id
-                        }").querySelector("iframe").src = "${url}";
-                    });
-                `);
-
-        resolve();
+              document.getElementById("${
+                this.appData.id
+              }").querySelector("iframe").src = "${url}";
+          });
+        `).then(resolve);
       });
     }
 
-    async loadFile(url, opts) {
+    async loadFile(url, opts = {}) {
       let text;
+
+      opts;
 
       if (
         url.startsWith("data:") ||
@@ -75,12 +76,14 @@ function __workerCode() {
         text = await fetch(url).then(function (res) {
           return res.text();
         });
-      } else
+      } else {
         text = await fetch(
-          location.origin + __joinPath("/xen/~/apps/", self.__moduleID, url),
+          window.location.origin +
+            self.__joinPath("/xen/~/apps/", self.__moduleID, url),
         ).then(function (res) {
           return res.text();
         });
+      }
 
       await exec(
         `document.getElementById("${
@@ -101,7 +104,9 @@ function __workerCode() {
         `requestAnimationFrame(() => document.getElementById("${this.appData.id}").style.opacity = "0");`,
       );
 
-      if (ms) await new Promise((r) => setTimeout(r, ms));
+      if (ms) {
+        await new Promise((resolve) => setTimeout(resolve, ms));
+      }
 
       await exec(
         `document.getElementById("${this.appData.id}").style.display = "none";`,
@@ -120,7 +125,9 @@ function __workerCode() {
         `requestAnimationFrame(() => document.getElementById("${this.appData.id}").style.opacity = "1");`,
       );
 
-      if (ms) await new Promise((r) => setTimeout(r, ms));
+      if (ms) {
+        await new Promise((resolve) => setTimeout(resolve, ms));
+      }
 
       await exec(
         `document.getElementById("${this.appData.id}").style.display = "block";`,
@@ -132,7 +139,7 @@ function __workerCode() {
 
   self.xen = {
     onReady: function (callback) {
-      _readyPromise.then(callback).then(function () {
+      self._readyPromise.then(callback).then(function () {
         self.postMessage({
           type: "ready",
         });
@@ -166,7 +173,7 @@ function __workerCode() {
           if (event.data.success === true) {
             resolve(event.data.result);
           } else {
-            reject();
+            reject(new Error("unknown"));
           }
         }
       };
@@ -174,7 +181,7 @@ function __workerCode() {
       self.postMessage(
         {
           type: "exec",
-          script: script,
+          script,
         },
         [channel.port1],
       );
@@ -200,30 +207,33 @@ ${script}
     },
   );
 
-  const worker = new Worker(URL.createObjectURL(script), {
+  const worker = new window.Worker(URL.createObjectURL(script), {
     type: "module",
-    name: "appLoader-" + pid,
+    name: `appLoader-${pid}`,
   });
 
   return worker;
 }
 
 const appLoader = {
-  load(data, script, el, pid = xen.apps.createID()) {
-    return new Promise(async (resolve) => {
+  load(data, script, el, pid = window.xen.apps.createID()) {
+    return new Promise((resolve) => {
       const worker = createWorker(data.name, script, data.id, pid);
 
       let complete = false;
 
       function bounce() {
-        if (complete) return resolve(worker), clearInterval(interval);
+        if (complete) {
+          clearInterval(interval);
+          return resolve(worker);
+        }
 
         if (el) {
           el.bounce();
         }
       }
 
-      let interval = setInterval(bounce, 800);
+      const interval = setInterval(bounce, 800);
 
       bounce();
 
@@ -248,14 +258,14 @@ const appLoader = {
           event.ports[0].postMessage({
             type: "exec",
             success: true,
-            result: clone(await (0, eval)(`(() => {${event.data.script};})()`)),
+            result: clone(
+              await (0, Function)(`(() => {${event.data.script};})()`)(),
+            ),
           });
         }
       });
 
-      await window.xen.taskbar.appOpen(data.name, data.id);
-
-      //return resolve(worker);
+      window.xen.taskbar.appOpen(data.name, data.id);
     });
   },
 };

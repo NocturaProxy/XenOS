@@ -37,7 +37,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js
 var init_dirname = __esm({
@@ -9260,112 +9259,6 @@ var require_filer_min = __commonJS({
   }
 });
 
-// public/xen/js/core/FileSystem.ts
-var FileSystem_exports = {};
-__export(FileSystem_exports, {
-  default: () => FileSystem_default
-});
-function makeProxy(dir = "/") {
-  var proxy = new Proxy(file, {
-    get(target, prop) {
-      if (prop === "sh") {
-        return target.sh;
-      }
-      if (prop === "cwd") {
-        return () => dir;
-      }
-      if (prop === "exists") {
-        return async (...a) => {
-          try {
-            await proxy.stat(...a);
-            return true;
-          } catch {
-            return false;
-          }
-        };
-      }
-      if (prop === "openDir") {
-        return async (path2) => {
-          path2 = Filer.path.resolve(
-            dir,
-            Filer.path.normalize(path2)
-          );
-          if (!await proxy.exists(path2)) {
-            throw new Filer.Errors.EEXIST("no such file or directory", path2);
-          }
-          return makeProxy(path2);
-        };
-      }
-      if (prop == "readFile") {
-        return new Proxy(target[prop], {
-          apply: async (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            var result = await Reflect.apply(target2, thisArg, args);
-            if (args[1] == "buffer") {
-              return result.buffer;
-            }
-            if (args[1] == "string") {
-              return Filer.Buffer.from(result).toString();
-            }
-            if (args[1] == "utf-8") {
-              return new TextDecoder("utf-8").decode(result);
-            }
-            return result;
-          }
-        });
-      }
-      if (prop == "rmdir") {
-        return new Proxy(target[prop], {
-          apply: async (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            try {
-              return await Reflect.apply(target2, thisArg, args);
-            } catch {
-              await new Promise((resolve, reject) => {
-                file.sh.rm(args[0], { recursive: true }, resolve);
-              });
-              return void 0;
-            }
-          }
-        });
-      }
-      if (target[prop] instanceof Function) {
-        return new Proxy(target[prop], {
-          apply: (target2, thisArg, args) => {
-            args[0] = Filer.path.resolve(
-              dir,
-              Filer.path.normalize(args[0])
-            );
-            return Reflect.apply(target2, thisArg, args);
-          }
-        });
-      }
-      return target[prop];
-    }
-  });
-  return proxy;
-}
-var Filer, file, FileSystem_default;
-var init_FileSystem = __esm({
-  "public/xen/js/core/FileSystem.ts"() {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    Filer = require_filer_min();
-    file = new Filer.FileSystem().promises;
-    file.sh = new Filer.Shell(file);
-    file.buffer = Filer.Buffer;
-    FileSystem_default = makeProxy("/");
-  }
-});
-
 // node_modules/path-browserify/index.js
 var require_path_browserify = __commonJS({
   "node_modules/path-browserify/index.js"(exports3, module) {
@@ -9797,11 +9690,119 @@ var require_path_browserify = __commonJS({
   }
 });
 
+// public/sw.js
+init_dirname();
+init_buffer2();
+init_process2();
+var import_filer2 = __toESM(require_filer_min());
+
+// public/xen/js/core/FileSystem.ts
+init_dirname();
+init_buffer2();
+init_process2();
+
+// public/modules.d.ts
+init_dirname();
+init_buffer2();
+init_process2();
+
+// public/xen/js/core/FileSystem.ts
+var import_filer = __toESM(require_filer_min());
+var file = new import_filer.default.FileSystem().promises;
+file.sh = new import_filer.default.Shell(file);
+file.buffer = import_filer.default.Buffer;
+function makeProxy(dir = "/") {
+  const proxy = new Proxy(file, {
+    get(target, prop) {
+      if (prop === "sh") {
+        return target.sh;
+      }
+      if (prop === "cwd") {
+        return () => dir;
+      }
+      if (prop === "exists") {
+        return async (...a) => {
+          try {
+            await proxy.stat(...a);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+      }
+      if (prop === "openDir") {
+        return async (path2) => {
+          path2 = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(path2));
+          if (!await proxy.exists(path2)) {
+            throw new import_filer.default.Errors.EEXIST("no such file or directory", path2);
+          }
+          return makeProxy(path2);
+        };
+      }
+      if (prop == "readFile") {
+        return new Proxy(target[prop], {
+          apply: async (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            const result = await Reflect.apply(
+              target2,
+              thisArg,
+              args
+            );
+            if (args[1] == "buffer") {
+              return result.buffer;
+            }
+            if (args[1] == "string") {
+              return import_filer.default.Buffer.from(result).toString();
+            }
+            if (args[1] == "utf-8") {
+              return new TextDecoder("utf-8").decode(result);
+            }
+            return result;
+          }
+        });
+      }
+      if (prop == "rmdir") {
+        return new Proxy(target[prop], {
+          apply: async (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            try {
+              return await Reflect.apply(target2, thisArg, args);
+            } catch {
+              await new Promise((resolve, reject) => {
+                file.sh.rm(args[0], { recursive: true }, resolve, reject);
+              });
+              return void 0;
+            }
+          }
+        });
+      }
+      if (target[prop] instanceof Function) {
+        return new Proxy(target[prop], {
+          apply: (target2, thisArg, args) => {
+            args[0] = import_filer.default.path.resolve(dir, import_filer.default.path.normalize(args[0]));
+            return Reflect.apply(target2, thisArg, args);
+          }
+        });
+      }
+      return target[prop];
+    }
+  });
+  return proxy;
+}
+var FileSystem_default = makeProxy("/");
+
+// public/sw.js
+var import_path_browserify2 = __toESM(require_path_browserify());
+
 // node_modules/@dynamic-pkg/mime/index.js
-var mime_exports = {};
-__export(mime_exports, {
-  default: () => mime_default
-});
+init_dirname();
+init_buffer2();
+init_process2();
+var import_path_browserify = __toESM(require_path_browserify());
+var db = { "application/ecmascript": { source: "apache", compressible: true, extensions: ["ecma"] }, "application/gzip": { source: "iana", compressible: false, extensions: ["gz"] }, "application/http": { source: "iana" }, "application/javascript": { source: "apache", charset: "UTF-8", compressible: true, extensions: ["js"] }, "application/json": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["json", "map"] }, "application/manifest+json": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["webmanifest"] }, "application/marc": { source: "iana", extensions: ["mrc"] }, "application/mp4": { source: "iana", extensions: ["mp4", "mpg4", "mp4s", "m4p"] }, "application/ogg": { source: "iana", compressible: false, extensions: ["ogx"] }, "application/sql": { source: "iana", extensions: ["sql"] }, "application/wasm": { source: "iana", compressible: true, extensions: ["wasm"] }, "application/x-bittorrent": { source: "apache", extensions: ["torrent"] }, "application/x-gzip": { source: "apache" }, "application/x-javascript": { compressible: true }, "application/x-web-app-manifest+json": { compressible: true, extensions: ["webapp"] }, "application/x-www-form-urlencoded": { source: "iana", compressible: true }, "application/xhtml+xml": { source: "iana", compressible: true, extensions: ["xhtml", "xht"] }, "application/xhtml-voice+xml": { source: "apache", compressible: true }, "application/xml": { source: "iana", compressible: true, extensions: ["xml", "xsl", "xsd", "rng"] }, "application/zip": { source: "iana", compressible: false, extensions: ["zip"] }, "application/zlib": { source: "iana" }, "audio/midi": { source: "apache", extensions: ["mid", "midi", "kar", "rmi"] }, "audio/mp3": { compressible: false, extensions: ["mp3"] }, "audio/mp4": { source: "iana", compressible: false, extensions: ["m4a", "mp4a"] }, "audio/mp4a-latm": { source: "iana" }, "audio/mpa": { source: "iana" }, "audio/mpa-robust": { source: "iana" }, "audio/mpeg": { source: "iana", compressible: false, extensions: ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"] }, "audio/ogg": { source: "iana", compressible: false, extensions: ["oga", "ogg", "spx", "opus"] }, "audio/red": { source: "iana" }, "audio/rtx": { source: "iana" }, "audio/scip": { source: "iana" }, "audio/silk": { source: "apache", extensions: ["sil"] }, "audio/smv": { source: "iana" }, "audio/wav": { compressible: false, extensions: ["wav"] }, "audio/wave": { compressible: false, extensions: ["wav"] }, "audio/webm": { source: "apache", compressible: false, extensions: ["weba"] }, "audio/x-aac": { source: "apache", compressible: false, extensions: ["aac"] }, "audio/x-aiff": { source: "apache", extensions: ["aif", "aiff", "aifc"] }, "audio/x-caf": { source: "apache", compressible: false, extensions: ["caf"] }, "audio/x-flac": { source: "apache", extensions: ["flac"] }, "audio/x-m4a": { source: "nginx", extensions: ["m4a"] }, "audio/x-matroska": { source: "apache", extensions: ["mka"] }, "audio/x-mpegurl": { source: "apache", extensions: ["m3u"] }, "audio/x-ms-wax": { source: "apache", extensions: ["wax"] }, "audio/x-ms-wma": { source: "apache", extensions: ["wma"] }, "audio/x-pn-realaudio": { source: "apache", extensions: ["ram", "ra"] }, "audio/x-pn-realaudio-plugin": { source: "apache", extensions: ["rmp"] }, "audio/x-realaudio": { source: "nginx", extensions: ["ra"] }, "audio/x-tta": { source: "apache" }, "audio/x-wav": { source: "apache", extensions: ["wav"] }, "audio/xm": { source: "apache", extensions: ["xm"] }, "font/collection": { source: "iana", extensions: ["ttc"] }, "font/otf": { source: "iana", compressible: true, extensions: ["otf"] }, "font/sfnt": { source: "iana" }, "font/ttf": { source: "iana", compressible: true, extensions: ["ttf"] }, "font/woff": { source: "iana", extensions: ["woff"] }, "font/woff2": { source: "iana", extensions: ["woff2"] }, "image/gif": { source: "iana", compressible: false, extensions: ["gif"] }, "image/heic": { source: "iana", extensions: ["heic"] }, "image/heic-sequence": { source: "iana", extensions: ["heics"] }, "image/heif": { source: "iana", extensions: ["heif"] }, "image/jpeg": { source: "iana", compressible: false, extensions: ["jpeg", "jpg", "jpe"] }, "image/png": { source: "iana", compressible: false, extensions: ["png"] }, "image/svg+xml": { source: "iana", compressible: true, extensions: ["svg", "svgz"] }, "image/webp": { source: "iana", extensions: ["webp"] }, "text/coffeescript": { extensions: ["coffee", "litcoffee"] }, "text/css": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["css"] }, "text/ecmascript": { source: "apache" }, "text/html": { source: "iana", compressible: true, extensions: ["html", "htm", "shtml"] }, "text/jade": { extensions: ["jade"] }, "text/javascript": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["js", "mjs"] }, "text/markdown": { source: "iana", compressible: true, extensions: ["md", "markdown"] } };
+var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
+var TEXT_TYPE_REGEXP = /^text\//i;
+var exports2 = {};
 function charset(e) {
   if (!e || "string" != typeof e)
     return false;
@@ -9850,31 +9851,10 @@ function populateMaps(e, s) {
     }
   });
 }
-var import_path_browserify, db, EXTRACT_TYPE_REGEXP, TEXT_TYPE_REGEXP, exports2, mime_default;
-var init_mime = __esm({
-  "node_modules/@dynamic-pkg/mime/index.js"() {
-    "use strict";
-    init_dirname();
-    init_buffer2();
-    init_process2();
-    import_path_browserify = __toESM(require_path_browserify());
-    db = { "application/ecmascript": { source: "apache", compressible: true, extensions: ["ecma"] }, "application/gzip": { source: "iana", compressible: false, extensions: ["gz"] }, "application/http": { source: "iana" }, "application/javascript": { source: "apache", charset: "UTF-8", compressible: true, extensions: ["js"] }, "application/json": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["json", "map"] }, "application/manifest+json": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["webmanifest"] }, "application/marc": { source: "iana", extensions: ["mrc"] }, "application/mp4": { source: "iana", extensions: ["mp4", "mpg4", "mp4s", "m4p"] }, "application/ogg": { source: "iana", compressible: false, extensions: ["ogx"] }, "application/sql": { source: "iana", extensions: ["sql"] }, "application/wasm": { source: "iana", compressible: true, extensions: ["wasm"] }, "application/x-bittorrent": { source: "apache", extensions: ["torrent"] }, "application/x-gzip": { source: "apache" }, "application/x-javascript": { compressible: true }, "application/x-web-app-manifest+json": { compressible: true, extensions: ["webapp"] }, "application/x-www-form-urlencoded": { source: "iana", compressible: true }, "application/xhtml+xml": { source: "iana", compressible: true, extensions: ["xhtml", "xht"] }, "application/xhtml-voice+xml": { source: "apache", compressible: true }, "application/xml": { source: "iana", compressible: true, extensions: ["xml", "xsl", "xsd", "rng"] }, "application/zip": { source: "iana", compressible: false, extensions: ["zip"] }, "application/zlib": { source: "iana" }, "audio/midi": { source: "apache", extensions: ["mid", "midi", "kar", "rmi"] }, "audio/mp3": { compressible: false, extensions: ["mp3"] }, "audio/mp4": { source: "iana", compressible: false, extensions: ["m4a", "mp4a"] }, "audio/mp4a-latm": { source: "iana" }, "audio/mpa": { source: "iana" }, "audio/mpa-robust": { source: "iana" }, "audio/mpeg": { source: "iana", compressible: false, extensions: ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"] }, "audio/ogg": { source: "iana", compressible: false, extensions: ["oga", "ogg", "spx", "opus"] }, "audio/red": { source: "iana" }, "audio/rtx": { source: "iana" }, "audio/scip": { source: "iana" }, "audio/silk": { source: "apache", extensions: ["sil"] }, "audio/smv": { source: "iana" }, "audio/wav": { compressible: false, extensions: ["wav"] }, "audio/wave": { compressible: false, extensions: ["wav"] }, "audio/webm": { source: "apache", compressible: false, extensions: ["weba"] }, "audio/x-aac": { source: "apache", compressible: false, extensions: ["aac"] }, "audio/x-aiff": { source: "apache", extensions: ["aif", "aiff", "aifc"] }, "audio/x-caf": { source: "apache", compressible: false, extensions: ["caf"] }, "audio/x-flac": { source: "apache", extensions: ["flac"] }, "audio/x-m4a": { source: "nginx", extensions: ["m4a"] }, "audio/x-matroska": { source: "apache", extensions: ["mka"] }, "audio/x-mpegurl": { source: "apache", extensions: ["m3u"] }, "audio/x-ms-wax": { source: "apache", extensions: ["wax"] }, "audio/x-ms-wma": { source: "apache", extensions: ["wma"] }, "audio/x-pn-realaudio": { source: "apache", extensions: ["ram", "ra"] }, "audio/x-pn-realaudio-plugin": { source: "apache", extensions: ["rmp"] }, "audio/x-realaudio": { source: "nginx", extensions: ["ra"] }, "audio/x-tta": { source: "apache" }, "audio/x-wav": { source: "apache", extensions: ["wav"] }, "audio/xm": { source: "apache", extensions: ["xm"] }, "font/collection": { source: "iana", extensions: ["ttc"] }, "font/otf": { source: "iana", compressible: true, extensions: ["otf"] }, "font/sfnt": { source: "iana" }, "font/ttf": { source: "iana", compressible: true, extensions: ["ttf"] }, "font/woff": { source: "iana", extensions: ["woff"] }, "font/woff2": { source: "iana", extensions: ["woff2"] }, "image/gif": { source: "iana", compressible: false, extensions: ["gif"] }, "image/heic": { source: "iana", extensions: ["heic"] }, "image/heic-sequence": { source: "iana", extensions: ["heics"] }, "image/heif": { source: "iana", extensions: ["heif"] }, "image/jpeg": { source: "iana", compressible: false, extensions: ["jpeg", "jpg", "jpe"] }, "image/png": { source: "iana", compressible: false, extensions: ["png"] }, "image/svg+xml": { source: "iana", compressible: true, extensions: ["svg", "svgz"] }, "image/webp": { source: "iana", extensions: ["webp"] }, "text/coffeescript": { extensions: ["coffee", "litcoffee"] }, "text/css": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["css"] }, "text/ecmascript": { source: "apache" }, "text/html": { source: "iana", compressible: true, extensions: ["html", "htm", "shtml"] }, "text/jade": { extensions: ["jade"] }, "text/javascript": { source: "iana", charset: "UTF-8", compressible: true, extensions: ["js", "mjs"] }, "text/markdown": { source: "iana", compressible: true, extensions: ["md", "markdown"] } };
-    EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
-    TEXT_TYPE_REGEXP = /^text\//i;
-    exports2 = {};
-    exports2.charset = charset, exports2.charsets = { lookup: charset }, exports2.contentType = contentType, exports2.extension = extension, exports2.extensions = /* @__PURE__ */ Object.create(null), exports2.lookup = lookup, exports2.types = /* @__PURE__ */ Object.create(null), populateMaps(exports2.extensions, exports2.types);
-    mime_default = exports2;
-  }
-});
+exports2.charset = charset, exports2.charsets = { lookup: charset }, exports2.contentType = contentType, exports2.extension = extension, exports2.extensions = /* @__PURE__ */ Object.create(null), exports2.lookup = lookup, exports2.types = /* @__PURE__ */ Object.create(null), populateMaps(exports2.extensions, exports2.types);
+var mime_default = exports2;
 
 // public/sw.js
-init_dirname();
-init_buffer2();
-init_process2();
-var Filer2 = require_filer_min();
-var { default: fs } = (init_FileSystem(), __toCommonJS(FileSystem_exports));
-var path = require_path_browserify();
-var { default: mime } = (init_mime(), __toCommonJS(mime_exports));
 importScripts("/uv/uv.bundle.js");
 importScripts("/uv/uv.config.js");
 importScripts("/uv/uv.sw.js");
@@ -9885,12 +9865,13 @@ self.addEventListener("fetch", (event) => {
     (async (res) => {
       if (req.url.startsWith("chrome-extension://"))
         return await fetch(req);
-      if (req.url.startsWith(location.origin + "/~/uv/"))
+      if (req.url.startsWith(location.origin + "/~/uv/")) {
         return await uv.fetch(event);
+      }
       if (req.url.startsWith(location.origin + "/xen/~/")) {
         const _url = req.url.replace(location.origin + "/xen/~", "");
         if (_url.startsWith("/terminal/commands/")) {
-          const url = path.join(
+          const url = import_path_browserify2.default.join(
             "/xen/apps/native/terminal/commands/",
             _url.replace("/terminal/commands/", "")
           );
@@ -9898,15 +9879,15 @@ self.addEventListener("fetch", (event) => {
         }
         if (_url.startsWith("/about:")) {
           switch (_url.slice(7)) {
-            default:
-            case "blank":
-              return new Response("", {
+            case "srcdoc":
+              return new Response(await req.text(), {
                 headers: {
                   "Content-Type": "text/html"
                 }
               });
-            case "srcdoc":
-              return new Response(await req.text(), {
+            case "blank":
+            default:
+              return new Response("", {
                 headers: {
                   "Content-Type": "text/html"
                 }
@@ -9914,27 +9895,23 @@ self.addEventListener("fetch", (event) => {
           }
         }
         if (_url.startsWith("/assets")) {
-          const url = path.join(
+          const url = import_path_browserify2.default.join(
             "/xen/system/assets/",
             _url.replace("/assets/", "")
           );
-          return new Response(await fs.readFile(url), {
+          return new Response(await FileSystem_default.readFile(url), {
             headers: {
-              "Content-Type": mime.lookup(url)
+              "Content-Type": mime_default.lookup(url)
             }
           });
         }
         if (_url.startsWith("/apps")) {
           const app = _url.replace("/apps/", "").split("/").slice(0, 2).join("/");
-          const [author, appName] = app.split("/");
-          let native = false;
-          if (author == "Xen")
-            native = true;
           const url = `/${_url.split("/").slice(4).join("/")}`;
           if (url.startsWith("/meta")) {
             return new Response(
-              await fs.readFile(
-                path.normalize("/xen/system/apps/" + app + "/app.json")
+              await FileSystem_default.readFile(
+                import_path_browserify2.default.normalize("/xen/system/apps/" + app + "/app.json")
               ),
               {
                 headers: {
@@ -9945,35 +9922,33 @@ self.addEventListener("fetch", (event) => {
           } else {
             let finalURL, content;
             try {
-              content = await fs.readFile(
-                finalURL = path.join(
+              content = await FileSystem_default.readFile(
+                finalURL = import_path_browserify2.default.join(
                   "/xen/system/apps/",
                   app,
-                  url == "/" ? "/index.html" : url
+                  url === "/" ? "/index.html" : url
                 )
               );
             } catch {
-              content = await fs.readFile(
-                finalURL = path.join(
+              content = await FileSystem_default.readFile(
+                finalURL = import_path_browserify2.default.join(
                   "/xen/system/apps/",
                   app,
-                  url == "/" ? "/index.html" : url + ".html"
+                  url === "/" ? "/index.html" : url + ".html"
                 )
               ).catch(() => {
                 return new Response(`404: ${url} not found`);
               });
             }
-            content = new Blob([
-              content
-            ], {
-              type: mime.lookup(finalURL)
+            content = new Blob([content], {
+              type: mime_default.lookup(finalURL)
             });
-            if (mime.lookup(finalURL) == "text/html") {
-              content = `<base href="/xen/~/apps/${app}/" /><script src="/xen/~/assets/inject.bundle.js"><\/script>${await content.text()}`;
+            if (mime_default.lookup(finalURL) === "text/html") {
+              content = `<base href='/xen/~/apps/${app}/' /><script src='/xen/~/assets/inject.bundle.js'><\/script>${await content.text()}`;
             }
             return new Response(content, {
               headers: {
-                "Content-Type": mime.lookup(finalURL)
+                "Content-Type": mime_default.lookup(finalURL)
               }
             });
           }
@@ -9982,10 +9957,13 @@ self.addEventListener("fetch", (event) => {
         const path2 = new URL(req.url).pathname;
         const cache = await caches.open("xen-cache");
         if (!await cache.match(req)) {
-          if (path2.startsWith("/xen/img/") || path2.startsWith("/xen/font/") || path2.startsWith("/xen/cursors/") || req.destination == "font" || req.url.startsWith("https://cdn.jsdelivr.net/") || req.url.startsWith("https://ka-f.fontawesome.com/"))
-            return res = await fetch(req), cache.put(req.url, res.clone()), res;
-          else
+          if (path2.startsWith("/xen/img/") || path2.startsWith("/xen/font/") || path2.startsWith("/xen/cursors/") || req.destination === "font" || req.url.startsWith("https://cdn.jsdelivr.net/") || req.url.startsWith("https://ka-f.fontawesome.com/")) {
+            res = await fetch(req);
+            cache.put(req.url, res.clone());
+            return res;
+          } else {
             return await fetch(req);
+          }
         } else {
           return await cache.match(req) || await fetch(req);
         }
@@ -9995,6 +9973,7 @@ self.addEventListener("fetch", (event) => {
 });
 var nativePath = "/xen/apps/native/";
 function installApp(data) {
+  return data;
 }
 async function installNative(data) {
   const appData = await fetch(
@@ -10003,42 +9982,50 @@ async function installNative(data) {
   appData.id = data.app;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
   try {
-    await fs.mkdir("/xen/system/apps/" + data.app);
+    await FileSystem_default.mkdir("/xen/system/apps/" + data.app);
   } catch {
+    null;
   }
-  ;
   await Promise.all(
     appData.files.map(async (file2) => {
-      if (await fs.stat(Filer2.path.dirname("/xen/system/apps/" + data.app + "/" + file2)).catch(() => false)) {
+      if (await FileSystem_default.stat(import_filer2.default.path.dirname("/xen/system/apps/" + data.app + "/" + file2)).catch(() => false)) {
         const res = await fetch(
           nativePath + data.app.replace("Xen/", "") + "/" + file2
         );
         const blob = await res.blob();
-        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file2, Filer2.Buffer.from(await blob.arrayBuffer()));
+        await FileSystem_default.writeFile(
+          "/xen/system/apps/" + data.app + "/" + file2,
+          import_filer2.default.Buffer.from(await blob.arrayBuffer())
+        );
       } else {
         try {
-          await fs.mkdir(Filer2.path.dirname("/xen/system/apps/" + data.app + "/" + file2));
+          await FileSystem_default.mkdir(
+            import_filer2.default.path.dirname("/xen/system/apps/" + data.app + "/" + file2)
+          );
         } catch (e) {
+          null;
         }
-        ;
         const res = await fetch(
           nativePath + data.app.replace("Xen/", "") + "/" + file2
         );
         const blob = await res.blob();
-        await fs.writeFile("/xen/system/apps/" + data.app + "/" + file2, Filer2.Buffer.from(await blob.arrayBuffer()));
+        await FileSystem_default.writeFile(
+          "/xen/system/apps/" + data.app + "/" + file2,
+          import_filer2.default.Buffer.from(await blob.arrayBuffer())
+        );
       }
     })
   );
-  await fs.writeFile(
+  await FileSystem_default.writeFile(
     "/xen/system/apps/" + data.app + "/app.json",
     JSON.stringify(appData)
   );
   const installed = JSON.parse(
-    await fs.readFile("/xen/system/apps/installed.json", "utf-8")
+    await FileSystem_default.readFile("/xen/system/apps/installed.json", "utf-8")
   );
   if (!installed.includes(data.app))
     installed.push(data.app);
-  await fs.writeFile(
+  await FileSystem_default.writeFile(
     "/xen/system/apps/installed.json",
     JSON.stringify(installed)
   );
@@ -10049,19 +10036,22 @@ async function updateNative(data) {
     nativePath + data.app.replace("Xen/", "") + "/app.json"
   ).then((response) => response.json());
   const installed = JSON.parse(
-    await fs.readFile(`/xen/system/apps/${data.app}/app.json`, "utf-8")
+    await FileSystem_default.readFile(`/xen/system/apps/${data.app}/app.json`, "utf-8")
   );
-  if (installed.version == appData.version)
+  if (installed.version === appData.version)
     return false;
   appData.files.splice(appData.files.indexOf("app.json"), 1);
-  for (let file2 of appData.files) {
+  for (const file2 of appData.files) {
     const res = await fetch(
       nativePath + data.app.replace("Xen/", "") + "/" + file2
     );
     const blob = await res.blob();
-    await fs.writeFile("/xen/system/apps/" + data.app + "/" + file2, Filer2.Buffer.from(await blob.arrayBuffer()));
+    await FileSystem_default.writeFile(
+      "/xen/system/apps/" + data.app + "/" + file2,
+      import_filer2.default.Buffer.from(await blob.arrayBuffer())
+    );
   }
-  await fs.writeFile(
+  await FileSystem_default.writeFile(
     "/xen/system/apps/" + data.app + "/app.json",
     JSON.stringify(appData)
   );
@@ -10104,10 +10094,11 @@ self.addEventListener("message", async (event) => {
       }
       break;
     case "uninstall":
+      event.preventDefault();
       break;
   }
 });
-self.addEventListener("install", (event) => self.skipWaiting());
+self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(clients.claim()));
 /*! Bundled license information:
 
