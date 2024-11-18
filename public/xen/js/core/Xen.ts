@@ -50,6 +50,8 @@ class Xen {
 
     if (navigator.serviceWorker.controller == null) {
       location.reload();
+
+      return false;
     }
 
     return true;
@@ -59,7 +61,9 @@ class Xen {
     // await this.fs.loading;
 
     if (navigator.serviceWorker.controller == null) {
-      await this.Worker();
+      if (!await this.Worker()) {
+        return;
+      }
     }
 
     if (cookie.get("fs-initiated") !== "true") {
